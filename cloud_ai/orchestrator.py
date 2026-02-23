@@ -2,8 +2,8 @@ from .intent_builder import IntentBuilder
 from .cinematic_reasoner import CinematicReasoner
 from .plan_generator import PlanGenerator
 from ai.shot_intent.reasoning.intent_reasoner import ShotIntentReasoner
-# Assuming you have a class for multi-modal acting as the entry reasoning
-# If not, we will use ShotIntentReasoner as the primary entry
+from ai_context_store import context_store
+import json
 
 class CloudOrchestrator:
     """
@@ -14,30 +14,30 @@ class CloudOrchestrator:
     3. Plan Generation -> PlanGenerator
     """
     def __init__(self, llm_client=None):
-        # We need to instantiate the sub-modules
-        # Note: In a real app, inject dependencies or config
         self.intent_reasoner = ShotIntentReasoner(llm_client, "prompts/shot_intent.txt") if llm_client else None
         self.cinematic_reasoner = CinematicReasoner()
         self.planner = PlanGenerator()
 
     async def process_request(self, payload: dict) -> dict:
-        """
-        Full Pipeline Execution
-        """
+        """Full Pipeline Execution"""
         user_text = payload.get("text", "")
         
-        # 🔗 TELEMETRY INJECTION (Context-Aware AI)
+        # TELEMETRY INJECTION (Context-Aware AI)
         telemetry = payload.get("telemetry", {})
         if telemetry:
-             # We append this as system context for the LLM
-             user_text += f"\n[SYSTEM CONTEXT: Altitude={telemetry.get('altitude', 0)}m, Battery={telemetry.get('battery', 0)}%, GPS=({telemetry.get('lat', 0)}, {telemetry.get('lng', 0)})]"
+            user_text += f"\n[SYSTEM CONTEXT: Altitude={telemetry.get('altitude', 0)}m, Battery={telemetry.get('battery', 0)}%, GPS=({telemetry.get('lat', 0)}, {telemetry.get('lng', 0)})]"
+        
+        # LAPTOP AI CONTEXT INJECTION (Vision-Aware AI)
+        laptop_ctx = context_store.get_context()
+        if laptop_ctx:
+            user_text += f"\n[LAPTOP_AI_CONTEXT]: {json.dumps(laptop_ctx, default=str)}"
+        
         references = payload.get("media", []) 
         
-        # 0. Extract Dynamic Keys
+        # Extract Dynamic Keys
         api_keys = payload.get("api_keys", {})
 
         # 1. RAW REASONING (The "Director" Brain)
-        # This converts "chase car" into { "emotion": "fast", "subject": "car" ... }
         if self.intent_reasoner:
             raw_intent = self.intent_reasoner.reason(
                 user_text=user_text,

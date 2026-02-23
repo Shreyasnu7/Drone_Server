@@ -3,6 +3,7 @@ from cloud_ai.orchestrator import CloudOrchestrator
 from cloud_ai.llm import RealLLMClient
 from plan_router import submit_plan
 from api_schemas import DronePlan
+from ai_context_store import context_store
 import logging
 
 
@@ -12,8 +13,17 @@ print("--> AI COMMAND ROUTER LOADED")
 router = APIRouter(prefix="/director", tags=["AI-Command"])
 
 # Initialize Orchestrator with REAL AI Client
-# This ensures no fake "Mock" responses are ever generated.
 orchestrator = CloudOrchestrator(llm_client=RealLLMClient())
+
+
+@router.post("/ai/context")
+async def receive_laptop_context(payload: dict):
+    """
+    Receives live vision context from Laptop AI.
+    Called periodically by director_core.py on the laptop.
+    """
+    context_store.update(payload)
+    return {"status": "ok", "age": 0}
 
 @router.post("/ai/command")
 async def ai_command(payload: dict):
