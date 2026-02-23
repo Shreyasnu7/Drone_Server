@@ -101,7 +101,8 @@ class RealLLMClient:
 
         # Only try models that are known to work (Feb 2026)
         models_to_try = [
-            'gemini-2.0-flash',     # Stable, fast, works
+            'gemini-3-flash',       # Gemini 3 Flash - primary
+            'gemini-2.0-flash',     # Stable fallback
             'gemini-1.5-flash',     # Reliable fallback
         ]
 
@@ -117,8 +118,7 @@ class RealLLMClient:
                 print(f"DEBUGGING LLM: Trying {model_name}")
                 response = client.models.generate_content(
                     model=model_name,
-                    contents=prompt,
-                    config={"http_options": {"timeout": 20000}}  # 20s timeout
+                    contents=prompt
                 )
                 print(f"DEBUGGING LLM: SUCCESS with {model_name}")
                 return self._clean_json(response.text)
