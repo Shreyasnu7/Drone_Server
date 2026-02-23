@@ -10,7 +10,7 @@ class GeminiDirector:
     """
     def __init__(self, api_key=None):
         self.api_key = os.getenv("GEMINI_API_KEY") # SCRUBBED: Use Env Var
-        self.model = "gemini-3.0-flash-preview" # Updated to Feb 2026 Latest
+        self.model = "gemini-2.0-flash" # High rate limit model
         if not self.api_key:
              print("⚠️ No GEMINI_API_KEY in Environment. AI features will be limited.")
         print(f"✅ Gemini Director Initialized (Model: {self.model})")

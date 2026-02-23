@@ -101,11 +101,12 @@ class RealLLMClient:
 
         import time
 
-        # Current working models (Feb 2026)
-        # gemini-3-flash-preview = Gemini 3 Flash (FIRST PRIORITY)
+        # User explicitly requested gemini-2.5-flash everywhere
         models_to_try = [
-            'gemini-3-flash-preview',    # Gemini 3 Flash - FIRST PRIORITY
-            'gemini-2.5-flash',          # Latest stable Flash fallback
+            'gemini-2.0-flash',          # Latest stable Flash fallback
+            'gemini-2.0-flash-exp',
+            'gemini-1.5-flash',
+            'gemini-1.5-pro',
             'gemini-2.5-flash-lite',     # Fast, low-cost fallback
             'gemini-2.0-flash',          # Legacy fallback (retiring March 2026)
         ]
