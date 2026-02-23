@@ -99,10 +99,11 @@ class RealLLMClient:
         if not genai:
             raise Exception(f"GenAI Lib Missing: {GENAI_IMPORT_ERROR or 'Unknown'}")
 
-        # Only try models that are known to work (Feb 2026)
+        # Confirmed valid model IDs (Feb 2026)
         models_to_try = [
-            'gemini-3-flash',       # Gemini 3 Flash - primary
-            'gemini-2.0-flash',     # Stable fallback
+            'gemini-3-flash',       # Gemini 3 Flash - correct API ID
+            'gemini-flash-latest',  # Latest flash alias
+            'gemini-2.0-flash',     # Stable v2
             'gemini-1.5-flash',     # Reliable fallback
         ]
 
