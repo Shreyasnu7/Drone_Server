@@ -101,10 +101,9 @@ class RealLLMClient:
 
         # Confirmed valid model IDs (Feb 2026)
         models_to_try = [
-            'gemini-3-flash',       # Gemini 3 Flash - correct API ID
-            'gemini-flash-latest',  # Latest flash alias
-            'gemini-2.0-flash',     # Stable v2
-            'gemini-1.5-flash',     # Reliable fallback
+            'gemini-3-flash-preview',  # Gemini 3 Flash - correct API ID (preview)
+            'gemini-2.0-flash',        # Stable v2
+            'gemini-1.5-flash',        # Reliable fallback
         ]
 
         client = genai.Client(api_key=api_key) if api_key else self.gemini_client
