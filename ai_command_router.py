@@ -3,7 +3,16 @@ from cloud_ai.orchestrator import CloudOrchestrator
 from cloud_ai.llm import RealLLMClient
 from plan_router import submit_plan
 from api_schemas import DronePlan
-from ai_context_store import context_store
+import sys, os
+sys.path.insert(0, os.path.dirname(__file__))
+try:
+    from ai_context_store import context_store
+except ImportError:
+    class _FallbackStore:
+        def __init__(self): self._ctx = {}
+        def update(self, data): self._ctx = data
+        def get_context(self): return self._ctx
+    context_store = _FallbackStore()
 import logging
 
 
