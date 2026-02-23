@@ -99,11 +99,9 @@ class RealLLMClient:
         if not genai:
             raise Exception(f"GenAI Lib Missing: {GENAI_IMPORT_ERROR or 'Unknown'}")
 
-        # Confirmed valid model IDs (Feb 2026)
+        # Only try models that are known to work (Feb 2026)
         models_to_try = [
-            'gemini-3-flash',       # Gemini 3 Flash - correct API ID
-            'gemini-flash-latest',  # Latest flash alias
-            'gemini-2.0-flash',     # Stable v2
+            'gemini-2.0-flash',     # Stable, fast, works
             'gemini-1.5-flash',     # Reliable fallback
         ]
 
@@ -119,7 +117,8 @@ class RealLLMClient:
                 print(f"DEBUGGING LLM: Trying {model_name}")
                 response = client.models.generate_content(
                     model=model_name,
-                    contents=prompt
+                    contents=prompt,
+                    config={"http_options": {"timeout": 20000}}  # 20s timeout
                 )
                 print(f"DEBUGGING LLM: SUCCESS with {model_name}")
                 return self._clean_json(response.text)
