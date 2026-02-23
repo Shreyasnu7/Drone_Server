@@ -99,11 +99,15 @@ class RealLLMClient:
         if not genai:
             raise Exception(f"GenAI Lib Missing: {GENAI_IMPORT_ERROR or 'Unknown'}")
 
-        # Confirmed valid model IDs (Feb 2026)
+        import time
+
+        # Current working models (Feb 2026)
+        # gemini-2.0-flash retiring March 31 2026, gemini-1.5-flash already deprecated
         models_to_try = [
-            'gemini-3-flash-preview',  # Gemini 3 Flash - correct API ID (preview)
-            'gemini-2.0-flash',        # Stable v2
-            'gemini-1.5-flash',        # Reliable fallback
+            'gemini-2.5-flash',          # Latest stable Flash
+            'gemini-2.5-flash-lite',     # Fast, low-cost fallback 
+            'gemini-3-flash-preview',    # Gemini 3 Flash (preview, may 503 under load)
+            'gemini-2.0-flash',          # Legacy fallback (retiring soon)
         ]
 
         client = genai.Client(api_key=api_key) if api_key else self.gemini_client
@@ -114,19 +118,30 @@ class RealLLMClient:
 
         last_model_error = "Unknown"
         for model_name in models_to_try:
-            try:
-                print(f"DEBUGGING LLM: Trying {model_name}")
-                response = client.models.generate_content(
-                    model=model_name,
-                    contents=prompt
-                )
-                print(f"DEBUGGING LLM: SUCCESS with {model_name}")
-                return self._clean_json(response.text)
-            except Exception as e:
-                last_model_error = str(e)
-                print(f"DEBUGGING LLM: Failed {model_name} -> {e}")
-                logger.error(f"Gemini {model_name} Error: {e}")
-                continue
+            # Try each model with 1 retry for 503 (high demand)
+            for attempt in range(2):
+                try:
+                    print(f"DEBUGGING LLM: Trying {model_name} (attempt {attempt+1})")
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=prompt
+                    )
+                    print(f"DEBUGGING LLM: SUCCESS with {model_name}")
+                    return self._clean_json(response.text)
+                except Exception as e:
+                    error_str = str(e)
+                    last_model_error = error_str
+                    print(f"DEBUGGING LLM: Failed {model_name} -> {e}")
+                    
+                    # Retry on 503 (temporary high demand)
+                    if "503" in error_str and attempt == 0:
+                        print(f"DEBUGGING LLM: 503 detected, retrying {model_name} in 2s...")
+                        time.sleep(2)
+                        continue
+                    
+                    # Don't retry on 404 (model doesn't exist) or 429 (quota)
+                    logger.error(f"Gemini {model_name} Error: {e}")
+                    break  # Move to next model
 
         raise Exception(f"All Gemini Models Failed. Last error: {last_model_error}")
 
