@@ -102,12 +102,12 @@ class RealLLMClient:
         import time
 
         # Current working models (Feb 2026)
-        # gemini-2.0-flash retiring March 31 2026, gemini-1.5-flash already deprecated
+        # gemini-3-flash-preview = Gemini 3 Flash (FIRST PRIORITY)
         models_to_try = [
-            'gemini-2.5-flash',          # Latest stable Flash
-            'gemini-2.5-flash-lite',     # Fast, low-cost fallback 
-            'gemini-3-flash-preview',    # Gemini 3 Flash (preview, may 503 under load)
-            'gemini-2.0-flash',          # Legacy fallback (retiring soon)
+            'gemini-3-flash-preview',    # Gemini 3 Flash - FIRST PRIORITY
+            'gemini-2.5-flash',          # Latest stable Flash fallback
+            'gemini-2.5-flash-lite',     # Fast, low-cost fallback
+            'gemini-2.0-flash',          # Legacy fallback (retiring March 2026)
         ]
 
         client = genai.Client(api_key=api_key) if api_key else self.gemini_client
