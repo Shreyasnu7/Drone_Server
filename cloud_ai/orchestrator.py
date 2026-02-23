@@ -2,7 +2,19 @@ from .intent_builder import IntentBuilder
 from .cinematic_reasoner import CinematicReasoner
 from .plan_generator import PlanGenerator
 from ai.shot_intent.reasoning.intent_reasoner import ShotIntentReasoner
-from ai_context_store import context_store
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+try:
+    from ai_context_store import context_store
+except ImportError:
+    # Fallback: inline minimal context store if module not found
+    class _FallbackStore:
+        def __init__(self):
+            self._ctx = {}
+        def update(self, data): self._ctx = data
+        def get_context(self): return self._ctx
+    context_store = _FallbackStore()
+    print("⚠️ ai_context_store not found, using inline fallback")
 import json
 
 class CloudOrchestrator:
