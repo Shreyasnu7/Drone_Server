@@ -62,7 +62,12 @@ Each request contains:
 
 Output ONLY valid JSON. No markdown, no commentary. YOU decide every value based on your reasoning — nothing is restricted.
 {
-    "action": "<your complete action plan — you decide what the drone does, step by step>",
+    "action": "<the FIRST action to execute — but this is part of a larger sequence you plan below>",
+    "sequence": [
+        {"phase": 1, "action": "<first shot/move>", "duration_s": <seconds>, "description": "<what it achieves>"},
+        {"phase": 2, "action": "<second shot/move>", "duration_s": <seconds>, "description": "<what it achieves>"},
+        "<...as many phases as the shot requires. A 30s commercial might have 4-6 phases.>"
+    ],
     "thought_process": "<your full reasoning — what you understood, how professionals would film this, what cinematic techniques apply>",
     "reasoning": "<why this plan is optimal given current context, telemetry, obstacles, and scene>",
     "confidence": <you decide 0.0-1.0>,

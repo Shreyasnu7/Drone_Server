@@ -28,11 +28,13 @@
 #include <WiFiUdp.h>
 
 // --- WIFI CONFIGURATION ---
-const char* wifi_ssid = "Seema";          // 2.4GHz WiFi Name
-const char* wifi_password = "Seema1978";  // WiFi Password
+// ESP32 connects to the Cubie A7Z's own WiFi hotspot (DroneAP)
+// 4G dongle handles internet separately via USB
+const char* wifi_ssid = "DroneAP";            // Cubie A7Z hotspot name
+const char* wifi_password = "dronepass123";    // Cubie A7Z hotspot password
 
 WiFiUDP udp;
-IPAddress radxa_ip(192, 168, 0, 11);      // Radxa IP
+IPAddress radxa_ip(10, 42, 0, 1);              // Cubie A7Z IP on its own hotspot
 uint16_t radxa_port = 8888;
 
 // --- PIN CONFIGURATION ---
@@ -448,8 +450,53 @@ void checkCommand(Stream &s) {
 unsigned long last_telem = 0;
 
 void loop() {
-    runLEDs(); 
+    runLEDs();
     checkCommand(Serial);
+
+    // MA-19 FIX: Also check for commands arriving via UDP (bridge sends via WiFi UDP)
+    int packetSize = udp.parsePacket();
+    if (packetSize > 0) {
+        char udpBuf[256];
+        int len = udp.read(udpBuf, sizeof(udpBuf) - 1);
+        if (len > 0) {
+            udpBuf[len] = '\0';
+            // Parse the UDP command the same way as Serial commands
+            String udpCmd = String(udpBuf);
+            udpCmd.trim();
+            if (udpCmd.startsWith("{")) {
+                StaticJsonDocument<256> cmdDoc;
+                if (deserializeJson(cmdDoc, udpCmd) == DeserializationOk) {
+                    // Gimbal command: {"gim": [pitch, yaw]}
+                    if (cmdDoc.containsKey("gim")) {
+                        int p = cmdDoc["gim"][0];
+                        int y = cmdDoc["gim"][1];
+                        CurrentPitch = constrain(map(p, -90, 90, 0, 180), 10, 170);
+                        CurrentYaw = constrain(map(y, -90, 90, 45, 135), 45, 135);
+                        gimPitch.write(CurrentPitch);
+                        gimYaw.write(CurrentYaw);
+                        stabilize_active = false; // Manual gimbal overrides stabilization
+                    }
+                    // LED command: {"led": "RED"}
+                    if (cmdDoc.containsKey("led")) {
+                        String color = cmdDoc["led"].as<String>();
+                        // Map color string to LED mode
+                        if (color == "RED") currentMode = 99;
+                        else if (color == "BLUE") currentMode = 3;
+                        else if (color == "GREEN") currentMode = 1;
+                        else if (color == "OFF") currentMode = 0;
+                    }
+                    // Mode command: {"mode": 16}
+                    if (cmdDoc.containsKey("mode")) {
+                        currentMode = cmdDoc["mode"].as<int>();
+                    }
+                    // Stabilization toggle: {"stab": true/false}
+                    if (cmdDoc.containsKey("stab")) {
+                        stabilize_active = cmdDoc["stab"].as<bool>();
+                    }
+                }
+            }
+        }
+    }
 
     // === SENSOR READING LOOP ===
     selectChannel(SHARED_PCA_CHANNEL); 
@@ -484,7 +531,7 @@ void loop() {
         doc["t3"] = dist3; doc["t4"] = dist4;
         doc["ax"] = g_ax; doc["ay"] = g_ay; doc["az"] = g_az;
         doc["gx"] = g_gx; doc["gy"] = g_gy; doc["gz"] = g_gz;
-        doc["gp"] = CurrentPitch; doc["gy"] = CurrentYaw; 
+        doc["gp"] = CurrentPitch; doc["cy"] = CurrentYaw;  // MA-20 FIX: was "gy" which overwrote gyro Y
         doc["lm"] = (int)currentMode; 
 
         String json_str;

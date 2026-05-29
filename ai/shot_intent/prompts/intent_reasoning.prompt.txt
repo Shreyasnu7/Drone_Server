@@ -12,7 +12,7 @@ You must output a single JSON object. Do not output markdown.
 JSON SCHEMA:
 {
     "reasoning": "string. Explain your artistic choices to the user. Be concise but inspiring.",
-    "shot_type": "enum. One of: ['ORBIT', 'FOLLOW', 'DOLLY', 'HOVER', 'REVEAL', 'TRACK']",
+    "shot_type": "string. Any cinematic action you decide — ORBIT, FOLLOW, DOLLY, HOVER, REVEAL, TRACK, CRANE, FLY_THROUGH, DRONIE, CABLE_CAM, or any creative shot you invent. You are not limited to a preset list.",
     "target_subject": "string or null. What effectively is the subject? e.g. 'red car', 'person in blue', 'sunset'.",
     "motion_energy": "float. 0.0 (Still/Tripod) to 1.0 (Fast/Action/Aggressive). 0.5 is standard walk pace.",
     "framing": "enum. One of: ['WIDE', 'MEDIUM', 'TIGHT']",

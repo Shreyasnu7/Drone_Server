@@ -30,6 +30,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import json
 import base64
+
+# GPU Configuration — auto-detects Standard (5070 Ti) vs Ultra (5090 + 5070 Ti)
+from laptop_ai.gpu_config import get_gpu_config
+GPU_CONFIG = get_gpu_config()
 import traceback
 import cv2
 import numpy as np
@@ -40,7 +44,7 @@ from typing import Optional, List, Dict, Any
 
 # Local modules
 from laptop_ai.camera_fusion import CameraFusion
-from laptop_ai.gopro_driver import GoProDriver
+from laptop_ai.gopro_hero12_bridge import GoProHero12Bridge
 from laptop_ai.ai_camera_brain import AICameraBrain
 from laptop_ai.camera_selector import choose_camera_for_request
 from laptop_ai.autopilot_controller import AutopilotController
@@ -82,6 +86,8 @@ from laptop_ai.camera_director import CameraDirector
 # WIRED: ADVANCED AI MODELS (DeepStream, Pi0, Gemini)
 from laptop_ai.deepstream_handler import DeepStreamHandler
 from laptop_ai.pi0_pilot import Pi0Pilot
+from laptop_ai.gemini_live_brain import GeminiLiveBrain
+from laptop_ai.local_er_brain import LocalERBrain  # Qwen 2.5 VL 3B local pilot
 # Add cloud_ai path if needed, or assume relative import works if cloud_ai is sibling
 try:
     from cloud_ai.gemini_director import GeminiDirector
@@ -94,7 +100,7 @@ except ImportError:
         GeminiDirector = None
 
 print("✅ Medium Priority AI Modules Loaded: Motion, Mavlink, Render, ShotPlanner, Safety, Recorder, CamDirector, Metadata")
-print("✅ Advanced AI Models Loaded: DeepStream, Pi0-FAST, Gemini 3.0")
+print("✅ Advanced AI Models Loaded: DeepStream, Pi0-FAST, Gemini Live Brain")
 
 # === CRITICAL CAMERA AI MODULES (WIRING PHASE 3) ===
 try:
@@ -153,16 +159,16 @@ class ThreadedYOLO:
         if self.thread.is_alive():
             self.thread.join(timeout=1.0)
 
-    def update(self, frame):
-        """Push a new frame for inference."""
-        if frame is None: return
-        with self.lock:
-            self.frame = frame.copy()
-
     def get_latest_detections(self):
         """Get the most recent detection results."""
         with self.lock:
             return self.latest_detections
+
+    def update(self, frame):
+        """Pass a new frame to the background thread for inference."""
+        if frame is not None:
+            with self.lock:
+                self.frame = frame.copy()
 
     def _worker(self):
         while self.running:
@@ -188,10 +194,11 @@ class DirectorCore:
         self.simulation_only = simulation_only
         self.simulate = simulation_only
         self.ws = MessagingClient("laptop_vision")
-        self.autopilot = AutopilotController() # This is the Mavlink Controller
+        self.autopilot = AutopilotController(messaging_client=self.ws) # This is the Mavlink Controller
         self.frame_count = 0
         self.tracker = None
         self.classifier = None
+        self._scene_type = 'unknown'  # Updated by scene classifier every 30 frames
         self.ultra_director = None
         self.drone_stabilizer = AIDroneStabilizer() if AIDroneStabilizer else None
         try:
@@ -210,7 +217,7 @@ class DirectorCore:
         
         # Init components
         self.camera_selector = "MAIN" # Default
-        self.gopro = GoProDriver()
+        self.gopro = GoProHero12Bridge(messaging_client=self.ws)
         # self.esp32 = ESP32Driver() # REMOVED: Hardware is on Drone
         self.remote_esp_telem = {}
         print("✅ Director Ready for Remote ESP32 Telemetry")
@@ -449,16 +456,42 @@ class DirectorCore:
         # INSTANTIATE ADVANCED AI MODELS (NVIDIA/DeepStream/Pi0/Gemini)
         print("🚀 Initializing High-Performance AI Stack...")
         self.deepstream = DeepStreamHandler(RTSP_URL)
-        # self.deepstream.start() # Start 200fps loop (Optional: enabled by task)
+        self.deepstream.start()  # Start detection pipeline (DeepStream or YOLO fallback)
         
         self.pi0_pilot = Pi0Pilot()
+        self._pi0_commands = None  # Latest Pi0 output
+        self._pi0_active = True    # Pi0 runs as 50Hz reflex layer (micro-corrections for wind/vibration)
         
         try:
            self.gemini = GeminiDirector(api_key=os.getenv("GEMINI_API_KEY"))
         except:
-           self.gemini = None
-           
-        print("✅ Advanced AI Models Instantiated.")
+           self.autopilot = MavlinkExecutor()
+
+        # TWO-BRAIN ARCHITECTURE (configured by gpu_config):
+        # Standard mode: Qwen 2.5 VL 3B (256px, 28fps) + Gemini 2.0 Flash
+        # Ultra mode:    Qwen3 VL 32B (1024px, 10fps) + Gemini 2.5 Flash
+        vision_cfg = GPU_CONFIG.get('vision_brain', {})
+        self.er_brain = LocalERBrain()
+        self.er_brain.model_id = vision_cfg.get('model_id', 'Qwen/Qwen2.5-VL-3B-Instruct')
+        self.er_brain.max_frame_dim = vision_cfg.get('max_frame_dim', 256)
+        print(f"🧠 ER Brain: {self.er_brain.model_id} @ {vision_cfg.get('max_frame_dim', 256)}px → {vision_cfg.get('target_fps', 28)}fps target")
+
+        gemini_cfg = GPU_CONFIG.get('gemini_cloud', {})
+        self.gemini_brain = GeminiLiveBrain(api_key=os.getenv("GEMINI_API_KEY"))
+        self.gemini_brain.model = gemini_cfg.get('model', 'gemini-2.0-flash')
+        print(f"🧠 Gemini Brain: {self.gemini_brain.model} (cloud, every {gemini_cfg.get('interval_seconds', 2)}s)")
+        
+        self._brain_override = True  # ER Brain takes precedence on navigation
+
+        # SPATIAL AWARENESS GRID — fuses LiDAR + ToF + MiDaS into 2.5D obstacle map
+        try:
+            from laptop_ai.spatial_grid import SpatialGrid
+            self.spatial_grid = SpatialGrid()
+            print("Spatial Grid: ACTIVE (10x10m, sensor fusion)")
+        except ImportError:
+            self.spatial_grid = None
+
+        print(f"Advanced AI Models Instantiated (Pi0: {self.pi0_pilot.model_type}, DS: {self.deepstream.mode}, Brain: ONLINE)")
 
         # Load Cinematic Assets
         self._load_cinematic_library()
@@ -474,22 +507,30 @@ class DirectorCore:
 
     async def start(self):
         """
-        Starts the Director Core services (Messaging, Vision, etc.)
+        Launch all concurrent loops (Vision, Reasoning, Messaging).
         """
-        print("🚀 Starting Director Core Services...")
+        print("🚀 Director Core Starting...")
         
-        # Start Media Server
-        if self.media_server:
-            asyncio.create_task(self.media_server.start())
-
-        # Register Packet Handler
-        self.ws.add_recv_handler(self._handle_packet)
+        # 1. Start Vision Loop (Camera + UI)
+        asyncio.create_task(self._vision_loop())
         
-        # Connect to Messaging Server (VPS)
-        await self.ws.connect()
+        # 2. Start Autonomous Brain (Idle thoughts)
+        asyncio.create_task(self._autonomous_reasoning_loop())
         
-        # Start Polling (Backup if WS fails)
-        asyncio.create_task(self._poll_for_jobs())
+        # 3. Connect Messaging + REGISTER PACKET HANDLER
+        # Without this, laptop AI NEVER receives sensor data from drone
+        if hasattr(self, 'ws') and self.ws:
+            self.ws.add_recv_handler(self._handle_packet)
+            print("✅ Packet handler registered — will receive ESP32 telem + LiDAR scans")
+        print("✅ Director Loops Active.")
+        
+        # Start Local ER Brain Model in background thread
+        if hasattr(self, 'er_brain'):
+            self.er_brain.connect()
+            
+        # Start Gemini Continuous Mastermind
+        if hasattr(self, 'gemini_brain'):
+            self.gemini_brain.connect()
 
     def _load_cinematic_library(self):
         """
@@ -518,27 +559,6 @@ class DirectorCore:
                      if file.endswith(".json") or file.endswith(".lut"):
                          pass # Placeholder for loading logic
 
-        # Start Autonomous Logic (The "Brain")
-        # Moved to end of __init__ to avoid orphan code execution
-        # asyncio.create_task(self._autonomous_reasoning_loop())
-        # print("Director: connected to messaging service and vision loop started.")
-        # self.autopilot.connect()
-
-    async def start(self):
-        """
-        Launch all concurrent loops (Vision, Reasoning, Messaging).
-        """
-        print("🚀 Director Core Starting...")
-        
-        # 1. Start Vision Loop (Camera + UI)
-        asyncio.create_task(self._vision_loop())
-        
-        # 2. Start Autonomous Brain (Idle thoughts)
-        asyncio.create_task(self._autonomous_reasoning_loop())
-        
-        # 3. Connect Messaging
-        # (MessagingClient usually connects on first send or background)
-        print("✅ Director Loops Active.")
     async def _autonomous_reasoning_loop(self):
         """
         P2.2: The "Idle Mind" of the AI.
@@ -604,13 +624,18 @@ class DirectorCore:
         CAM_WIDTH, CAM_HEIGHT = 1920, 1080 
         
         # --- SOURCE DEFINITIONS ---
-        # 1. Internal Camera (Radxa) - Expecting MJPEG HTTP Stream (UDP was problematic)
-        #    Radxa (192.168.0.11) -> Server (Relay) -> Laptop (Request)
-        internal_src = RTSP_URL # "https://drone-server-r0qe.onrender.com/video_feed"
-        
-        # 2. GoPro - Expecting UDP stream from GoPro IP
-        gopro_ip = getattr(self.gopro, 'ip', '10.5.5.9')
-        gopro_src = f"udp://{gopro_ip}:8554"
+        # All video flows through the Radxa bridge, which auto-selects the best camera:
+        # GoPro USB (best) > GoPro WiFi > Onboard IMX219
+        #
+        # Path 1 (TAILSCALE): Radxa UDP stream via Tailscale VPN (12ms, 720p H.264)
+        # Path 2 (RENDER): Cloud server MJPEG relay (200ms+, 480p JPEG fallback)
+
+        # 1. Tailscale UDP stream from Radxa (primary — fast, works across any network)
+        RADXA_TAILSCALE_IP = "100.94.242.14"
+        internal_src = f"udp://@0.0.0.0:8554"  # Radxa sends TO us on this port via Tailscale
+
+        # 2. Cloud relay fallback (if Tailscale is down)
+        gopro_src = RTSP_URL  # Render server MJPEG relay of Radxa frames
         
         # Initialize Fusion Engine (if not already loaded)
         if not hasattr(self, 'fusion') or self.fusion is None:
@@ -622,27 +647,27 @@ class DirectorCore:
         
         print(f"📡 CONNECTING CAMERAS...")
         
-        # Try Internal
+        # Try Tailscale UDP Stream (primary — Radxa streams here via Tailscale VPN)
         try:
-            print(f"   👉 Connecting Internal (Radxa): {internal_src}...")
+            print(f"   👉 Connecting Tailscale UDP (Radxa → Laptop): {internal_src}...")
             self.cam_internal = CameraStream(src=internal_src, width=CAM_WIDTH, height=CAM_HEIGHT).start()
-            if not self.cam_internal.working:
-                print(f"   ⚠️ INTERNAL CAMERA (Radxa) NOT DETECTED. (Will keep retrying)")
-                # self.cam_internal.stop() # Keep it alive to retry? CameraStream usually dies if open fails.
-                # Re-instantiate in loop if needed
+            if self.cam_internal.working:
+                print(f"   ✅ TAILSCALE VIDEO STREAM ACTIVE (from Radxa {RADXA_TAILSCALE_IP})")
+            else:
+                print(f"   ⚠️ TAILSCALE STREAM NOT DETECTED. Radxa bridge may not be running.")
         except Exception as e:
-            print(f"   ❌ Internal Cam Error: {e}")
+            print(f"   ❌ Tailscale Stream Error: {e}")
 
-        # Try GoPro
+        # Try Render Cloud Relay (fallback — higher latency but always works)
         try:
-            print(f"   👉 Connecting GoPro: {gopro_src}...")
+            print(f"   👉 Connecting Cloud Relay (fallback): {gopro_src}...")
             self.cam_gopro = CameraStream(src=gopro_src, width=CAM_WIDTH, height=CAM_HEIGHT).start()
             if self.cam_gopro.working:
-                print(f"   ✅ GOPRO CONNECTED. IP: {gopro_ip}")
+                print(f"   ✅ CLOUD RELAY CONNECTED (Render MJPEG)")
             else:
-                 print(f"   ⚠️ GOPRO NOT DETECTED. (Is it on? WiFi connected?)")
+                 print(f"   ⚠️ CLOUD RELAY NOT AVAILABLE.")
         except Exception as e:
-             print(f"   ❌ GoPro connection failed: {e}")
+             print(f"   ❌ Cloud Relay connection failed: {e}")
 
         if (not self.cam_internal or not self.cam_internal.working) and \
            (not self.cam_gopro or not self.cam_gopro.working):
@@ -660,6 +685,10 @@ class DirectorCore:
         print(f"🔥 GPU INFERENCE ENGINE: STANDBY (Waiting for frames)")
         
         frame_id = 0
+        
+        # Pre-allocate blank frame to prevent Numpy MemoryErrors when RAM is full
+        import numpy as np
+        blank_frame = np.zeros((720, 1280, 3), np.uint8)
         
         while True:
             t0 = time.time()
@@ -686,15 +715,16 @@ class DirectorCore:
             # Handle "No Signal"
             if raw_frame is None:
                 # No Camera -> Show Disconnected Screen
-                import numpy as np
-                blank = np.zeros((720, 1280, 3), np.uint8)
-                cv2.putText(blank, "SEARCHING FOR DRONE VIDEO (UDP)...", (340, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 165, 255), 2)
-                cv2.putText(blank, f"Checking: {internal_src}", (400, 360), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (200, 200, 200), 1)
-                cv2.imshow("Laptop AI Director (RTX 5070 Ti)", blank)
+                blank_frame.fill(0)
+                cv2.putText(blank_frame, "SEARCHING FOR DRONE VIDEO (UDP)...", (340, 300), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 165, 255), 2)
+                cv2.putText(blank_frame, f"Checking: {internal_src}", (400, 360), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (200, 200, 200), 1)
+                cv2.imshow("Laptop AI Director (RTX 5070 Ti)", blank_frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-                await asyncio.sleep(0.1)
-                continue
+                
+                # ENABLE BLIND MODE: Feed the blank frame to the AI so it can purely process Sensor/Telemetry data!
+                raw_frame = blank_frame.copy()
+                await asyncio.sleep(0.05)  # Cap at 20fps to prevent CPU spam
             
             # Resize check (if stream changed)
             h, w = raw_frame.shape[:2]
@@ -707,12 +737,12 @@ class DirectorCore:
             
             # --- NEW: ISO/EV SOFTWARE ADJUSTMENT ---
             # Apply Digital Gain if set (Simulate ISO)
-            if getattr(self, 'iso_gain', 1.0) != 1.0 or getattr(self, 'ev_bias', 0.0) != 0.0:
+            if raw_frame is not None and (getattr(self, 'iso_gain', 1.0) != 1.0 or getattr(self, 'ev_bias', 0.0) != 0.0):
                 gain = self.iso_gain * (1.0 + (self.ev_bias * 0.2)) # EV adds 20% brightness per stop
                 if gain != 1.0:
                     raw_frame = cv2.convertScaleAbs(raw_frame, alpha=gain, beta=0)
 
-            if video_out is None:
+            if raw_frame is not None and video_out is None:
                  video_out_width, video_out_height = w, h
                  # SAVE TO MEDIA DIR
                  out_path = f"media/drone_footage_{int(time.time())}.mp4"
@@ -720,95 +750,474 @@ class DirectorCore:
                  video_out = cv2.VideoWriter(out_path, fourcc, 30.0, (w, h))
                  print(f"⏺️  Recording Started: {out_path} ({w}x{h})")
 
-            # 3. AI INFERENCE (YOLO + DeepStream Adapter)
+            # 3. AI INFERENCE — DeepStream (primary) or YOLO (fallback)
             detections = []
-            if self.threaded_yolo:
+            det_source = "none"
+            
+            # Try DeepStream first (100+ FPS when GPU pipeline is active)
+            if raw_frame is not None and hasattr(self, 'deepstream') and self.deepstream and self.deepstream.mode == "deepstream":
+                ds_dets = self.deepstream.get_detections()
+                if ds_dets:
+                    detections = ds_dets  # Format: [class, cx, cy, w, h, conf]
+                    det_source = "deepstream"
+            
+            # Fall back to ThreadedYOLO (30-60 FPS)
+            if not detections and self.threaded_yolo:
                 self.threaded_yolo.update(raw_frame)
                 detections = self.threaded_yolo.get_latest_detections()
+                det_source = "yolo"
+            
+            # Also try DeepStream YOLO fallback if ThreadedYOLO didn't work
+            if not detections and hasattr(self, 'deepstream') and self.deepstream and self.deepstream.mode == "yolo":
+                ds_dets = self.deepstream.get_detections(frame=raw_frame)
+                if ds_dets:
+                    detections = ds_dets
+                    det_source = "deepstream_yolo"
                 
-                if frame_id == 0:
-                    dev_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
-                    print(f"🔥 GPU INFERENCE RUNNING: {len(detections)} objects | Device: {dev_name} | Source: {current_source.upper()}")
+            if frame_id == 0:
+                dev_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
+                ds_fps = self.deepstream.get_fps() if hasattr(self, 'deepstream') and self.deepstream else 0
+                print(f"🔥 GPU INFERENCE RUNNING: {len(detections)} objects | Device: {dev_name} | Source: {current_source.upper()} | Detector: {det_source} | DS FPS: {ds_fps:.0f}")
+
+            # 3b. DEPTH ESTIMATION (MiDaS) — every 5 frames (~6 FPS)
+            # Gives all AIs actual depth perception from the camera
+            depth_map = None
+            subject_depth = 9.9  # default: far away
+            if hasattr(self, 'depth_estimator') and self.depth_estimator and frame_id % 5 == 0:
+                try:
+                    depth_map, subject_mask = self.depth_estimator.estimate(raw_frame)
+                    if depth_map is not None:
+                        # Get depth at image center (where tracked subject usually is)
+                        h_d, w_d = depth_map.shape[:2]
+                        center_depth = float(depth_map[h_d//2, w_d//2])
+
+                        # If we have a tracked subject, get depth at its centroid
+                        if detections:
+                            try:
+                                det = detections[0]
+                                if hasattr(det, 'xyxy'):
+                                    cx = int((det.xyxy[0][0] + det.xyxy[0][2]) / 2)
+                                    cy = int((det.xyxy[0][1] + det.xyxy[0][3]) / 2)
+                                elif isinstance(det, (list, tuple)) and len(det) >= 4:
+                                    cx, cy = int(det[1]), int(det[2])
+                                else:
+                                    cx, cy = w_d // 2, h_d // 2
+                                # Scale to depth map coords
+                                dx = max(0, min(w_d - 1, int(cx * w_d / w)))
+                                dy = max(0, min(h_d - 1, int(cy * h_d / h)))
+                                subject_depth = float(depth_map[dy, dx])
+                            except:
+                                subject_depth = center_depth
+                        else:
+                            subject_depth = center_depth
+
+                        # Convert normalized depth (0-1, 1=close) to approximate meters
+                        # MiDaS gives relative depth — scale using ToF front as reference
+                        tof_front_m = env.get('tof_front', 3000) / 1000.0 if hasattr(self, 'current_environment_state') else 5.0
+                        if subject_depth > 0.01:
+                            subject_depth_m = tof_front_m * (1.0 / max(subject_depth, 0.05))
+                        else:
+                            subject_depth_m = 9.9
+                        subject_depth_m = min(subject_depth_m, 30.0)  # Cap at 30m
+
+                        # Store for other modules
+                        self._latest_depth_map = depth_map
+                        self._subject_depth_m = subject_depth_m
+                except Exception as e:
+                    if frame_id % 150 == 0:
+                        print(f"Depth estimation: {e}")
+
+            # Make depth available to environment state
+            if not hasattr(self, '_subject_depth_m'):
+                self._subject_depth_m = 9.9
+            env = getattr(self, 'current_environment_state', {})
+            if isinstance(env, dict):
+                env['depth_to_subject_m'] = getattr(self, '_subject_depth_m', 9.9)
+
+            # 3c. SPATIAL GRID UPDATE — fuse all sensors into 2.5D obstacle map
+            if hasattr(self, 'spatial_grid') and self.spatial_grid:
+                tof = {}
+                esp_telem = getattr(self, 'remote_esp_telem', {})
+                if esp_telem:
+                    tof = {
+                        't1': esp_telem.get('t1', esp_telem.get('tof_front', -1)),
+                        't2': esp_telem.get('t2', esp_telem.get('tof_right', -1)),
+                        't3': esp_telem.get('t3', esp_telem.get('tof_back', -1)),
+                        't4': esp_telem.get('t4', esp_telem.get('tof_left', -1)),
+                    }
+                self.spatial_grid.update(
+                    lidar_points=getattr(self, 'remote_obstacles', None),
+                    tof_sensors=tof if tof else None,
+                    depth_info={'subject_depth_m': getattr(self, '_subject_depth_m', 9.9)},
+                    altitude=env.get('altitude', 0),
+                    drone_yaw_rad=env.get('yaw', 0),
+                )
+                # Inject spatial description into environment for all AIs
+                env['spatial'] = self.spatial_grid.get_spatial_description()
+                env['spatial_closest_m'], env['spatial_closest_dir'] = self.spatial_grid.get_closest_obstacle()
 
             # 4. Pi0-FAST PILOT (Reflexes) - 50Hz Control
-            # Send frame to Pi0 Pilot model for immediate control response
             if hasattr(self, 'pi0_pilot') and self.pi0_pilot:
-                # self.pi0_pilot.update(raw_frame, detections)
-                # commands = self.pi0_pilot.get_commands()
-                pass
+                # Build state vector from detections (handles both YOLO and DeepStream format)
+                target_err_x, target_err_y = 0.0, 0.0
+                if detections and len(detections) > 0:
+                    try:
+                        det = detections[0]
+                        if det_source == "yolo" and hasattr(det, 'xyxy'):
+                            # YOLO ultralytics format
+                            cx = float(det.xyxy[0][0] + det.xyxy[0][2]) / 2
+                            cy = float(det.xyxy[0][1] + det.xyxy[0][3]) / 2
+                        elif isinstance(det, (list, tuple)) and len(det) >= 4:
+                            # DeepStream format: [class, cx, cy, w, h, conf]
+                            cx = float(det[1])
+                            cy = float(det[2])
+                        else:
+                            cx, cy = w/2, h/2
+                        target_err_x = (cx - w/2) / (w/2)  # Normalized -1 to 1
+                        target_err_y = (cy - h/2) / (h/2)
+                    except:
+                        pass
+                
+                env = getattr(self, 'current_environment_state', {})
+                pi0_state = {
+                    'target_err_x': target_err_x,
+                    'target_err_y': target_err_y,
+                    'vx': env.get('speed', 0),
+                    'vy': 0,
+                    'x': 0, 'y': 0,
+                    'depth_dist': getattr(self, '_subject_depth_m', env.get('tof_front', 9999) / 1000.0),
+                    'altitude': env.get('altitude', 0),
+                    'heading': env.get('heading', 0),
+                }
+                pi0_commands = self.pi0_pilot.update(pi0_state)
+                self._pi0_commands = pi0_commands
+                
+                # === Pi0 REFLEX CORRECTIONS (stored, applied when ER brain sends velocity) ===
+                # Pi0 doesn't send velocity directly — it stores micro-corrections
+                # that get ADDED to ER brain's velocity commands for stability
+                if self._pi0_active and pi0_commands and hasattr(self, 'autopilot'):
+                    if pi0_commands.get('emergency'):
+                        # Emergency brake — immediate stop (Pi0 detected danger at 50Hz)
+                        self.autopilot.send_velocity(0, 0, 0)
+                        print("🛑 Pi0 EMERGENCY BRAKE")
+                    else:
+                        # Store corrections — ER brain will add these to its velocity
+                        scale = 0.05  # Small corrections (stability, not override)
+                        self._pi0_correction = {
+                            'vx': pi0_commands.get('pitch', 0) * scale,
+                            'vy': pi0_commands.get('roll', 0) * scale,
+                            'vz': (pi0_commands.get('throttle', 0.5) - 0.5) * 0.5,
+                        }
 
-            # RENDER (If RenderMaster loaded)
+            # 4a. LOCAL ER BRAIN (QWEN2.5-VL) — Continuous fast spatial decisions
+            if hasattr(self, 'er_brain') and self.er_brain and self.er_brain.connected:
+                # Feed frame + sensor data to local ER
+                sensor_state = getattr(self, 'current_environment_state', {})
+                det_list = []
+                for d in (detections[:5] if detections else []):
+                    try:
+                        if isinstance(d, (list, tuple)):
+                            det_list.append({"class": str(d[0]), "confidence": float(d[-1]) if len(d) > 5 else 0.5})
+                        elif hasattr(d, 'cls'):
+                            det_list.append({"class": str(int(d.cls[0])), "confidence": float(d.conf[0])})
+                    except:
+                        pass
+                self.er_brain.update_state(raw_frame, sensor_state, det_list)
+                
+                # Consume latest brain decision (if available)
+                # Qwen runs at 20-30 FPS now — check every frame
+                if self._brain_override:
+                    decision = self.er_brain.get_latest_decision()
+                    if decision and hasattr(self, 'autopilot'):
+                        flight = decision.get('flight', {})
+                        
+                        # SAFETY: ER obstacle alert
+                        if decision.get('obstacle_alert'):
+                            print(f"🚨 ER OBSTACLE AVOIDANCE: {decision.get('reasoning', '')[:80]}")
+                            self.autopilot.send_velocity(0, 0, 0)
+                        elif flight.get('hover') or flight.get('stop'):
+                            self.autopilot.send_velocity(0, 0, 0)
+                        else:
+                            # ER controls velocity via local VLM inference
+                            vx = float(flight.get('vx', 0))
+                            vy = float(flight.get('vy', 0))
+                            vz = float(flight.get('vz', 0))
+                            yaw = float(flight.get('yaw_rate', 0))
+                            # ADD Pi0 micro-corrections for stability (wind, vibration)
+                            pi0_corr = getattr(self, '_pi0_correction', {})
+                            vx += pi0_corr.get('vx', 0)
+                            vy += pi0_corr.get('vy', 0)
+                            vz += pi0_corr.get('vz', 0)
+                            self.autopilot.send_velocity(vx, vy, vz, yaw_rate=yaw)
+                        
+                        # Apply ER gimbal
+                        gimbal = decision.get('gimbal', {})
+                        if gimbal and hasattr(self.autopilot, 'set_gimbal'):
+                            pitch = float(gimbal.get('pitch', 0))
+                            yaw_g = float(gimbal.get('yaw', 0))
+                            self.autopilot.set_gimbal(pitch, yaw_g)
+                        
+                        if frame_id % 90 == 0:  # Log status every ~3 seconds
+                            print(f"🧠 ER Brain: {decision.get('reasoning', '')[:100]}")
+
+            # 4b. GEMINI CONTINUOUS DIRECTOR (gemini-2.0-flash)
+            if hasattr(self, 'gemini_brain') and self.gemini_brain and self.gemini_brain.connected:
+                # Feed frame + sensor data to Gemini Director
+                self.gemini_brain.feed(raw_frame, sensor_state, det_list)
+                
+                # Check for new deep master plans
+                if frame_id % 30 == 0:  # Check occasionally
+                    decision = self.gemini_brain.get_latest_decision()
+                    if decision and "er_intent" in decision:
+                        # Forward the new 2-second deep plan to the Local ER brain
+                        if hasattr(self, 'er_brain') and self.er_brain:
+                            self.er_brain.set_director_intent(
+                                f"[Gemini 2s Director Plan] {decision['er_intent']} | Basic Cam: {decision.get('basic_camera_settings', {})}"
+                            )
+
+                        # APPLY CAMERA SETTINGS TO GOPRO (was missing — Gemini outputs them but nobody applied them)
+                        cam_settings = decision.get('basic_camera_settings')
+                        if cam_settings and hasattr(self, 'gopro') and self.gopro:
+                            try:
+                                asyncio.create_task(asyncio.coroutine(lambda: self.gopro.apply_cloud_ai_settings(decision))())
+                            except Exception:
+                                try:
+                                    self.gopro.apply_cloud_ai_settings(decision)
+                                except Exception as e:
+                                    if frame_id % 300 == 0:
+                                        print(f"⚠️ GoPro settings apply error: {e}")
+
+                        # APPLY CINEMATIC STYLE from Gemini to the processing pipeline
+                        style_notes = cam_settings.get('style_notes', '') if cam_settings else ''
+                        if style_notes and hasattr(self, 'cam_pipeline') and self.cam_pipeline:
+                            self.current_style_params = cam_settings
+
+                        if frame_id % 90 == 0:
+                            print(f"🎬 [GEMINI DIRECTOR UPDATE]: {decision.get('reasoning', '')[:100]}")
+
             # RENDER (Handled inline below)
-            # if self.render_master:
-            #     pass
             
             if video_out:
                 video_out.write(raw_frame)
 
+            # 4b. SCENE CLASSIFICATION (every 30 frames)
+            if frame_id % 30 == 0 and raw_frame is not None:
+                if hasattr(self, 'scene_classifier') and self.scene_classifier:
+                    try:
+                        self._scene_type = self.scene_classifier.classify(raw_frame)
+                    except:
+                        pass
+
+            # 4c. CONTEXT UPLINK TO CLOUD AI (every 30 frames ~1/sec)
+            if frame_id % 30 == 0:
+                try:
+                    from laptop_ai.config import API_BASE
+                    det_summary = []
+                    for d in (detections[:10] if detections else []):
+                        try:
+                            if det_source == "yolo" and hasattr(d, 'xyxy'):
+                                b = d.xyxy[0].cpu().numpy().tolist()
+                                det_summary.append({
+                                    'class': int(d.cls[0]),
+                                    'confidence': round(float(d.conf[0]), 2),
+                                    'bbox': [round(x) for x in b]
+                                })
+                            elif isinstance(d, (list, tuple)) and len(d) >= 6:
+                                # DeepStream format: [class, cx, cy, w, h, conf]
+                                det_summary.append({
+                                    'class': int(d[0]),
+                                    'confidence': round(float(d[5]), 2),
+                                    'bbox': [round(d[1]-d[3]/2), round(d[2]-d[4]/2), round(d[1]+d[3]/2), round(d[2]+d[4]/2)]
+                                })
+                        except:
+                            pass
+                    
+                    env = getattr(self, 'current_environment_state', {})
+                    context_payload = {
+                        'detected_objects': det_summary,
+                        'scene_type': self._scene_type,
+                        'obstacles': {
+                            'front_m': env.get('tof_front', 9999) / 1000.0,
+                            'left_m': env.get('tof_left', 9999) / 1000.0,
+                            'right_m': env.get('tof_right', 9999) / 1000.0,
+                            'rear_m': env.get('tof_back', 9999) / 1000.0,
+                        },
+                        'flight_state': {
+                            'altitude': env.get('altitude', 0),
+                            'speed_ms': env.get('speed', 0),
+                            'battery': env.get('battery', 0),
+                            'heading': env.get('heading', 0),
+                        },
+                        'pi0_mode': self.pi0_pilot.model_type if self.pi0_pilot else 'none',
+                        'detector': det_source,
+                        'detector_fps': self.deepstream.get_fps() if hasattr(self, 'deepstream') and self.deepstream else 0,
+                        'frame_id': frame_id,
+                        'source': current_source,
+                    }
+                    async with aiohttp.ClientSession() as ctx_session:
+                        await ctx_session.post(
+                            f"{API_BASE}/director/ai/context",
+                            json=context_payload,
+                            timeout=aiohttp.ClientTimeout(total=2)
+                        )
+                except Exception:
+                    pass  # Non-critical, don't block vision loop
+
             frame_id += 1
             await asyncio.sleep(0.001)
 
-            # 4. GIMBAL / TRACKER UPDATE
+            # 4. GIMBAL BRAIN — track subject in every frame
+            if self.gimbal_brain and raw_frame is not None and detections:
+                # Find primary subject box for gimbal tracking
+                subject_box = None
+                for det in detections[:5]:
+                    try:
+                        if hasattr(det, 'xyxy'):
+                            x1, y1, x2, y2 = det.xyxy[0].tolist()
+                            h, w = raw_frame.shape[:2]
+                            subject_box = [x1/w, y1/h, (x2-x1)/w, (y2-y1)/h]  # normalized
+                            break
+                        elif isinstance(det, (list, tuple)) and len(det) >= 4:
+                            subject_box = [float(det[1]), float(det[2]), float(det[3]), float(det[4])]
+                            break
+                    except:
+                        continue
+
+                esp = getattr(self, 'remote_esp_telem', {})
+                gyro_data = {
+                    'p': esp.get('gx', 0), 'q': esp.get('gy', 0), 'r': esp.get('gz', 0)
+                }
+                gimbal_result = self.gimbal_brain.update(subject_box, raw_frame.shape[:2], gyro_data)
+                # Send gimbal command to drone via WebSocket
+                if gimbal_result and gimbal_result.get('confidence', 0) > 0.1:
+                    try:
+                        import json as _json
+                        gimbal_msg = _json.dumps({
+                            "type": "command",
+                            "payload": f"GIMBAL:{int(gimbal_result['pitch'])}:{int(gimbal_result['yaw'])}"
+                        })
+                        asyncio.create_task(self.ws.send({"type": "command", "payload": f"GIMBAL:{int(gimbal_result['pitch'])}:{int(gimbal_result['yaw'])}"}))
+                    except:
+                        pass
+
             if self.tracker and self.gimbal_brain and self.vision_enabled:
                  self.tracker.update(detections, raw_frame)
-            
-            # 5. RENDER UI
-            display_frame = raw_frame.copy()
-            
-            # Draw detections
-            if self.vision_enabled:
-                for box in detections:
-                    b = box.xyxy[0].cpu().numpy().astype(int)
-                    cv2.rectangle(display_frame, (b[0], b[1]), (b[2], b[3]), (0, 255, 0), 2)
-                    if self.classifier and hasattr(self.classifier, 'names'):
-                        label = f"{self.classifier.names[int(box.cls[0])]} {float(box.conf[0]):.2f}"
-                        cv2.putText(display_frame, label, (b[0], b[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-            
-            # Draw Status OSD
-            fps = 1.0/(time.time()-t0+1e-9)
-            source_lable = getattr(self, 'camera_selector', 'UNKNOWN')
-            status_text = f"MODE: {self.current_action} | SRC: {source_lable} | GPU: ON | FPS: {fps:.1f}"
-            cv2.putText(display_frame, status_text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
-            
-            # Show
-            cv2.imshow("Laptop AI Director (RTX 5070 Ti)", display_frame)
-            
-            # Record
-            if self.is_recording and video_out:
-                video_out.write(raw_frame)
-            
-            if getattr(self, 'should_capture_photo', False):
-                import datetime
-                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                photo_path = f"media/photo_{timestamp}.jpg"
-                cv2.imwrite(photo_path, raw_frame)
-                print(f"📸 PHOTO SAVED: {photo_path}")
-                self.should_capture_photo = False 
-                # Upload
-                asyncio.create_task(self._upload_media_to_server(photo_path))
-            
-            # 7. Broadcast to App
-            target_w, target_h = getattr(self, 'stream_target_res', (1280, 720))
-            if w > target_w:
-                preview_frame = cv2.resize(display_frame, (target_w, target_h), interpolation=cv2.INTER_AREA)
-            else:
-                preview_frame = display_frame
 
-            _, buffer = cv2.imencode('.jpg', preview_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 60])
+            # 4c. FOLLOW BRAIN — visual servoing when FOLLOW mode is active
+            if hasattr(self, 'follower') and self.follower and getattr(self.follower, 'active', False):
+                if detections and len(detections) > 0 and raw_frame is not None:
+                    # Get primary subject bounding box (largest person or object)
+                    best_box = None
+                    best_area = 0
+                    for det in detections:
+                        try:
+                            if hasattr(det, 'xyxy'):
+                                x1, y1, x2, y2 = det.xyxy[0].tolist()
+                            elif isinstance(det, (list, tuple)) and len(det) >= 4:
+                                x1, y1, x2, y2 = float(det[1]) - float(det[3])/2, float(det[2]) - float(det[4])/2, float(det[1]) + float(det[3])/2, float(det[2]) + float(det[4])/2
+                            else:
+                                continue
+                            w, h_box = x2 - x1, y2 - y1
+                            area = w * h_box
+                            if area > best_area:
+                                best_area = area
+                                fh, fw = raw_frame.shape[:2]
+                                best_box = (x1/fw, y1/fh, w/fw, h_box/fh)  # normalized
+                        except:
+                            continue
+
+                    if best_box:
+                        follow_cmd = self.follower.update(best_box, raw_frame.shape[:2][::-1])
+                        if follow_cmd and self.autopilot.connected:
+                            self.autopilot.send_velocity(
+                                follow_cmd.get('vx', 0),
+                                follow_cmd.get('vy', 0),
+                                follow_cmd.get('vz', 0),
+                                yaw_rate=follow_cmd.get('yaw', 0)
+                            )
             
-            try:
-                from laptop_ai.config import API_BASE
-                async with aiohttp.ClientSession() as session:
-                     url = f"{API_BASE}/video/frame"
-                     # Use await to avoid session closed error (accept frame latency)
-                     await session.post(url, data=buffer.tobytes(), headers={"Content-Type": "image/jpeg"})
-            except Exception:
-                pass
-            
-            # Handle Keys
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord('q'):
-                break
+            # 5. CINEMATIC PIPELINE + RENDER UI
+            if raw_frame is not None:
+                # Apply cinematic processing to EVERY frame (1000+ AI files)
+                # ACES tone curve, color grading, exposure, bloom, grain, stabilization
+                if hasattr(self, 'cam_pipeline') and self.cam_pipeline:
+                    try:
+                        processed = self.cam_pipeline.process(raw_frame)
+                        display_frame = processed if processed is not None else raw_frame.copy()
+                    except Exception:
+                        display_frame = raw_frame.copy()
+                else:
+                    display_frame = raw_frame.copy()
+                
+                # Draw detections
+                if self.vision_enabled:
+                    for box in detections:
+                        b = box.xyxy[0].cpu().numpy().astype(int)
+                        cv2.rectangle(display_frame, (b[0], b[1]), (b[2], b[3]), (0, 255, 0), 2)
+                        if self.classifier and hasattr(self.classifier, 'names'):
+                            label = f"{self.classifier.names[int(box.cls[0])]} {float(box.conf[0]):.2f}"
+                            cv2.putText(display_frame, label, (b[0], b[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                
+                # Draw Status OSD
+                fps = 1.0/(time.time()-t0+1e-9)
+                source_lable = getattr(self, 'camera_selector', 'UNKNOWN')
+                status_text = f"MODE: {self.current_action} | SRC: {source_lable} | GPU: ON | FPS: {fps:.1f}"
+                cv2.putText(display_frame, status_text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+                
+                # Show
+                cv2.imshow("Laptop AI Director (RTX 5070 Ti)", display_frame)
+
+                # Render spatial map with live sensor data
+                if hasattr(self, 'spatial_grid') and self.spatial_grid:
+                    self.spatial_grid.set_telemetry(
+                        heading_deg=env.get('heading', 0),
+                        speed=env.get('speed', 0),
+                        battery=env.get('battery', 0),
+                    )
+                    spatial_map = self.spatial_grid.render_map()
+                    cv2.imshow("3D Spatial Map", spatial_map)
+                
+                # Record
+                if self.is_recording and video_out:
+                    video_out.write(raw_frame)
+                
+                if getattr(self, 'should_capture_photo', False):
+                    import datetime
+                    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                    photo_path = f"media/photo_{timestamp}.jpg"
+                    cv2.imwrite(photo_path, raw_frame)
+                    print(f"📸 PHOTO SAVED: {photo_path}")
+                    self.should_capture_photo = False 
+                    # Upload
+                    asyncio.create_task(self._upload_media_to_server(photo_path))
+                
+                # 7. Broadcast to App
+                target_w, target_h = getattr(self, 'stream_target_res', (1280, 720))
+                if w > target_w:
+                    preview_frame = cv2.resize(display_frame, (target_w, target_h), interpolation=cv2.INTER_AREA)
+                else:
+                    preview_frame = display_frame
+
+                _, buffer = cv2.imencode('.jpg', preview_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 60])
+                
+                try:
+                    from laptop_ai.config import API_BASE
+                    async with aiohttp.ClientSession() as session:
+                         url = f"{API_BASE}/video/frame"
+                         # Use await to avoid session closed error (accept frame latency)
+                         await session.post(url, data=buffer.tobytes(), headers={"Content-Type": "image/jpeg"})
+                except Exception:
+                    pass
+                
+                # Handle Keys
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('q'):
+                    break
+            else:
+                # Still handle Keys to alow exiting even when no camera
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('q'):
+                    break
             
             # YIELD TO ASYNCIO
             await asyncio.sleep(0.01)
@@ -831,25 +1240,55 @@ class DirectorCore:
                 fc_telem = self.autopilot.get_telemetry()
                 DroneConfig.update_from_fc_telemetry(fc_telem)
 
+                # Build environment state with ALL keys that ALL AI models expect
+                pos = self.autopilot.get_position() or [0, 0, 0]
+                esp = self.remote_esp_telem or {}
                 self.current_environment_state = {
-                    # LiDAR obstacles (2D points from YDLiDAR)
+                    # LiDAR — multiple key formats so all consumers find their data
                     "lidar_obstacles": self.remote_obstacles if self.remote_obstacles else [],
-                    
-                    # ESP32 ToF sensors (4x VL53L1X Time-of-Flight)
-                    "tof_front": self.remote_esp_telem.get("tof_front", 9999),  # mm
-                    "tof_back": self.remote_esp_telem.get("tof_back", 9999),
-                    "tof_left": self.remote_esp_telem.get("tof_left", 9999),
-                    "tof_right": self.remote_esp_telem.get("tof_right", 9999),
-                    
-                    # Drone telemetry (From DroneConfig now)
+                    "lidar_scan": self.remote_obstacles if self.remote_obstacles else [],
+                    "lidar": self.remote_obstacles if self.remote_obstacles else [],
+
+                    # ESP32 ToF sensors — BOTH naming conventions
+                    # (bridge uses t1-t4, older code uses tof_front/back/left/right)
+                    "tof_front": esp.get("t1", esp.get("tof_front", 9999)),
+                    "tof_back": esp.get("t3", esp.get("tof_back", 9999)),
+                    "tof_left": esp.get("t4", esp.get("tof_left", 9999)),
+                    "tof_right": esp.get("t2", esp.get("tof_right", 9999)),
+                    "t1": esp.get("t1", esp.get("tof_front", 9999)),
+                    "t2": esp.get("t2", esp.get("tof_right", 9999)),
+                    "t3": esp.get("t3", esp.get("tof_back", 9999)),
+                    "t4": esp.get("t4", esp.get("tof_left", 9999)),
+
+                    # IMU data from ESP32
+                    "imu": {
+                        "ax": esp.get("ax", 0), "ay": esp.get("ay", 0), "az": esp.get("az", 0),
+                        "gx": esp.get("gx", 0), "gy": esp.get("gy", 0), "gz": esp.get("gz", 0),
+                    },
+
+                    # Drone telemetry
                     "battery": DroneConfig.get_battery_status()['percent'],
-                    "gps": self.autopilot.get_position(),  # [lat, lon, alt]
+                    "gps": {"lat": pos[0], "lng": pos[1], "alt": pos[2]},
                     "altitude": DroneConfig.get_flight_state()['altitude_agl'],
                     "heading": fc_telem.get("heading", 0),
                     "speed": DroneConfig.get_flight_state()['groundspeed'],
+                    "mode": fc_telem.get("mode", "UNKNOWN"),
+                    "armed": fc_telem.get("armed", False),
+                    "satellites": fc_telem.get("satellites", 0),
                     "weight": DroneConfig.DRONE_WEIGHT,
-                    
-                    # Timestamp for fusion
+
+                    # Depth stats from MiDaS (if available)
+                    "depth_stats": {
+                        "min_m": getattr(self, '_depth_min', 0),
+                        "max_m": getattr(self, '_depth_max', 99),
+                        "mean_m": getattr(self, '_depth_mean', 0),
+                    },
+                    "depth_to_subject_m": getattr(self, '_subject_depth_m', 99),
+
+                    # Scene classification
+                    "scene_type": getattr(self, '_scene_type', 'unknown'),
+
+                    # Timestamp
                     "timestamp": time.time()
                 }
 
@@ -989,8 +1428,11 @@ class DirectorCore:
                 check_sensor('tof_3', 0.0, -1.0) # Left
                 check_sensor('tof_4', 0.0, 1.0)  # Right
                 # No tof_bottom in 4-sensor PCB layout
-            self.ultra_director = UltraDirector()
-            print("✅ UltraDirector Instantiated for Cinematic Planning.")
+            # MA-24 FIX: Only create UltraDirector if it doesn't exist yet
+            # Recreating it every call destroys curve state and causes jerky transitions
+            if not self.ultra_director:
+                self.ultra_director = UltraDirector()
+                print("✅ UltraDirector Instantiated for Cinematic Planning.")
 
             self.tone_engine = None
             self.rrt_enhancer = None
@@ -1157,9 +1599,9 @@ class DirectorCore:
             if self.gimbal_brain and self.remote_esp_telem:
                 # Extract Gyro (Rad/s)
                 gyro_data = {
-                    'p': self.remote_esp_telem.get('gyro_x', 0.0),
-                    'q': self.remote_esp_telem.get('gyro_y', 0.0), # Pitch rate
-                    'r': self.remote_esp_telem.get('gyro_z', 0.0)  # Yaw rate
+                    'p': self.remote_esp_telem.get('gx', self.remote_esp_telem.get('gyro_x', 0.0)),
+                    'q': self.remote_esp_telem.get('gy', self.remote_esp_telem.get('gyro_y', 0.0)),
+                    'r': self.remote_esp_telem.get('gz', self.remote_esp_telem.get('gyro_z', 0.0))
                 }
                 # Update Brain with Visual + Gyro
                 # Flatten detections to finding primary subject box
@@ -1304,8 +1746,13 @@ class DirectorCore:
                          asyncio.create_task(self._upload_media_to_server(self._last_recording_path))
                 elif cmd in ["FOLLOW", "ORBIT", "DRONIE", "SCAN_AREA", "SCAN"]:
                      print(f"🎬 SMART SHOT REQUEST: {cmd}")
-                     # Route to Autopilot Primitive (or AI Job if complex)
-                     if self.autopilot.connected: 
+                     self.current_action = cmd
+                     # For FOLLOW, activate the FollowBrain visual servoing
+                     if cmd == "FOLLOW" and hasattr(self, 'follower') and self.follower:
+                         self.follower.active = True
+                         print("👁️ FollowBrain ACTIVATED — visual tracking mode")
+                     # Route to Autopilot Primitive
+                     if self.autopilot.connected:
                          self.autopilot.execute_primitive({"action": cmd})
                 elif cmd == "CAPTURE_PHOTO":
                      print("📸 PHOTO REQUEST RECEIVED")
@@ -1506,7 +1953,11 @@ class DirectorCore:
                 "lidar_obstacles": self.remote_obstacles, # [[x,y], [x,y]]
                 "tof_sensors": self.remote_esp_telem, # {"tof_front": 1200, ...}
                 "battery": self.autopilot.get_telemetry().get('battery', 100),
-                "location": self.autopilot.get_position()
+                "location": self.autopilot.get_position(),
+                "depth_to_subject_m": getattr(self, '_subject_depth_m', None),
+                "spatial_awareness": self.spatial_grid.get_spatial_description() if hasattr(self, 'spatial_grid') and self.spatial_grid else None,
+                "altitude": getattr(self, 'current_environment_state', {}).get('altitude', 0),
+                "speed": getattr(self, 'current_environment_state', {}).get('speed', 0),
             }
             
             raw = await asyncio.to_thread(ask_gpt, user_text, vision_context, images, video_link, memory, sensor_data=full_sensor_context, api_keys=job_keys)
@@ -1658,8 +2109,12 @@ class DirectorCore:
             "user_id": user_id,
             "drone_id": drone_id,
             "primitive": primitive,
-            "meta": {"source": "laptop", "reason": reason, "ts": time.time()}
+            # Send new cinematic intent from Gemini (Cloud) to Qwen (Local ER)
         }
+        if "TRACK" in primitive.get("action", "") or "CINEMATIC" in primitive.get("action", ""):
+            self.er_brain.set_director_intent(f"Intent from Cloud Director: {primitive.get('action')} - {', '.join(f'{k}={v}' for k, v in primitive.get('params', {}).items())}")
+            
+        packet["meta"] = {"source": "laptop", "reason": reason, "ts": time.time()}
         
         def safe_serialize(obj):
             if hasattr(obj, 'tolist'): return obj.tolist()

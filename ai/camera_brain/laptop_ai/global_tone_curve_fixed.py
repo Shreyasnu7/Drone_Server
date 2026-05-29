@@ -288,8 +288,8 @@ class LUTExporter:
             for r in range(N):
                 for g in range(N):
                     for b in range(N):
-        R, G, B = lut[r, g, b]
-        f.write(f"{R:.6f} {G:.6f} {B:.6f}\n")
+                        R, G, B = lut[r, g, b]
+                        f.write(f"{R:.6f} {G:.6f} {B:.6f}\n")
 
         return True
 
@@ -898,7 +898,7 @@ class UltraACES:
                 apply_grain=True,
                 lut_1d=None,
                 lut_3d=None):
-        aces = self.idt.process(frame)
+                    aces = self.idt.process(frame)
         if ev_offset != 0:
             aces *= 2**ev_offset
         if self.gamut is not None:
@@ -2059,7 +2059,7 @@ class VintageFilmEmulator:
                  grain_params: Dict = None,
                  overlay_params: Dict = None,
                  vignette_strength: float = 0.15):
-        self.halation = HalationEngine(**(halation_params or {}))
+                     self.halation = HalationEngine(**(halation_params or {}))
         self.bloom = BloomEngine(**(bloom_params or {}))
         self.ca = ChromaticAberration(**(ca_params or {}))
         self.grain = FilmGrain(**(grain_params or {}))
@@ -2225,7 +2225,7 @@ class FilmGrainV2:
                  chroma_strength: float = 0.6,
                  min_strength: float = 0.002,
                  max_strength: float = 0.12):
-        self.temporal_blend = float(np.clip(temporal_blend, 0.0, 0.99))
+                     self.temporal_blend = float(np.clip(temporal_blend, 0.0, 0.99))
         self.chroma_strength = float(np.clip(chroma_strength, 0.0, 1.0))
         self.min_strength = float(min_strength)
         self.max_strength = float(max_strength)
@@ -2241,7 +2241,7 @@ class FilmGrainV2:
               curr_gray: Optional[np.ndarray] = None,
               frame_id: Optional[int] = None,
               use_flow: bool = True) -> np.ndarray:
-        """
+                  """
         Apply grain to `frame`. Returns frame with grain added (float32 0..1).
         """
         f = _norm_float01(frame)
@@ -3448,7 +3448,7 @@ class HalationV3:
                  directionality: float = 0.65,
                  threshold: float = 0.78,
                  softness: float = 0.35):
-        self.red_strength = float(red_strength)
+                     self.red_strength = float(red_strength)
         self.diffusion_radius = float(diffusion_radius)
         self.directionality = float(directionality)
         self.threshold = float(threshold)
@@ -3576,7 +3576,7 @@ class BloomV3:
                  warm_shift: float = 0.20,
                  passes: int = 5,
                  base_radius: float = 12.0):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.threshold = float(threshold)
         self.warm_shift = float(warm_shift)
         self.passes = int(np.clip(passes, 1, 8))
@@ -3664,7 +3664,7 @@ class HDRHarmonizerV3:
                  rolloff_end: float = 0.97,
                  chroma_preserve: float = 0.85,
                  highlight_balance: float = 0.55):
-        """
+                     """
         rolloff_start : where compression begins
         rolloff_end   : where highlights reach full compression
         chroma_preserve : 1 = maximum color retention
@@ -3801,7 +3801,7 @@ class SpectralLensFlareV3:
                  aperture_blades: int = 8,
                  blade_curve: float = 0.25,
                  source_threshold: float = 0.85):
-        self.anamorphic_ratio = float(anamorphic_ratio)
+                     self.anamorphic_ratio = float(anamorphic_ratio)
         self.streak_intensity = float(streak_intensity)
         self.ghost_intensity = float(ghost_intensity)
         self.chroma_dispersion = float(chroma_dispersion)
@@ -3963,7 +3963,7 @@ class ChromaticAberrationV3:
                  shift_strength: float = 1.15,
                  radial_strength: float = 0.75,
                  fringe_reduce: float = 0.45):
-        self.shift_strength = float(shift_strength)
+                     self.shift_strength = float(shift_strength)
         self.radial_strength = float(radial_strength)
         self.fringe_reduce = float(fringe_reduce)
 
@@ -4075,7 +4075,7 @@ class FilmEmulationV4:
                  contrast: float = 1.04,
                  shadow_lift: float = 0.02,
                  preserve_skin: float = 0.65):
-        """
+                     """
         film_stock: "Kodak_Vision3", "Fuji_Eterna", or "Hybrid"
         blend_strength: 0..1 mixing ratio for film matrix
         saturation: global color density boost
@@ -4233,7 +4233,7 @@ class FilmGrainV4:
                  highlight_protect: float = 0.55,
                  gate_weave: float = 0.25,
                  temporal_drift: float = 0.35):
-        """
+                     """
         intensity: overall grain multiplier
         grain_size: base scale, 1.0 = 35mm film, 0.5 = finer, 2.0 = coarse
         shadow_boost: gain for darker regions
@@ -4368,7 +4368,7 @@ class VintageColorV4:
                  dye_bleed: float = 0.18,
                  stock_age: float = 0.10,
                  density_softclip: float = 0.75):
-        """
+                     """
         koda_contrast      → Kodachrome-like punchy midtones
         ekta_cyan_shift    → Ektachrome cyan/blue enhancement
         dye_bleed          → analog cross-talk between dye layers
@@ -4519,7 +4519,7 @@ class ChromaticAberrationV3:
                  blue_shift: float = 0.20,
                  anamorphic_ratio: float = 1.00,
                  edge_sensitivity: float = 0.65):
-        """
+                     """
         strength          = global CA intensity scale
         red_shift         = relative shift for red channel
         green_shift       = relative shift for green
@@ -4665,7 +4665,7 @@ class FilmDamageV3:
                  flicker_strength: float = 0.015,
                  grain_modulation: float = 0.25,
                  seed: int = 1234):
-        random.seed(seed)
+                     random.seed(seed)
         np.random.seed(seed)
         self.dust_amount = float(dust_amount)
         self.scratch_amount = float(scratch_amount)
@@ -4817,7 +4817,7 @@ class FilmLUTEngineV3:
                  strength: float = 1.0,
                  saturation: float = 1.0,
                  contrast: float = 1.0):
-        self.lut_type = lut_type.lower()
+                     self.lut_type = lut_type.lower()
         self.strength = float(np.clip(strength, 0.0, 1.0))
         self.saturation = float(saturation)
         self.contrast = float(contrast)
@@ -4973,7 +4973,7 @@ class NeuralTextureEnhancerV2:
                  highlight_limit: float = 0.82,
                  bands: int = 4,
                  motion_suppress: float = 0.65):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.skin_protect = float(skin_protect)
         self.highlight_limit = float(highlight_limit)
         self.bands = int(np.clip(bands, 1, 6))
@@ -5114,7 +5114,7 @@ class CinematicColorSeparationV4:
                  highlight_protect=0.75,
                  separation_strength=0.85,
                  density_curve=0.55):
-        self.shadow_tint = np.array(shadow_tint, np.float32)
+                     self.shadow_tint = np.array(shadow_tint, np.float32)
         self.mid_tint = np.array(mid_tint, np.float32)
         self.highlight_tint = np.array(highlight_tint, np.float32)
 
@@ -5269,7 +5269,7 @@ class FilmLUTEmulatorV2:
                  gamma=1.0,
                  toe_strength=0.15,
                  shoulder_strength=0.20):
-        self.stock = stock.lower()
+                     self.stock = stock.lower()
         self.contrast = float(contrast)
         self.saturation = float(saturation)
         self.gamma = float(gamma)
@@ -5483,7 +5483,7 @@ class FilmGrainV5:
                  sensor_noise_level: float = 0.015,
                  weave_amount: float = 0.20,
                  temporal_blend: float = 0.85):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.grain_size = float(np.clip(grain_size, 0.5, 3.0))
         self.chroma_grain = float(chroma_grain)
         self.highlight_suppress = float(highlight_suppress)
@@ -5667,7 +5667,7 @@ class FilmDamageV5:
                  temporal_persist: float = 0.92,
                  max_scratches: int = 6,
                  max_dust: int = 60):
-        self.scratch_intensity = float(scratch_intensity)
+                     self.scratch_intensity = float(scratch_intensity)
         self.dust_intensity = float(dust_intensity)
         self.flicker_intensity = float(flicker_intensity)
         self.burn_intensity = float(burn_intensity)
@@ -5842,7 +5842,7 @@ class ChromaticAberrationV6:
                  longitudinal_strength: float = 0.65,
                  bokeh_fringe: float = 0.45,
                  highlight_boost: float = 0.85):
-        self.radial_strength = float(radial_strength)
+                     self.radial_strength = float(radial_strength)
         self.spectral_shift = float(spectral_shift)
         self.longitudinal_strength = float(longitudinal_strength)
         self.bokeh_fringe = float(bokeh_fringe)
@@ -5988,7 +5988,7 @@ class UltraSharpenV5:
                  radius: float = 1.4,
                  bilateral_weight: float = 0.45,
                  highlight_protect: float = 0.65):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.detail_boost = float(detail_boost)
         self.radius = float(radius)
         self.bilateral_weight = float(bilateral_weight)
@@ -6132,7 +6132,7 @@ class FilmProfileV6:
                  chroma_soften: float = 0.15,
                  density_curve: float = 1.0,
                  preserve_skintones: float = 0.65):
-        self.stock = stock.lower()
+                     self.stock = stock.lower()
         self.strength = float(strength)
         self.chroma_soften = float(chroma_soften)
         self.density_curve = float(density_curve)
@@ -6290,7 +6290,7 @@ class OpticalFlowStabilizerV4:
                  smoothing: float = 0.85,
                  flow_scale: float = 1.0,
                  rolling_shutter_strength: float = 0.15):
-        self.crop_ratio = float(crop_ratio)        # output = stabilized + auto crop
+                     self.crop_ratio = float(crop_ratio)        # output = stabilized + auto crop
         self.smoothing = float(smoothing)          # temporal vector smoothing
         self.flow_scale = float(flow_scale)        # amount of stabilization
         self.rolling_shutter_strength = float(rolling_shutter_strength)
@@ -6443,7 +6443,7 @@ class AutoFramingV5:
                  pan_smooth: float = 0.85,
                  zoom_smooth: float = 0.90,
                  golden_ratio_bias: float = 0.35):
-        self.zoom_strength = float(zoom_strength)
+                     self.zoom_strength = float(zoom_strength)
         self.pan_smooth = float(pan_smooth)
         self.zoom_smooth = float(zoom_smooth)
         self.golden_ratio_bias = float(golden_ratio_bias)
@@ -6880,7 +6880,7 @@ class AIAutoExposureV4:
                  shadow_lift: float = 0.20,
                  sky_weight: float = 0.35,
                  subject_weight: float = 0.45):
-        self.mid = float(target_mid_gray)
+                     self.mid = float(target_mid_gray)
         self.hp = float(highlight_protect)
         self.sl = float(shadow_lift)
         self.sky_weight = float(sky_weight)
@@ -7091,7 +7091,7 @@ class AIAutoWhiteBalanceV4:
                  sky_balance: float = 0.55,
                  neutral_strength: float = 0.85,
                  temporal_smooth: float = 0.12):
-        self.skin_preserve = float(skin_preserve)
+                     self.skin_preserve = float(skin_preserve)
         self.sky_balance = float(sky_balance)
         self.neutral_strength = float(neutral_strength)
         self.temporal_smooth = float(temporal_smooth)
@@ -7237,7 +7237,7 @@ class AIColorConstancyV3:
                  motion_smooth: float = 0.80,
                  camera_match_strength: float = 0.55,
                  temporal_smooth: float = 0.15):
-        self.anchor_strength = float(anchor_strength)
+                     self.anchor_strength = float(anchor_strength)
         self.motion_smooth = float(motion_smooth)
         self.camera_match_strength = float(camera_match_strength)
         self.temporal_smooth = float(temporal_smooth)
@@ -7381,7 +7381,7 @@ class AIColorEqualizerV3:
                  sky_strength: float = 0.45,
                  foliage_strength: float = 0.50,
                  temporal_smooth: float = 0.20):
-        self.skin_strength = float(skin_strength)
+                     self.skin_strength = float(skin_strength)
         self.sky_strength = float(sky_strength)
         self.foliage_strength = float(foliage_strength)
         self.temporal_smooth = float(temporal_smooth)
@@ -7541,7 +7541,7 @@ class AICineLUTGeneratorV4:
                  exposure_bias: float = 0.0,
                  protect_skin: float = 0.65,
                  protect_sky: float = 0.50):
-        self.film_profile = film_profile.upper()
+                     self.film_profile = film_profile.upper()
         self.saturation = float(saturation)
         self.contrast = float(contrast)
         self.exposure_bias = float(exposure_bias)
@@ -7719,7 +7719,7 @@ class MicroContrastV5:
                  texture_bias: float = 0.45,
                  guidance_radius: int = 8,
                  guidance_eps: float = 1e-3):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.skin_protect = float(skin_protect)
         self.texture_bias = float(texture_bias)
         self.guidance_radius = int(guidance_radius)
@@ -7854,7 +7854,7 @@ class AITextureEnhancerV4:
                  sky_suppress: float = 0.60,
                  skin_protect: float = 0.55,
                  fine_pass_strength: float = 0.45):
-        self.texture_gain = float(texture_gain)
+                     self.texture_gain = float(texture_gain)
         self.edge_gain = float(edge_gain)
         self.sky_suppress = float(sky_suppress)
         self.skin_protect = float(skin_protect)
@@ -7993,7 +7993,7 @@ class AIFlickerRemovalV3:
                  fft_suppress: float = 0.65,
                  prop_shadow_reduce: float = 0.50,
                  rolling_shutter_fix: float = 0.28):
-        self.temporal_strength = float(temporal_strength)
+                     self.temporal_strength = float(temporal_strength)
         self.fft_suppress = float(fft_suppress)
         self.prop_shadow_reduce = float(prop_shadow_reduce)
         self.rolling_shutter_fix = float(rolling_shutter_fix)
@@ -8409,7 +8409,7 @@ class TemporalStabilizerV4:
                  blend_strength: float = 0.80,
                  flicker_smooth: float = 0.65,
                  max_flow_mag: float = 42.0):
-        self.blend_strength = float(np.clip(blend_strength, 0.0, 0.99))
+                     self.blend_strength = float(np.clip(blend_strength, 0.0, 0.99))
         self.flicker_smooth = float(np.clip(flicker_smooth, 0.0, 0.99))
         self.max_flow_mag = float(max_flow_mag)
 
@@ -10384,7 +10384,7 @@ class SkinToneProtectorV3:
                  strength: float = 0.65,
                  highlight_preserve: float = 0.55,
                  hue_range: float = 18.0):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.highlight_preserve = float(highlight_preserve)
         self.hue_range = float(hue_range)
 
@@ -10515,7 +10515,7 @@ class AISkyEnhancerV3:
                  sunset_boost: float = 0.20,
                  gradient_strength: float = 0.35,
                  anti_halo: float = 0.65):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.blue_boost = float(blue_boost)
         self.sunset_boost = float(sunset_boost)
         self.gradient_strength = float(gradient_strength)
@@ -10672,7 +10672,7 @@ class AIShadowRecoveryV3:
                  noise_protect: float = 0.55,
                  rolloff_mid: float = 0.25,
                  rolloff_end: float = 0.45):
-        self.lift_strength = float(lift_strength)
+                     self.lift_strength = float(lift_strength)
         self.chroma_preserve = float(chroma_preserve)
         self.noise_protect = float(noise_protect)
         self.rolloff_mid = float(rolloff_mid)
@@ -10799,7 +10799,7 @@ class AIDynamicContrastV3:
                  micro_boost: float = 0.30,
                  protect_shadows: float = 0.60,
                  protect_highlights: float = 0.65):
-        self.global_strength = float(global_strength)
+                     self.global_strength = float(global_strength)
         self.local_strength = float(local_strength)
         self.micro_boost = float(micro_boost)
         self.protect_shadows = float(protect_shadows)
@@ -10912,7 +10912,7 @@ class AIColorConstancyV3:
                  strength: float = 1.0,
                  temporal_smooth: float = 0.82,
                  skin_protect: float = 0.40):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.temporal_smooth = float(np.clip(temporal_smooth, 0.0, 0.99))
         self.skin_protect = float(skin_protect)
         
@@ -11044,7 +11044,7 @@ class AIShadowRestorerV3:
                  chroma_strength: float = 0.65,
                  density_boost: float = 0.35,
                  temporal_smooth: float = 0.80):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.chroma_strength = float(chroma_strength)
         self.density_boost = float(density_boost)
         self.temporal_smooth = float(np.clip(temporal_smooth, 0.0, 0.99))
@@ -11718,7 +11718,7 @@ class ChromaticAberrationV3:
                  intensity: float = 0.0035,
                  bokeh_boost: float = 0.65,
                  loca_tint: float = 0.08):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.bokeh_boost = float(bokeh_boost)
         self.loca_tint = float(loca_tint)
 
@@ -11831,7 +11831,7 @@ class AcesGamutCompressionV4:
                  threshold: float = 0.82,
                  limit: float = 1.35,
                  rolloff_power: float = 2.5):
-        """
+                     """
         threshold: where gamut compression begins
         limit:     maximum possible channel value before full compression
         rolloff_power: curve hardness (2–4 recommended)
@@ -13019,7 +13019,7 @@ class PrintStockGrainV4:
                  grain_size: float = 1.0,
                  chroma_weight: float = 0.55,
                  density_link: float = 0.65):
-        self.base_iso = int(base_iso)
+                     self.base_iso = int(base_iso)
         self.grain_size = float(grain_size)     # 1.0 = 35mm grain feel
         self.chroma_weight = float(chroma_weight)
         self.density_link = float(density_link)
@@ -13158,7 +13158,7 @@ class VintageImperfectionV4:
                  scratch_intensity: float = 0.12,
                  dust_amount: int = 22,
                  burn_strength: float = 0.18):
-        self.weave_intensity = float(weave_intensity)
+                     self.weave_intensity = float(weave_intensity)
         self.breathing_strength = float(breathing_strength)
         self.scratch_intensity = float(scratch_intensity)
         self.dust_amount = int(dust_amount)
@@ -13327,7 +13327,7 @@ class FilmGateScannerV4:
                  line_jitter_strength: float = 0.6,
                  gate_shadow_strength: float = 0.18,
                  perf_bleed_strength: float = 0.12):
-        self.smear_strength = float(smear_strength)
+                     self.smear_strength = float(smear_strength)
         self.scan_wobble = float(scan_wobble)
         self.line_jitter_strength = float(line_jitter_strength)
         self.gate_shadow_strength = float(gate_shadow_strength)
@@ -13484,7 +13484,7 @@ class FilmStockLUTV4:
                  density_softness: float = 0.35,
                  preserve_highlights: float = 0.85,
                  preserve_shadows: float = 0.60):
-        self.stock = stock.lower()
+                     self.stock = stock.lower()
         self.lut_strength = float(lut_strength)
         self.contrast_boost = float(contrast_boost)
         self.density_softness = float(np.clip(density_softness, 0.05, 0.95))
@@ -13659,7 +13659,7 @@ class FilmGrainEngineV5:
                  chroma_ratio: tuple = (1.00, 0.85, 0.65),
                  clump_strength: float = 0.45,
                  temporal_smooth: float = 0.80):
-        self.iso = max(50, min(6400, int(iso)))
+                     self.iso = max(50, min(6400, int(iso)))
         self.strength = float(np.clip(strength, 0.0, 2.0))
         self.chroma_ratio = chroma_ratio
         self.clump_strength = float(np.clip(clump_strength, 0.0, 1.0))
@@ -13796,7 +13796,7 @@ class GateWeaveEngineV4:
                  scan_jitter_strength: float = 0.004,
                  vertical_jitter_strength: float = 0.008,
                  temporal_smooth: float = 0.92):
-        self.weave_strength = float(weave_strength)
+                     self.weave_strength = float(weave_strength)
         self.breathing_strength = float(breathing_strength)
         self.scan_jitter_strength = float(scan_jitter_strength)
         self.vertical_jitter_strength = float(vertical_jitter_strength)
@@ -13917,7 +13917,7 @@ class ChromaticAberrationV5:
                  highlight_boost: float = 1.4,
                  asymmetry: float = 0.15,
                  center_bias: float = 0.10):
-        self.radial_strength = float(radial_strength)
+                     self.radial_strength = float(radial_strength)
         self.axial_strength = float(axial_strength)
         self.highlight_boost = float(highlight_boost)
         self.asymmetry = float(asymmetry)
@@ -14063,7 +14063,7 @@ class CinemaNRV4:
                  temporal_strength: float = 0.65,
                  detail_restore: float = 0.35,
                  motion_weight: float = 0.75):
-        self.spatial_strength = float(spatial_strength)
+                     self.spatial_strength = float(spatial_strength)
         self.temporal_strength = float(temporal_strength)
         self.detail_restore = float(detail_restore)
         self.motion_weight = float(motion_weight)
@@ -14224,7 +14224,7 @@ class UltraSharpenV3:
                  micro_contrast: float = 0.28,
                  deconv_strength: float = 0.22,
                  noise_floor: float = 0.015):
-        self.sharp_strength = float(sharp_strength)
+                     self.sharp_strength = float(sharp_strength)
         self.micro_contrast = float(micro_contrast)
         self.deconv_strength = float(deconv_strength)
         self.noise_floor = float(noise_floor)
@@ -14357,7 +14357,7 @@ class ACESToneConsolidatorV4:
                  highlight_clean: float = 0.12,
                  chroma_stability: float = 0.85,
                  contrast_rebuild: float = 0.12):
-        self.midgray_target = float(midgray_target)
+                     self.midgray_target = float(midgray_target)
         self.black_floor = float(black_floor)
         self.white_clip = float(white_clip)
         self.highlight_clean = float(highlight_clean)
@@ -14486,7 +14486,7 @@ class ACESColorimetricFinalizerV2:
                  shadow_chroma_hold: float = 0.65,
                  highlight_neutralize: float = 0.10,
                  gamut_limit: float = 1.00):
-        self.sat_strength = float(sat_strength)
+                     self.sat_strength = float(sat_strength)
         self.skin_preservation = float(skin_preservation)
         self.shadow_chroma_hold = float(shadow_chroma_hold)
         self.highlight_neutralize = float(highlight_neutralize)
@@ -14637,7 +14637,7 @@ class ACESOutputStageV4:
                  peak_nits=1000.0,
                  apply_lut=None,
                  dither=True):
-        self.target_space = target_space.lower()
+                     self.target_space = target_space.lower()
         self.transfer = transfer.lower()  # gamma / pq / hlg
         self.peak_nits = float(peak_nits)
         self.apply_lut = apply_lut  # optional function(frame)
@@ -15318,7 +15318,7 @@ class FilmDamageV3:
                  flicker_strength: float = 0.04,
                  light_leak_strength: float = 0.12,
                  seed: int = 1234):
-        self.weave_strength = float(weave_strength)
+                     self.weave_strength = float(weave_strength)
         self.scratch_density = float(scratch_density)
         self.dust_density = float(dust_density)
         self.flicker_strength = float(flicker_strength)
@@ -16429,7 +16429,7 @@ class FilmFlickerV4:
                  flicker_freq_high: float = 4.0,
                  temporal_smooth: float = 0.82,
                  seed: int = 1234):
-        self.intensity_strength = float(intensity_strength)
+                     self.intensity_strength = float(intensity_strength)
         self.density_strength = float(density_strength)
         self.spectral_bias = float(spectral_bias)
 
@@ -16586,8 +16586,8 @@ class FilmGrainV6:
                  temporal_drift: float = 0.15,
                  clump_strength: float = 0.45,
                  seed: int = 1234):
-        if preset not in self.PRESETS:
-            preset = "vision3_500t"
+                     if preset not in self.PRESETS:
+                         preset = "vision3_500t"
         self.p = self.PRESETS[preset]
         self.iso = float(iso)
         self.temporal_drift = float(temporal_drift)
@@ -16774,8 +16774,8 @@ class FilmPrintEmulationV5:
                  stock="kodak_2383",
                  exposure=0.0,
                  halation_strength=0.05):
-        if stock not in self.STOCKS:
-            stock = "kodak_2383"
+                     if stock not in self.STOCKS:
+                         stock = "kodak_2383"
         self.s = self.STOCKS[stock]
         self.exposure = float(exposure)
         self.halation_strength = float(halation_strength)
@@ -17111,7 +17111,7 @@ class FilmGrainV4:
                  size=1.0,
                  print_soften=0.20,
                  chroma_ratio=(1.25, 1.00, 0.65)): 
-        """
+                     """
         strength: 0..1 how strong grain appears
         size: 0.5..3.0 spatial grain scale
         print_soften: 0..1 smoothing after print stage
@@ -17232,7 +17232,7 @@ class FilmicCurveV4:
                  mid_contrast=1.25,
                  knee_strength=0.30,
                  density_weight=0.65):
-        self.toe_strength = float(toe_strength)
+                     self.toe_strength = float(toe_strength)
         self.mid_pivot = float(mid_pivot)
         self.mid_contrast = float(mid_contrast)
         self.knee_strength = float(knee_strength)
@@ -17414,20 +17414,20 @@ class FilmDensityLUTV3:
                 for b_i, b in enumerate(grid):
                     x = (r + g + b) / 3.0  # luminance approx
                     if profile == "kodak_2383":
-        y = self._curve_kodak_2383(x)
+                        y = self._curve_kodak_2383(x)
                     elif profile == "vision3_250d":
-        y = self._curve_vision3(x, tungsten=False)
+                        y = self._curve_vision3(x, tungsten=False)
                     elif profile == "vision3_500t":
-        y = self._curve_vision3(x, tungsten=True)
+                        y = self._curve_vision3(x, tungsten=True)
                     elif profile == "fuji_eterna":
-        y = self._curve_fuji_eterna(x)
+                        y = self._curve_fuji_eterna(x)
                     else:
-        y = x
+                        y = x
                     # scale RGB proportionally
                     if x > 1e-6:
-        scale = y / x
+                        scale = y / x
                     else:
-        scale = 0.0
+                        scale = 0.0
                     lut[r_i, g_i, b_i] = np.array([b, g, r]) * scale
         # G-Matrix saturation shaping
         lut = self._apply_gmatrix(lut)
@@ -17511,7 +17511,7 @@ class PCCE_V3:
                  hue_protect: float = 0.65,
                  skin_protect: float = 0.55,
                  chroma_boost: float = 0.12):
-        self.hk_intensity = float(hk_intensity)
+                     self.hk_intensity = float(hk_intensity)
         self.hue_protect = float(hue_protect)
         self.skin_protect = float(skin_protect)
         self.chroma_boost = float(chroma_boost)
@@ -17628,7 +17628,7 @@ class ShadowSeparationV3:
                  protect_black: float = 0.85,
                  film_bias: str = "kodak_teal",
                  fade_curve: float = 4.5):
-        self.sep_strength = float(sep_strength)
+                     self.sep_strength = float(sep_strength)
         self.protect_black = float(protect_black)
         self.film_bias = film_bias.lower()
         self.fade_curve = float(fade_curve)
@@ -17766,7 +17766,7 @@ class AdaptiveContrastV5:
                  protect_shadows: float = 0.65,
                  protect_highlights: float = 0.55,
                  local_radius: float = 2.2):
-        self.global_strength = float(global_strength)
+                     self.global_strength = float(global_strength)
         self.local_strength = float(local_strength)
         self.protect_shadows = float(protect_shadows)
         self.protect_highlights = float(protect_highlights)
@@ -17892,7 +17892,7 @@ class MicroDetailEnhancerV3:
                  strength_high: float = 0.22,
                  skin_protect: float = 0.65,
                  highlight_protect: float = 0.55):
-        self.sL = float(strength_low)
+                     self.sL = float(strength_low)
         self.sM = float(strength_mid)
         self.sH = float(strength_high)
         self.skin_protect = float(np.clip(skin_protect, 0.0, 1.0))
@@ -18023,7 +18023,7 @@ class ColorHarmonyV4:
                  highlight_sat_compress: float = 0.55,
                  density_strength: float = 0.40,
                  teal_orange_bias: float = 0.22):
-        self.harmony_strength = float(harmony_strength)
+                     self.harmony_strength = float(harmony_strength)
         self.skintone_preserve = float(np.clip(skintone_preserve, 0.0, 1.0))
         self.highlight_sat_compress = float(np.clip(highlight_sat_compress, 0.0, 1.0))
         self.density_strength = float(density_strength)
@@ -18355,7 +18355,7 @@ class FilmGrainV5:
                  chroma_strength: float = 0.22,
                  temporal_jitter: float = 0.03,
                  preserve_blacks: float = 0.85):
-        self.iso = int(np.clip(iso, 50, 5000))
+                     self.iso = int(np.clip(iso, 50, 5000))
         self.grain_strength = float(grain_strength)
         self.chroma_strength = float(chroma_strength)
         self.temporal_jitter = float(temporal_jitter)
@@ -18496,7 +18496,7 @@ class MicroContrastV4:
                  protect_skin: float = 0.40,
                  protect_highlights: float = 0.35,
                  protect_shadows: float = 0.30):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.midtone_bias = float(midtone_bias)
         self.texture_strength = float(texture_strength)
         self.protect_skin = float(protect_skin)
@@ -18589,7 +18589,7 @@ class MicroContrastModuleV4:
     def __init__(self,
                  strength=0.45,
                  texture_strength=0.30):
-        self.engine = MicroContrastV4(
+                     self.engine = MicroContrastV4(
             strength=strength,
             texture_strength=texture_strength
         )
@@ -18630,7 +18630,7 @@ class ColorSeparationV4:
                  skin_protect: float = 0.35,
                  shadow_desat: float = 0.30,
                  highlight_desat: float = 0.18):
-        self.sat_strength = float(sat_strength)
+                     self.sat_strength = float(sat_strength)
         self.hue_contrast = float(hue_contrast)
         self.skin_protect = float(skin_protect)
         self.shadow_desat = float(shadow_desat)
@@ -18745,7 +18745,7 @@ class ColorSeparationModuleV4:
     def __init__(self,
                  sat_strength=0.22,
                  hue_contrast=0.18):
-        self.engine = ColorSeparationV4(
+                     self.engine = ColorSeparationV4(
             sat_strength=sat_strength,
             hue_contrast=hue_contrast
         )
@@ -18785,7 +18785,7 @@ class FilmDensityV4:
                  mid_contrast: float = 1.18,
                  density_mix: float = 0.55,
                  color_density_strength: float = 0.14):
-        self.toe_strength = float(toe_strength)
+                     self.toe_strength = float(toe_strength)
         self.shoulder_strength = float(shoulder_strength)
         self.mid_contrast = float(mid_contrast)
         self.density_mix = float(density_mix)
@@ -18882,7 +18882,7 @@ class FilmDensityModuleV4:
                  toe_strength=0.32,
                  shoulder_strength=0.28,
                  density_mix=0.55):
-        self.engine = FilmDensityV4(
+                     self.engine = FilmDensityV4(
             toe_strength=toe_strength,
             shoulder_strength=shoulder_strength,
             density_mix=density_mix
@@ -18926,7 +18926,7 @@ class FilmGrainV4:
                  grain_medium: float = 0.65,
                  grain_coarse: float = 0.32,
                  log_blend: bool = True):
-        self.iso = int(max(50, min(6400, iso)))
+                     self.iso = int(max(50, min(6400, iso)))
         self.strength = float(strength)
         self.chroma_bias = float(chroma_bias)
         self.grain_fine = float(grain_fine)
@@ -19062,7 +19062,7 @@ class MicroContrastV3:
                  warm_bias: float = 0.10,
                  high_freq_boost: float = 1.35,
                  mid_freq_boost: float = 0.75):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.iso = int(max(50, min(6400, iso)))
         self.warm_bias = float(warm_bias)
         self.high_boost = float(high_freq_boost)
@@ -19310,7 +19310,7 @@ class LensFusionEngineV2:
                  bloom_weight: float = 0.70,
                  flare_weight: float = 0.85,
                  energy_preserve: float = 0.65):
-        self.hal_w = float(hal_weight)
+                     self.hal_w = float(hal_weight)
         self.bloom_w = float(bloom_weight)
         self.flare_w = float(flare_weight)
         self.energy_preserve = float(energy_preserve)
@@ -19425,7 +19425,7 @@ class ChromaticAberrationV4:
                  anamorphic_ratio: float = 1.40,
                  highlight_boost: float = 2.0,
                  dispersion_scale: float = 1.25):
-        self.lat_s = float(lateral_strength)
+                     self.lat_s = float(lateral_strength)
         self.ax_s  = float(axial_strength)
         self.anamorphic = float(anamorphic_ratio)
         self.hl_boost = float(highlight_boost)
@@ -19566,7 +19566,7 @@ class FilmGrainV4:
                  stock: str = "Vision3",
                  temporal_stability: float = 0.85,
                  chroma_strength: float = 0.35):
-        self.base_strength = float(grain_strength)
+                     self.base_strength = float(grain_strength)
         self.iso = float(iso_level)
         self.stock = stock
         self.temp_stability = float(temporal_stability)
@@ -20289,7 +20289,7 @@ class FilmBreathingV4:
             vignette_shift_strength: float = 0.015,
             subject_protect: float = 0.65,
             temporal_smooth: float = 0.88):
-        self.breathe_strength = breathe_strength
+                self.breathe_strength = breathe_strength
         self.density_strength = density_strength
         self.vignette_shift_strength = vignette_shift_strength
         self.subject_protect = subject_protect
@@ -20441,7 +20441,7 @@ class FilmGrainV5:
             highlight_soften: float = 0.65,
             temporal_smooth: float = 0.92,
             grain_size: float = 1.0):
-        self.base_strength = base_strength
+                self.base_strength = base_strength
         self.chroma_strength = chroma_strength
         self.shadow_boost = shadow_boost
         self.highlight_soften = highlight_soften
@@ -20704,7 +20704,7 @@ class FilmDirtEngineV3:
                  persistence_min: int = 3,
                  persistence_max: int = 12,
                  flicker_intensity: float = 0.30):
-        self.dust_amount = dust_amount
+                     self.dust_amount = dust_amount
         self.hair_amount = hair_amount
         self.scratch_amount = scratch_amount
         self.persistence_min = persistence_min
@@ -20859,7 +20859,7 @@ class FilmStockEngineV4:
                  exposure_offset=0.0,
                  saturation=1.08,
                  crosstalk=0.035):
-        self.stock = stock.lower()
+                     self.stock = stock.lower()
         self.print_film = print_film.lower()
         self.printer_lights = printer_lights
         self.exposure_offset = exposure_offset
@@ -21009,7 +21009,7 @@ class NegToPrintEngineV4:
                  highlight_limit: float = 0.92,
                  dye_comp: float = 0.045,
                  midtone_boost: float = 0.12):
-        self.print_gamma = float(print_gamma)
+                     self.print_gamma = float(print_gamma)
         self.highlight_limit = float(highlight_limit)
         self.dye_comp = float(dye_comp)
         self.midtone_boost = float(midtone_boost)
@@ -21134,7 +21134,7 @@ class LensBreathingV4:
                  drift_speed: float = 0.002,
                  drift_magnitude: float = 0.004,
                  curvature: float = 0.00045):
-        self.breath_strength = float(breath_strength)
+                     self.breath_strength = float(breath_strength)
         self.asymmetry = float(asymmetry)
         self.drift_speed = float(drift_speed)
         self.drift_magnitude = float(drift_magnitude)
@@ -21385,7 +21385,7 @@ class SprocketLeakV4:
                  gate_spread: float = 0.35,
                  color_shift: tuple = (1.20, 0.85, 0.70),   # warm leak
                  drift_speed: float = 0.004):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.randomness = float(randomness)
         self.sprocket_frequency = float(sprocket_frequency)
         self.gate_spread = float(gate_spread)
@@ -21538,7 +21538,7 @@ class ChromaticDeformV4:
                  anamorphic_ratio: float = 1.0,   # >1 for anamorphic stretch
                  highlight_bias: float = 0.65,
                  strength: float = 0.55):
-        self.blue_shift = float(blue_shift)
+                     self.blue_shift = float(blue_shift)
         self.green_shift = float(green_shift)
         self.red_shift = float(red_shift)
         self.radial_power = float(radial_power)
@@ -21680,7 +21680,7 @@ class HalideGrainV4:
                  chroma_variance: float = 0.12,
                  highlight_soften: float = 0.35,
                  motion_stability: float = 0.85):
-        self.strength = float(grain_strength)
+                     self.strength = float(grain_strength)
         self.midtone_bias = float(midtone_bias)
         self.chroma_variance = float(chroma_variance)
         self.highlight_soften = float(highlight_soften)
@@ -21825,7 +21825,7 @@ class FilmGateJitterV4:
                  gate_bounce_strength: float = 0.25,# micro jitter
                  exposure_phase_strength: float = 0.12,
                  temporal_smoothness: float = 0.80):
-        self.weave_amp = float(weave_amplitude)
+                     self.weave_amp = float(weave_amplitude)
         self.weave_freq = float(weave_freq)
         self.vert_jit = float(vertical_jitter)
         self.bounce = float(gate_bounce_strength)
@@ -21929,7 +21929,7 @@ class UnevenExposureV4:
                  rolling_strength: float = 0.010,   # exposure stripe wobble
                  chem_variance: float = 0.008,      # developer color shifts
                  temporal_smoothness: float = 0.85):
-        self.drift_strength = float(drift_strength)
+                     self.drift_strength = float(drift_strength)
         self.flicker_strength = float(flicker_strength)
         self.rolling_strength = float(rolling_strength)
         self.chem_variance = float(chem_variance)
@@ -22063,7 +22063,7 @@ class FilmSurfaceDamageV4:
                  persistence: float = 0.92,
                  max_scratch_length: int = 680,
                  dust_softness: float = 0.45):
-        self.dust_amount = float(dust_amount)
+                     self.dust_amount = float(dust_amount)
         self.scratch_amount = float(scratch_amount)
         self.hair_amount = float(hair_amount)
         self.persistence = float(persistence)
@@ -22518,7 +22518,7 @@ class FilmGateFlareV3:
                  jitter_amount: float = 0.004,
                  directional_flare: float = 0.20,
                  flicker_strength: float = 0.035):
-        self.gate_intensity = float(gate_intensity)
+                     self.gate_intensity = float(gate_intensity)
         self.perf_shadow_strength = float(perf_shadow_strength)
         self.perf_leak_strength = float(perf_leak_strength)
         self.jitter_amount = float(jitter_amount)
@@ -22677,7 +22677,7 @@ class ScannerDustV4:
                  smear_strength: float = 0.35,
                  cluster_bias: float = 0.30,
                  dust_type: str = "negative"):
-        """
+                     """
         dust_density : 0.0–0.1   → % of pixels that produce dust artifacts
         smear_strength : 0.0–1.0 → motion smear from transport rollers
         cluster_bias : 0.0–1.0   → higher = more dust near perforations
@@ -22818,7 +22818,7 @@ class HairInGateV4:
                  curve_points=6,
                  edge_bias: float = 0.55,
                  color_mode: str = "brown"):
-        """
+                     """
         probability : 1.0 = always generate hair, 0 = never
         thickness_range : min/max pixel width of hair fiber
         curve_points : # of random control points for spline
@@ -22993,7 +22993,7 @@ class FilmScratchV4:
                  max_width: int = 3,
                  accumulation_rate: float = 0.18,
                  jitter_strength: float = 1.2):
-        """
+                     """
         probability: likelihood of scratches being active
         max_scratches: max number of scratch lines
         accumulation_rate: how fast scratches fade IN over time
@@ -23139,7 +23139,7 @@ class EmulsionDustV5:
                  max_size: int = 16,
                  smear_strength: float = 0.22,
                  flicker_variance: float = 0.30):
-        """
+                     """
         base_probability : chance dust appears on this frame
         max_particles    : maximum dust flecks per frame
         min/max_size     : dust blob pixel radius
@@ -23298,7 +23298,7 @@ class GateHairV6:
                  max_thickness: int = 7,
                  opacity: float = 0.55,
                  persistence_frames: int = 15):
-        """
+                     """
         max_hairs          : number of fibers on frame
         min/max_length     : spline arc length relative to frame diagonal
         thickness          : pixel width base
@@ -23455,7 +23455,7 @@ class SensorDistortionV7:
                  chroma_noise: float = 0.015,
                  thermal_noise: float = 0.012,
                  jitter_strength: float = 0.006):
-        self.rs = float(rolling_strength)
+                     self.rs = float(rolling_strength)
         self.smear = float(smear_strength)
         self.band = float(banding_strength)
         self.cn = float(chroma_noise)
@@ -23617,7 +23617,7 @@ class SensorDustV4:
                  oil_max_radius: float = 42.0,
                  aperture_f: float = 2.8,
                  heat_drift: float = 0.004):
-        self.dust_count = int(dust_count)
+                     self.dust_count = int(dust_count)
         self.oil_count = int(oil_count)
         self.max_radius = float(max_radius)
         self.oil_max_radius = float(oil_max_radius)
@@ -23762,7 +23762,7 @@ class LensShadingV6:
                  breathing_strength: float = 0.012,
                  asymmetry_x: float = -0.04,
                  asymmetry_y: float = 0.02):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.cat_eye_strength = float(cat_eye_strength)
         self.chroma_falloff = float(chroma_falloff)
         self.breathing_strength = float(breathing_strength)
@@ -23894,7 +23894,7 @@ class SensorDamageV5:
                  dust_density: float = 0.10,
                  ring_strength: float = 0.25,
                  defect_opacity: float = 0.35):
-        self.scratch_density = float(scratch_density)
+                     self.scratch_density = float(scratch_density)
         self.scratch_angle = np.deg2rad(scratch_angle_deg)
         self.rainbow_strength = float(rainbow_strength)
         self.dust_density = float(dust_density)
@@ -24032,7 +24032,7 @@ class SensorDustRemovalV4:
                  detect_strength: float = 1.0,
                  temporal_strength: float = 0.85,
                  inpaint_radius: int = 3):
-        self.detect_strength = float(detect_strength)
+                     self.detect_strength = float(detect_strength)
         self.temporal_strength = float(np.clip(temporal_strength, 0.0, 0.99))
         self.inpaint_radius = int(inpaint_radius)
         self.prev_mask = None    # temporal dust mask
@@ -24149,7 +24149,7 @@ class BandingRemovalV4:
                  vertical_strength: float = 0.65,
                  horizontal_strength: float = 0.55,
                  iso_factor: float = 1.0):
-        self.vertical_strength = float(vertical_strength)
+                     self.vertical_strength = float(vertical_strength)
         self.horizontal_strength = float(horizontal_strength)
         self.iso_factor = float(iso_factor)
 
@@ -24273,7 +24273,7 @@ class ShutterPhaseCorrectorV3:
     def __init__(self,
                  strength: float = 1.0,
                  smooth_time: float = 0.85):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.smooth_time = float(smooth_time)
         self.prev_phase = None
 
@@ -24410,7 +24410,7 @@ class DynamicExposureV4:
                  highlight_recover: float = 0.60,
                  local_contrast: float = 0.35,
                  temporal_strength: float = 0.82):
-        self.shadow_boost = float(shadow_boost)
+                     self.shadow_boost = float(shadow_boost)
         self.highlight_recover = float(highlight_recover)
         self.local_contrast = float(local_contrast)
         self.temporal_strength = float(temporal_strength)
@@ -24533,7 +24533,7 @@ class LocalToneEqualizerV4:
                  shadow_weight: float = 0.45,
                  skin_protect: float = 0.65,
                  temporal_blend: float = 0.80):
-        self.micro = float(microcontrast)
+                     self.micro = float(microcontrast)
         self.hi_w = float(highlight_weight)
         self.sh_w = float(shadow_weight)
         self.skin_pro = float(skin_protect)
@@ -24682,7 +24682,7 @@ class ColorHarmonyEngineV5:
                  chroma_compress: float = 0.40,
                  skin_preserve: float = 0.65,
                  temporal_blend: float = 0.85):
-        self.palette = str(palette)
+                     self.palette = str(palette)
         self.hstrength = float(harmony_strength)
         self.ccompress = float(chroma_compress)
         self.skin_pres = float(skin_preserve)
@@ -24847,7 +24847,7 @@ class ColorSeparationV6:
                  sat_strength=0.55,
                  sep_strength=0.65,
                  temporal_blend=0.90):
-        self.shadow_tint = np.array(shadow_tint, np.float32)
+                     self.shadow_tint = np.array(shadow_tint, np.float32)
         self.midtone_tilt = np.array(midtone_tilt, np.float32)
         self.highlight_tint = np.array(highlight_tint, np.float32)
         self.sat_strength = float(sat_strength)
@@ -25096,7 +25096,7 @@ class ContrastMotionV4:
                  shadow_stability=0.65,
                  temporal_blend=0.90,
                  flow_blur=10.0):
-        self.base_contrast = float(base_contrast)
+                     self.base_contrast = float(base_contrast)
         self.motion_contrast_reduction = float(motion_contrast_reduction)
         self.shadow_stability = float(shadow_stability)
         self.temp = float(temporal_blend)
@@ -25211,7 +25211,7 @@ class EdgeAwareDensityV4:
                  highlight_limit=0.92,
                  motion_soften=0.25,
                  temporal_blend=0.85):
-        self.density_strength = float(density_strength)
+                     self.density_strength = float(density_strength)
         self.edge_preserve = float(edge_preserve)
         self.highlight_limit = float(highlight_limit)
         self.motion_soften = float(motion_soften)
@@ -25341,7 +25341,7 @@ class ColorCleanupV5:
                  skin_protect=0.55,
                  sat_limit=1.25,
                  temporal_smooth=0.82):
-        self.chroma_reduce = float(chroma_reduce)
+                     self.chroma_reduce = float(chroma_reduce)
         self.highlight_hue_guard = float(highlight_hue_guard)
         self.skin_protect = float(skin_protect)
         self.sat_limit = float(sat_limit)
@@ -25499,7 +25499,7 @@ class ShadowRecoveryV6:
                  toe_softness=0.45,
                  noise_floor=0.015,
                  temporal_smooth=0.80):
-        self.lift_strength = float(lift_strength)
+                     self.lift_strength = float(lift_strength)
         self.chroma_balance = float(chroma_balance)
         self.toe_softness = float(toe_softness)
         self.noise_floor = float(noise_floor)
@@ -25621,7 +25621,7 @@ class HighlightReconstructV7:
                  texture_strength=0.35,
                  chroma_preserve=0.75,
                  temporal_smooth=0.78):
-        self.rolloff_start = float(rolloff_start)
+                     self.rolloff_start = float(rolloff_start)
         self.rolloff_end = float(rolloff_end)
         self.texture_strength = float(texture_strength)
         self.chroma_preserve = float(chroma_preserve)
@@ -25751,7 +25751,7 @@ class SpecularRebuildV5:
                  intensity=0.45,
                  spectral_bias=0.65,
                  temporal_smooth=0.82):
-        self.freq_low = float(freq_low)
+                     self.freq_low = float(freq_low)
         self.freq_high = float(freq_high)
         self.intensity = float(intensity)
         self.spectral_bias = float(spectral_bias)
@@ -25877,7 +25877,7 @@ class FilmDensityMatrixV8:
                  fuji_chroma_sep=0.28,
                  kodak_warmth=0.12,
                  matrix_blend=0.65):
-        self.density_strength = float(density_strength)
+                     self.density_strength = float(density_strength)
         self.toe_strength = float(toe_strength)
         self.shoulder_strength = float(shoulder_strength)
         self.fuji_chroma_sep = float(fuji_chroma_sep)
@@ -26013,7 +26013,7 @@ class CineToneHueV6:
                  skin_protect=0.85,
                  highlight_desat=0.20,
                  rotate_strength=0.25):
-        self.teal_push = float(teal_push)
+                     self.teal_push = float(teal_push)
         self.warm_push = float(warm_push)
         self.skin_protect = float(skin_protect)
         self.highlight_desat = float(highlight_desat)
@@ -26138,7 +26138,7 @@ class FilmGrainV7:
                  chroma_factor=0.65,
                  temporal_smooth=0.82,
                  motion_dampen=True):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.chroma_factor = float(chroma_factor)
         self.temporal_smooth = float(temporal_smooth)
         self.motion_dampen = bool(motion_dampen)
@@ -26404,7 +26404,7 @@ class FilmHalideV4:
                  halide_density=1.35,
                  chroma_retention=0.82,
                  micro_saturation=0.18):
-        self.toe = float(toe_strength)
+                     self.toe = float(toe_strength)
         self.shoulder = float(shoulder_strength)
         self.halide_density = float(halide_density)
         self.chroma_retention = float(chroma_retention)
@@ -26575,7 +26575,7 @@ class FilmGateWeaveV2:
                  resonance_freq_y=0.21,
                  resonance_strength=0.55,
                  rolling_wobble_strength=0.004):
-        self.max_weave_px = float(max_weave_px)
+                     self.max_weave_px = float(max_weave_px)
         self.sprocket_jitter_px = float(sprocket_jitter_px)
         self.fx = float(resonance_freq_x)
         self.fy = float(resonance_freq_y)
@@ -26705,7 +26705,7 @@ class LensBreathingV3:
                  chroma_shift=0.003,
                  exposure_pulse_strength=0.015,
                  randomness=0.20):
-        self.base_strength = float(base_strength)
+                     self.base_strength = float(base_strength)
         self.chroma_shift = float(chroma_shift)
         self.exp_strength = float(exposure_pulse_strength)
         self.randomness = float(randomness)
@@ -26849,7 +26849,7 @@ class MicroContrastV4:
                  detail_radius_mid=4.0,
                  detail_radius_large=18.0,
                  edge_protect=0.65):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.r_small = float(detail_radius_small)
         self.r_mid = float(detail_radius_mid)
         self.r_large = float(detail_radius_large)
@@ -26974,7 +26974,7 @@ class TextureDensityV3:
                  highlight_density_cut=0.55,
                  zdepth_compress=0.35,
                  grain_size=1.25):
-        self.grain_strength = float(grain_strength)
+                     self.grain_strength = float(grain_strength)
         self.chroma_grain_ratio = float(chroma_grain_ratio)
         self.shadow_density_boost = float(shadow_density_boost)
         self.highlight_density_cut = float(highlight_density_cut)
@@ -28284,7 +28284,7 @@ class ChromaticAberrationV6:
                  focal_length_mm: float = 24.0,
                  center_suppress: float = 0.35,
                  motion_reduction: float = 0.50):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.focal_length_mm = float(focal_length_mm)
         self.center_suppress = float(np.clip(center_suppress, 0.0, 1.0))
         self.motion_reduction = float(np.clip(motion_reduction, 0.0, 1.0))
@@ -28407,7 +28407,7 @@ class FilmGrainV6:
                  static_seed: int = 1337,
                  luma_bias: float = 0.65,
                  motion_reduction: float = 0.45):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.softness = float(softness)
         self.seed = int(static_seed)
         self.luma_bias = float(np.clip(luma_bias, 0.0, 1.0))
@@ -28544,7 +28544,7 @@ class FilmDamageV4:
                  dirt_persistence: float = 0.65,
                  scratch_intensity: float = 0.40,
                  hairline_density: float = 0.05):
-        self.weave_strength = float(weave_strength)
+                     self.weave_strength = float(weave_strength)
         self.scratch_density = float(scratch_density)
         self.dirt_density = float(dirt_density)
         self.dirt_persistence = float(np.clip(dirt_persistence, 0.0, 1.0))
@@ -28609,7 +28609,7 @@ class FilmDamageV4:
             x = random.randint(0, w-1)
             thickness = random.choice([1, 1, 2])
                # occasional slight curvature:
-            curve = random.uniform(-0.002, 0.002)
+                   curve = random.uniform(-0.002, 0.002)
 
             for y in range(h):
                 offset = int(curve * (y - h/2))
@@ -28723,7 +28723,7 @@ class FacialToneOptimizerV5:
                  micro_contrast: float = 0.18,
                  highlight_restore: float = 0.30,
                  temporal_smooth: float = 0.80):
-        self.skin_hue_center = float(skin_hue_center)
+                     self.skin_hue_center = float(skin_hue_center)
         self.skin_hue_width  = float(skin_hue_width)
         self.micro_contrast  = float(micro_contrast)
         self.highlight_restore = float(highlight_restore)
@@ -28863,7 +28863,7 @@ class HairEnhancementV4:
                  shine_strength: float = 0.35,
                  harmony_strength: float = 0.40,
                  mask_softness: float = 3.5):
-        self.detail_boost = float(detail_boost)
+                     self.detail_boost = float(detail_boost)
         self.shine_strength = float(shine_strength)
         self.harmony_strength = float(harmony_strength)
         self.mask_softness = float(mask_softness)
@@ -29000,7 +29000,7 @@ class FabricEnhancerV4:
                  highlight_soften: float = 0.35,
                  shadow_restore: float = 0.20,
                  mask_strength: float = 0.65):
-        self.texture_boost = float(texture_boost)
+                     self.texture_boost = float(texture_boost)
         self.saturation_boost = float(saturation_boost)
         self.highlight_soften = float(highlight_soften)
         self.shadow_restore = float(shadow_restore)
@@ -29141,7 +29141,7 @@ class AccessoryRefinerV3:
                  saturation_recover: float = 0.10,
                  highlight_preserve: float = 0.35,
                  mask_strength: float = 0.70):
-        self.metal_boost = float(metal_boost)
+                     self.metal_boost = float(metal_boost)
         self.leather_soften = float(leather_soften)
         self.plastic_reflectivity = float(plastic_reflectivity)
         self.saturation_recover = float(saturation_recover)
@@ -29291,7 +29291,7 @@ class SubjectFusionEngineV5:
                  chroma_match_strength: float = 0.45,
                  density_unify_strength: float = 0.40,
                  matte_soften: float = 2.5):
-        self.edge_blend = float(edge_blend)
+                     self.edge_blend = float(edge_blend)
         self.exposure_match_strength = float(exposure_match_strength)
         self.chroma_match_strength = float(chroma_match_strength)
         self.density_unify_strength = float(density_unify_strength)
@@ -29376,7 +29376,7 @@ class SubjectFusionEngineV5:
     # ------------------------------------------------------------
     def apply(self, base_img, skin_pass, cloth_pass, acc_pass,
               skin_matte, cloth_matte, acc_matte):
-        """
+                  """
         Inputs:
           base_img   : original frame float32 0..1
           skin_pass  : processed skin adjusted image
@@ -29434,7 +29434,7 @@ class SubjectDetailRestorerV6:
                  strength_accessory: float = 0.55,
                  edge_protect: float = 0.65,
                  freq_radius: float = 1.6):
-        self.str_skin = float(strength_skin)
+                     self.str_skin = float(strength_skin)
         self.str_fabric = float(strength_fabric)
         self.str_acc = float(strength_accessory)
         self.edge_protect = float(edge_protect)
@@ -29479,7 +29479,7 @@ class SubjectDetailRestorerV6:
               skin_matte,
               cloth_matte,
               acc_matte):
-        """
+                  """
         Applies micro-detail restoration separately for:
           • Skin
           • Fabrics
@@ -29539,7 +29539,7 @@ class DepthRelightAssistV7:
                  shadow_lift: float = 0.18,
                  highlight_enhance: float = 0.22,
                  blur_radius: float = 18.0):
-        self.depth_boost = float(depth_boost)
+                     self.depth_boost = float(depth_boost)
         self.relight_intensity = float(relight_intensity)
         self.shadow_lift = float(shadow_lift)
         self.highlight_enhance = float(highlight_enhance)
@@ -29615,7 +29615,7 @@ class DepthRelightAssistV7:
               cloth_matte=None,
               acc_matte=None,
               depth_map=None):
-        """
+                  """
         Full depth + relighting assist pipeline.
           depth_map: optional (from AI/monocular depth)
         """
@@ -29679,7 +29679,7 @@ class ColorSeparationV5:
                  bg_warm_shift: float = 0.10,
                  film_density: float = 0.20,
                  skin_protect_gamma: float = 0.75):
-        self.subject_preserve = float(subject_preserve)
+                     self.subject_preserve = float(subject_preserve)
         self.bg_desaturate = float(bg_desaturate)
         self.bg_warm_shift = float(bg_warm_shift)
         self.film_density = float(film_density)
@@ -29736,7 +29736,7 @@ class ColorSeparationV5:
               skin_matte=None,
               cloth_matte=None,
               acc_matte=None):
-        """
+                  """
         Full cinematic color separation:
           • subject preserve
           • background desat + warm shift
@@ -29819,7 +29819,7 @@ class SkinToneReproV4:
                  warm_scatter: float = 0.18,
                  hue_correction: float = 0.22,
                  matte_softness: float = 1.85):
-        self.melanin_strength   = float(melanin_strength)
+                     self.melanin_strength   = float(melanin_strength)
         self.red_compression    = float(red_compression)
         self.warm_scatter       = float(warm_scatter)
         self.hue_correction     = float(hue_correction)
@@ -29954,7 +29954,7 @@ class FabricEnhancerV3:
                  highlight_protect: float = 0.40,
                  shade_anisotropy: float = 0.25,
                  matte_softness: float = 1.8):
-        self.texture_strength   = float(texture_strength)
+                     self.texture_strength   = float(texture_strength)
         self.chroma_boost       = float(chroma_boost)
         self.fabric_soften      = float(fabric_soften)
         self.highlight_protect  = float(highlight_protect)
@@ -30075,7 +30075,7 @@ class SkinLUTReconstructorV5:
                  rolloff_strength: float = 0.28,
                  density_rebuild: float = 0.22,
                  matte_softness: float = 1.8):
-        self.warm_bias = float(warm_bias)
+                     self.warm_bias = float(warm_bias)
         self.chroma_balance = float(chroma_balance)
         self.rolloff_strength = float(rolloff_strength)
         self.density_rebuild = float(density_rebuild)
@@ -30197,7 +30197,7 @@ class HairColorStabilizerV4:
                  highlight_protect: float = 0.35,
                  shadow_repair: float = 0.28,
                  smoothing_radius: float = 4.5):
-        self.melanin_boost = float(melanin_boost)
+                     self.melanin_boost = float(melanin_boost)
         self.spectral_shift = float(spectral_shift)
         self.highlight_protect = float(highlight_protect)
         self.shadow_repair = float(shadow_repair)
@@ -30317,7 +30317,7 @@ class FabricColorStabilizerV5:
                  texture_preserve: float = 0.78,
                  highlight_limit: float = 0.85,
                  reflectance_type: str = "cotton"):
-        self.sat_boost = float(sat_boost)
+                     self.sat_boost = float(sat_boost)
         self.luminance_balance = float(luminance_balance)
         self.texture_preserve = float(texture_preserve)
         self.highlight_limit = float(highlight_limit)
@@ -30438,7 +30438,7 @@ class SkinMicroDetailReconstructorV6:
                  poisson_mix: float = 0.65,
                  temporal_smooth: float = 0.75,
                  highlight_protect: float = 0.85):
-        self.enhancement_strength = float(enhancement_strength)
+                     self.enhancement_strength = float(enhancement_strength)
         self.highfreq_radius = float(highfreq_radius)
         self.midfreq_radius = float(midfreq_radius)
         self.poisson_mix = float(poisson_mix)
@@ -30577,7 +30577,7 @@ class NeuralSkinToneHarmonizerV7:
                  melanin_protect: float = 0.60,
                  highlight_safety: float = 0.82,
                  film_bias_strength: float = 0.40):
-        self.hue_strength = float(hue_strength)
+                     self.hue_strength = float(hue_strength)
         self.luminance_balance = float(luminance_balance)
         self.melanin_protect = float(melanin_protect)
         self.highlight_safety = float(highlight_safety)
@@ -30740,7 +30740,7 @@ class NeuralSkinToneHarmonizerV7_Extended:
                  hdr_face_recovery=0.55,
                  saturation_preserve_strength=0.40,
                  film_uniformity_strength=0.35):
-        self.ethnicity = ethnicity
+                     self.ethnicity = ethnicity
         self.undertone_correction_strength = float(undertone_correction_strength)
         self.hdr_face_recovery = float(hdr_face_recovery)
         self.saturation_preserve_strength = float(saturation_preserve_strength)
@@ -30924,7 +30924,7 @@ class NeuralSkinHarmonizerV7_Celebrity:
                  contrast_boost=0.35,
                  hue_blend=0.55,
                  sat_blend=0.45):
-        self.target = target
+                     self.target = target
         self.chroma_preserve_strength = float(chroma_preserve_strength)
         self.contrast_boost = float(contrast_boost)
         self.hue_blend = float(hue_blend)
@@ -31042,7 +31042,7 @@ class NeuralSkinHarmonizerV7_Adaptive:
                  tone_memory_rate=0.20,
                  max_hue_shift=0.10,
                  max_sat_shift=0.20):
-        self.base_hue_shift = float(base_hue_shift)
+                     self.base_hue_shift = float(base_hue_shift)
         self.exposure_comp_strength = float(exposure_comp_strength)
         self.tone_memory_rate = float(np.clip(tone_memory_rate, 0.0, 0.95))
         self.max_hue_shift = float(max_hue_shift)
@@ -31176,7 +31176,7 @@ class NeuralSkinHarmonizerV7_MultiFace:
                  sat_weight=0.20,
                  exp_weight=0.30,
                  direction_amplifier=0.65):
-        self.hue_weight = float(hue_weight)
+                     self.hue_weight = float(hue_weight)
         self.sat_weight = float(sat_weight)
         self.exp_weight = float(exp_weight)
         self.direction_amplifier = float(direction_amplifier)
@@ -31312,7 +31312,7 @@ class AmbientLeakSuppressorV7:
                  spill_strength=0.55,
                  protect_skin=True,
                  balance_towards_neutral=0.35):
-        self.spill_strength = float(spill_strength)
+                     self.spill_strength = float(spill_strength)
         self.protect_skin = bool(protect_skin)
         self.balance_towards_neutral = float(balance_towards_neutral)
 
@@ -31428,7 +31428,7 @@ class SkinContrastPreserverV77:
                  micro_strength=0.65,
                  hue_stability=0.55,
                  band_radius=3.5):
-        self.micro_strength = float(micro_strength)
+                     self.micro_strength = float(micro_strength)
         self.hue_stability = float(hue_stability)
         self.band_radius = float(band_radius)
 
@@ -31530,7 +31530,7 @@ class SkinSaturationEqualizerV78:
                  sat_max=0.85,
                  density_gamma=0.85,
                  blend=0.65):
-        self.sat_target = float(sat_target)
+                     self.sat_target = float(sat_target)
         self.sat_max = float(sat_max)
         self.density_gamma = float(density_gamma)
         self.blend = float(blend)
@@ -31618,7 +31618,7 @@ class FaceHighlightRestoreV79:
                  highlight_soften=0.35,
                  microtexture_radius=2.5,
                  blend=0.65):
-        self.detail_strength = float(detail_strength)
+                     self.detail_strength = float(detail_strength)
         self.highlight_soften = float(highlight_soften)
         self.microtexture_radius = float(microtexture_radius)
         self.blend = float(blend)
@@ -31715,7 +31715,7 @@ class SkinToneUniformityV80:
                  sat_balance=0.40,
                  uniformity=0.65,
                  texture_keep=0.85):
-        self.hue_strength = float(hue_strength)
+                     self.hue_strength = float(hue_strength)
         self.sat_balance = float(sat_balance)
         self.uniformity = float(uniformity)
         self.texture_keep = float(texture_keep)
@@ -33369,7 +33369,7 @@ class FilmGrainV5:
                  chroma_bias: float = 0.15,
                  gate_weave: float = 0.4,
                  grain_type: str = "35mm"):
-        self.amount = float(amount)
+                     self.amount = float(amount)
         self.size = float(size)
         self.chroma_bias = float(chroma_bias)
         self.gate_weave = float(gate_weave)
@@ -33507,7 +33507,7 @@ class HalationV4:
                  threshold: float = 0.80,
                  curve_power: float = 1.45,
                  preserve_blacks: float = 0.90):
-        self.red_strength = float(red_strength)
+                     self.red_strength = float(red_strength)
         self.orange_strength = float(orange_strength)
         self.yellow_strength = float(yellow_strength)
         self.diffusion = float(diffusion)
@@ -33652,7 +33652,7 @@ class ChromaticAberrationV5:
                  highlight_gain: float = 0.65,
                  longitudinal_strength: float = 0.35,
                  preserve_faces: float = 0.90):
-        self.base_shift = float(base_shift)
+                     self.base_shift = float(base_shift)
         self.edge_intensity = float(edge_intensity)
         self.highlight_gain = float(highlight_gain)
         self.longitudinal_strength = float(longitudinal_strength)
@@ -33789,7 +33789,7 @@ class FilmGrainV6:
                  animate: bool = True,
                  temporal_blend: float = 0.82,
                  gate_weave: float = 0.35):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.rough_r, self.rough_g, self.rough_b = roughness_rgb
         self.animate = bool(animate)
         self.temporal_blend = float(temporal_blend)
@@ -33949,7 +33949,7 @@ class VintageFilmV4:
                  toe_strength: float = 0.22,
                  shoulder_strength: float = 0.35,
                  saturation: float = 1.10):
-        self.kodak_strength   = float(kodak_strength)
+                     self.kodak_strength   = float(kodak_strength)
         self.fuji_strength    = float(fuji_strength)
         self.crossover        = float(crossover)
         self.toe_strength     = float(toe_strength)
@@ -34083,7 +34083,7 @@ class HalideGrainV5:
                  size: float = 1.25,
                  development: float = 0.65,
                  temporal_stability: float = 0.80):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.size = float(size)
         self.development = float(development)
         self.temporal_stability = float(temporal_stability)
@@ -34210,7 +34210,7 @@ class FilmPrintLUTV4:
                  printer_lights=(0.0, 0.0, 0.0),
                  density_strength: float = 0.35,
                  preview_mode=False):
-        self.kodak = kodak_lut   # numpy (33,33,33,3)
+                     self.kodak = kodak_lut   # numpy (33,33,33,3)
         self.fuji = fuji_lut     # numpy (33,33,33,3)
         self.stock_blend = float(np.clip(stock_blend, 0.0, 1.0))
         self.pl_r, self.pl_g, self.pl_b = printer_lights
@@ -34349,7 +34349,7 @@ class GateWeaveV4:
                  breathing_strength: float = 0.04,
                  projector_mode: str = "35mm",
                  seed: int = 1337):
-        self.weave_strength = float(weave_strength)  # 0–1 normalized
+                     self.weave_strength = float(weave_strength)  # 0–1 normalized
         self.rotation_strength = float(rotation_strength)
         self.breathing_strength = float(breathing_strength)
         self.projector_mode = projector_mode.lower()
@@ -34481,7 +34481,7 @@ class DiffractionEngineV5:
                  streak_strength: float = 0.22,
                  star_blades: int = 6,
                  micro_lens_scatter: float = 0.08):
-        self.fstop = float(aperture_fstop)
+                     self.fstop = float(aperture_fstop)
         self.airy_intensity = float(airy_intensity)
         self.wavelength_scale = float(wavelength_scale)
         self.streak_strength = float(streak_strength)
@@ -34622,7 +34622,7 @@ class OLPFEngineV4:
                  crosstalk=0.12,
                  direction_bias=0.18,
                  ir_cut=0.10):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.crosstalk = float(crosstalk)
         self.direction_bias = float(direction_bias)
         self.ir_cut = float(ir_cut)
@@ -34759,7 +34759,7 @@ class SensorSpectralResponseV6:
                  hdr_mix=0.35,
                  spectral_curve="alexa_like",
                  highlight_roll=0.22):
-        self.hdr_mix = float(hdr_mix)
+                     self.hdr_mix = float(hdr_mix)
         self.spectral_curve = spectral_curve
         self.highlight_roll = float(highlight_roll)
 
@@ -34897,7 +34897,7 @@ class SensorNoiseModelV7:
             read_noise_base=0.0022,
             thermal_noise_level=0.00045,
             fpn_strength=0.002):
-        self.iso_low = float(iso_native_low)
+                self.iso_low = float(iso_native_low)
         self.iso_high = float(iso_native_high)
         self.dual_iso_strength = float(dual_iso_strength)
         self.read_noise_base = float(read_noise_base)
@@ -35042,7 +35042,7 @@ class DynamicRangeCompressorV6:
             knee_strength=0.45,
             shoulder_strength=0.72,
             chroma_preserve=0.82):
-        self.shadow_lift = float(shadow_lift)
+                self.shadow_lift = float(shadow_lift)
         self.knee_start = float(knee_start)
         self.knee_strength = float(knee_strength)
         self.shoulder_strength = float(shoulder_strength)
@@ -35166,7 +35166,7 @@ class MicroContrastV9:
             vf_strength=0.20,
             edge_protect=0.65,
             chroma_protect=0.70):
-        self.strength = float(strength)
+                self.strength = float(strength)
         self.hf_strength = float(hf_strength)
         self.mf_strength = float(mf_strength)
         self.vf_strength = float(vf_strength)
@@ -35322,7 +35322,7 @@ class TextureRebalanceV5:
                  global_soft=0.10,
                  hf_suppression=0.45,
                  skin_tone_bias=0.12):
-        self.skin_soft = float(skin_soft)
+                     self.skin_soft = float(skin_soft)
         self.global_soft = float(global_soft)
         self.hf_suppression = float(hf_suppression)
         self.skin_tone_bias = float(skin_tone_bias)
@@ -35426,7 +35426,7 @@ class FilmicTonalHarmonyV4:
                  highlight_neutralize=0.10,
                  chroma_density=0.22,
                  tonal_glue_strength=0.35):
-        self.shadow_temp_balance = float(shadow_temp_balance)
+                     self.shadow_temp_balance = float(shadow_temp_balance)
         self.highlight_neutralize = float(highlight_neutralize)
         self.chroma_density = float(chroma_density)
         self.tonal_glue_strength = float(tonal_glue_strength)
@@ -35702,7 +35702,7 @@ class DynamicColorDensityV1:
                  shadow_protect=0.55,
                  highlight_protect=0.65,
                  midtone_boost=0.20):
-        self.density_strength = float(density_strength)
+                     self.density_strength = float(density_strength)
         self.shadow_protect = float(shadow_protect)
         self.highlight_protect = float(highlight_protect)
         self.midtone_boost = float(midtone_boost)
@@ -35818,7 +35818,7 @@ class MicroContrastV1:
                  radius=6.0,
                  protect_shadows=0.4,
                  protect_highlights=0.5):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.radius = float(radius)
         self.protect_shadows = float(protect_shadows)
         self.protect_highlights = float(protect_highlights)
@@ -35906,7 +35906,7 @@ class UltraClarityV2:
                  edge_radius=1.2,
                  noise_protect=0.65,
                  edge_boost=1.4):
-        self.clarity_strength = float(clarity_strength)
+                     self.clarity_strength = float(clarity_strength)
         self.edge_radius = float(edge_radius)
         self.noise_protect = float(noise_protect)
         self.edge_boost = float(edge_boost)
@@ -36012,7 +36012,7 @@ class TonalDepthV3:
                  midtone_separation=0.22,
                  highlight_protect=0.75,
                  micro_curve_strength=0.20):
-        self.shadow_lift = float(shadow_lift)
+                     self.shadow_lift = float(shadow_lift)
         self.shadow_density = float(shadow_density)
         self.midtone_separation = float(midtone_separation)
         self.highlight_protect = float(highlight_protect)
@@ -36123,7 +36123,7 @@ class FilmDensityRebuildV3:
                  shadow_anchor=0.08,
                  highlight_shield=0.72,
                  print_emulation=False):
-        self.density_strength = float(density_strength)
+                     self.density_strength = float(density_strength)
         self.midtone_boost = float(midtone_boost)
         self.shadow_anchor = float(shadow_anchor)
         self.highlight_shield = float(highlight_shield)
@@ -36240,7 +36240,7 @@ class HalationFusionV3:
                  adaptive_scale=0.65,
                  max_strength=0.55,
                  threshold=0.78):
-        self.base_strength = float(base_strength)
+                     self.base_strength = float(base_strength)
         self.adaptive_scale = float(adaptive_scale)
         self.max_strength = float(max_strength)
         self.threshold = float(threshold)
@@ -36338,7 +36338,7 @@ class FilmPrintMatrixV4:
                  density_strength=0.85,
                  toe_strength=0.22,
                  shoulder_strength=0.15):
-        self.sat = float(saturation)
+                     self.sat = float(saturation)
         self.density = float(density_strength)
         self.toe = float(toe_strength)
         self.shoulder = float(shoulder_strength)
@@ -36581,7 +36581,7 @@ class ChromaticAberrationV4:
                  highlight_boost: float = 0.35,
                  anamorphic_factor: float = 1.00,
                  curvature_strength: float = 0.015):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.h_boost = float(highlight_boost)
         self.anamorphic = float(anamorphic_factor)
         self.curve = float(curvature_strength)
@@ -36739,7 +36739,7 @@ class SpectralFuseV4:
             flare_weight: float = 1.00,
             highlight_preserve: float = 0.65,
             chroma_preserve: float = 0.80):
-        self.bloom_w = float(bloom_weight)
+                self.bloom_w = float(bloom_weight)
         self.hal_w = float(halation_weight)
         self.ca_w = float(ca_weight)
         self.flare_w = float(flare_weight)
@@ -36861,7 +36861,7 @@ class AtmosphereV4:
             depth_influence: float = 0.45,
             highlight_scatter: float = 0.55,
             fog_softness: float = 18.0):
-        self.s_str = float(scatter_strength)
+                self.s_str = float(scatter_strength)
         self.airlight_tint = np.array(airlight_tint, dtype=np.float32)
         self.depth_inf = float(depth_influence)
         self.hl_s = float(highlight_scatter)
@@ -36969,7 +36969,7 @@ class EdgeFidelityV5:
                  mf_gain: float = 0.65,
                  protect_highlights: float = 0.65,
                  protect_shadows: float = 0.35):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.hf_gain = float(hf_gain)
         self.mf_gain = float(mf_gain)
         self.prot_hi = float(protect_highlights)
@@ -37091,7 +37091,7 @@ class TextureRebuilderV4:
             detail_boost: float = 0.45,
             tone_adapt: float = 0.65,
             seed: int = 1337):
-        self.grain_strength = float(grain_strength)
+                self.grain_strength = float(grain_strength)
         self.grain_size = float(grain_size)
         self.detail_boost = float(detail_boost)
         self.tone_adapt = float(tone_adapt)
@@ -37207,7 +37207,7 @@ class MicroContrastV4:
                  strength: float = 0.55,
                  protect_highlights: float = 0.65,
                  scene_adapt: float = 0.70):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.protect_highlights = float(protect_highlights)
         self.scene_adapt = float(scene_adapt)
 
@@ -37310,7 +37310,7 @@ class HighlightRebuildV5:
                  knee_softness: float = 0.20,
                  chroma_preserve: float = 0.85,
                  specular_boost: float = 0.10):
-        self.clip_level = float(clip_level)
+                     self.clip_level = float(clip_level)
         self.knee_start = float(knee_start)
         self.knee_softness = float(knee_softness)
         self.chroma_preserve = float(chroma_preserve)
@@ -37438,7 +37438,7 @@ class ColorSeparationV6:
                  density_strength: float = 0.45,
                  skintone_preserve: float = 0.78,
                  chroma_boost: float = 0.12):
-        self.warm_factor = float(warm_factor)
+                     self.warm_factor = float(warm_factor)
         self.cool_factor = float(cool_factor)
         self.density_strength = float(density_strength)
         self.skintone_preserve = float(skintone_preserve)
@@ -37568,7 +37568,7 @@ class HighlightChromaticRepairV4:
                  repair_strength: float = 0.55,
                  spectral_bias: float = 0.18,
                  preserve_midtones: float = 0.85):
-        self.repair_strength = float(repair_strength)
+                     self.repair_strength = float(repair_strength)
         self.spectral_bias = float(spectral_bias)
         self.preserve_midtones = float(preserve_midtones)
 
@@ -37654,7 +37654,7 @@ class HighlightDetailRebuildV3:
                  detail_strength: float = 0.55,
                  radius: float = 3.0,
                  mask_threshold: float = 0.68):
-        self.detail_strength = float(detail_strength)
+                     self.detail_strength = float(detail_strength)
         self.radius = float(radius)
         self.mask_threshold = float(mask_threshold)
 
@@ -37926,7 +37926,7 @@ class FilmToneCleanupV3:
                  shadow_neutrality: float = 0.35,
                  color_balance_strength: float = 0.18,
                  protect_skin: float = 0.65):
-        self.midtone_saturation = float(midtone_saturation)
+                     self.midtone_saturation = float(midtone_saturation)
         self.fog_removal = float(fog_removal)
         self.shadow_neutrality = float(shadow_neutrality)
         self.color_balance_strength = float(color_balance_strength)
@@ -38050,7 +38050,7 @@ class ShadowReconstructorV3:
                  neutralize_strength: float = 0.30,
                  texture_strength: float = 0.12,
                  texture_size: float = 0.35):
-        self.lift_strength = float(lift_strength)       # Shadow brightening
+                     self.lift_strength = float(lift_strength)       # Shadow brightening
         self.pivot = float(pivot)                       # Pivot point of lift
         self.neutralize_strength = float(neutralize_strength)
         self.texture_strength = float(texture_strength)
@@ -38172,7 +38172,7 @@ class MidtoneContrastV3:
                  skin_protect_strength: float = 0.55,
                  skin_hue_center: float = 0.07,   # normalized hue (~25°)
                  skin_hue_width: float = 0.06):
-        self.contrast_amt = float(contrast_amt)
+                     self.contrast_amt = float(contrast_amt)
         self.radius = float(radius)
         self.skin_protect_strength = float(skin_protect_strength)
         self.skin_hue_center = float(skin_hue_center)
@@ -38279,7 +38279,7 @@ class ColorDensityEqualizerV3:
                  highlight_preserve: float = 0.55,
                  shadow_boost: float = 0.25,
                  smooth_radius: float = 6.0):
-        self.chroma_strength = float(chroma_strength)
+                     self.chroma_strength = float(chroma_strength)
         self.highlight_preserve = float(highlight_preserve)
         self.shadow_boost = float(shadow_boost)
         self.smooth_radius = float(smooth_radius)
@@ -38393,7 +38393,7 @@ class FilmDensityHarmonizerV3:
                  midtone_anchor: float = 0.55,
                  preserve_skin: float = 0.75,
                  roll_gamma: float = 1.15):
-        self.shoulder_strength = float(shoulder_strength)
+                     self.shoulder_strength = float(shoulder_strength)
         self.toe_strength = float(toe_strength)
         self.midtone_anchor = float(midtone_anchor)
         self.preserve_skin = float(preserve_skin)
@@ -38601,7 +38601,7 @@ class ColorConstancyNormalizerV3:
     def __init__(self,
                  highlight_protection=0.65,
                  strength=1.0):
-        self.highlight_protection = float(highlight_protection)
+                     self.highlight_protection = float(highlight_protection)
         self.strength = float(strength)
 
     # ------------------------------------------------------------
@@ -38684,7 +38684,7 @@ class ContrastEnvelopeV4:
                  toe_strength=0.15,
                  knee_strength=0.18,
                  temporal_smooth=0.80):
-        self.base_contrast = float(base_contrast)
+                     self.base_contrast = float(base_contrast)
         self.midtone_density = float(midtone_density)
         self.toe_strength = float(toe_strength)
         self.knee_strength = float(knee_strength)
@@ -38813,7 +38813,7 @@ class FilmDensityV4:
                  midtone_saturation=1.10,
                  highlight_compress=0.35,
                  crosslink_strength=0.20):
-        self.shadow_desat = float(shadow_desat)
+                     self.shadow_desat = float(shadow_desat)
         self.midtone_sat = float(midtone_saturation)
         self.highlight_compress = float(highlight_compress)
         self.cross = float(crosslink_strength)
@@ -38933,7 +38933,7 @@ class ColorSeparationV5:
                  foliage_lock=0.45,
                  warm_lock=0.55,
                  shadow_hue_compress=0.40):
-        self.skin_lock = float(skin_lock)
+                     self.skin_lock = float(skin_lock)
         self.sky_lock = float(sky_lock)
         self.foliage_lock = float(foliage_lock)
         self.warm_lock = float(warm_lock)
@@ -39053,7 +39053,7 @@ class FilmContrastV6:
                  microcontrast_strength=0.22,
                  local_radius=18,
                  scene_adapt=0.65):
-        self.toe_strength = float(toe_strength)
+                     self.toe_strength = float(toe_strength)
         self.shoulder_strength = float(shoulder_strength)
         self.micro = float(microcontrast_strength)
         self.radius = int(local_radius)
@@ -39169,7 +39169,7 @@ class FilmTextureV7:
                  shadow_boost=1.5,
                  highlight_reduce=0.65,
                  temporal_seed=12345):
-        self.iso = int(iso)
+                     self.iso = int(iso)
         self.sw = float(sensor_width_mm)
         self.sh = float(sensor_height_mm)
         self.cbias = chroma_bias
@@ -40287,7 +40287,7 @@ class HalationStabilizerV5:
                  skin_protect: float = 0.9,
                  temporal_alpha: float = 0.8,
                  hue_shift_limit_deg: float = 18.0):
-        self.red_spill_strength = float(np.clip(red_spill_strength, 0.0, 1.0))
+                     self.red_spill_strength = float(np.clip(red_spill_strength, 0.0, 1.0))
         self.skin_protect = float(np.clip(skin_protect, 0.0, 1.0))
         self.temporal_alpha = float(np.clip(temporal_alpha, 0.0, 0.99))
         self.hue_limit = float(hue_shift_limit_deg)  # degrees
@@ -40454,7 +40454,7 @@ class TemporalGlowStabilizerV2:
                  temporal_alpha: float = 0.85,
                  motion_reduction: float = 0.65,
                  variance_comp: float = 0.50):
-        self.temporal_alpha = float(np.clip(temporal_alpha, 0.0, 0.99))
+                     self.temporal_alpha = float(np.clip(temporal_alpha, 0.0, 0.99))
         self.motion_reduction = float(np.clip(motion_reduction, 0.0, 1.0))
         self.variance_comp = float(np.clip(variance_comp, 0.0, 1.0))
         # temporal state
@@ -40561,7 +40561,7 @@ class TemporalGlowStabilizerV2:
                  temporal_alpha: float = 0.85,
                  motion_reduction: float = 0.65,
                  variance_comp: float = 0.50):
-        self.temporal_alpha = float(np.clip(temporal_alpha, 0.0, 0.99))
+                     self.temporal_alpha = float(np.clip(temporal_alpha, 0.0, 0.99))
         self.motion_reduction = float(np.clip(motion_reduction, 0.0, 1.0))
         self.variance_comp = float(np.clip(variance_comp, 0.0, 1.0))
         # temporal state
@@ -40799,7 +40799,7 @@ class LightingReconstructorV3:
                  gi_radius=45,
                  skin_preserve=0.80,
                  temporal_smooth=0.80):
-        self.haze_strength = float(haze_strength)
+                     self.haze_strength = float(haze_strength)
         self.fill_intensity = float(fill_intensity)
         self.rim_intensity = float(rim_intensity)
         self.gi_radius = int(gi_radius)
@@ -40945,7 +40945,7 @@ class NeuralLUTMapperV5:
                  lut_strength_creative=0.65,
                  lut_strength_neural=0.45,
                  temporal_smooth=0.85):
-        self.str_c = float(lut_strength_creative)
+                     self.str_c = float(lut_strength_creative)
         self.str_n = float(lut_strength_neural)
         self.temporal_smooth = float(np.clip(temporal_smooth, 0.0, 0.99))
         self.prev_frame = None
@@ -40991,10 +40991,10 @@ class NeuralLUTMapperV5:
                     comp = R + G + B
                     # highlight rolloff
                     if key > 0.55:
-        comp *= (1.0 - (key - 0.55) * 0.35)
+                        comp *= (1.0 - (key - 0.55) * 0.35)
                     # color boost if low-saturation scene
                     if color_var < 0.015:
-        comp *= 1.05
+                        comp *= 1.05
                     # store
                     lut[r,g,b] = [comp*0.8, comp*0.9, comp]
         return lut
@@ -41084,7 +41084,7 @@ class NeuralLUTMapperV5:
                  lut_strength_creative=0.65,
                  lut_strength_neural=0.45,
                  temporal_smooth=0.85):
-        self.str_c = float(lut_strength_creative)
+                     self.str_c = float(lut_strength_creative)
         self.str_n = float(lut_strength_neural)
         self.temporal_smooth = float(np.clip(temporal_smooth, 0.0, 0.99))
         self.prev_frame = None
@@ -41130,10 +41130,10 @@ class NeuralLUTMapperV5:
                     comp = R + G + B
                     # highlight rolloff
                     if key > 0.55:
-        comp *= (1.0 - (key - 0.55) * 0.35)
+                        comp *= (1.0 - (key - 0.55) * 0.35)
                     # color boost if low-saturation scene
                     if color_var < 0.015:
-        comp *= 1.05
+                        comp *= 1.05
                     # store
                     lut[r,g,b] = [comp*0.8, comp*0.9, comp]
         return lut
@@ -41227,7 +41227,7 @@ class TemporalConsistencyV4:
                  color_smooth=0.82,
                  contrast_smooth=0.88,
                  highlight_smooth=0.90):
-        self.exp_s = float(exposure_smooth)
+                     self.exp_s = float(exposure_smooth)
         self.col_s = float(color_smooth)
         self.con_s = float(contrast_smooth)
         self.hi_s  = float(highlight_smooth)
@@ -41364,7 +41364,7 @@ class ShotLookHarmonizerV3:
                  sat_smooth=0.90,
                  gamma_smooth=0.88,
                  cut_threshold=0.28):
-        self.temp_smooth = float(temp_smooth)
+                     self.temp_smooth = float(temp_smooth)
         self.sat_smooth  = float(sat_smooth)
         self.gamma_smooth = float(gamma_smooth)
         self.cut_threshold = float(cut_threshold)
@@ -41506,7 +41506,7 @@ class ColorNarrativeEngineV2:
 
     def __init__(self,
                  smooth_factor=0.90):
-        self.mode_weights = None
+                     self.mode_weights = None
         self.smooth_factor = float(smooth_factor)
 
     # ------------------------------------------------------------
@@ -41586,7 +41586,7 @@ class ColorNarrativeEngineV2:
     def _apply_style(self, img, w):
         """
         Applies weighted combination of 6 narrative looks:
-= warm romance
+            = warm romance
 = cold thriller
 = action punch
 = dreamy pastel
@@ -41703,7 +41703,7 @@ class EmotionEnhancerV1:
     def _emotion_vector(self, f):
         """
         Map features into emotional distributions:
-calm
+            calm
 warm_romantic
 energetic_fast
 tension
@@ -41847,7 +41847,7 @@ class DepthSeparationEngineV1:
                  background_fade=0.20,
                  depth_haze_strength=0.12,
                  cool_fade=0.10):
-        self.subject_boost = float(subject_boost)
+                     self.subject_boost = float(subject_boost)
         self.background_fade = float(background_fade)
         self.depth_haze_strength = float(depth_haze_strength)
         self.cool_fade = float(cool_fade)
@@ -41983,7 +41983,7 @@ class AtmosphereV4:
                  ray_strength=0.22,
                  dust_density=0.015,
                  backlight_strength=0.14):
-        self.fog_strength = float(fog_strength)
+                     self.fog_strength = float(fog_strength)
         self.fog_color = tuple([float(x) for x in fog_color])
         self.ray_strength = float(ray_strength)
         self.dust_density = float(dust_density)
@@ -42122,7 +42122,7 @@ class FilmDamageV4:
                  fade_strength=0.10,
                  gate_weave_amount=1.2,
                  breathing_strength=0.04):
-        self.scratch_intensity = float(scratch_intensity)
+                     self.scratch_intensity = float(scratch_intensity)
         self.dust_amount = float(dust_amount)
         self.chemical_burn_intensity = float(chemical_burn_intensity)
         self.fade_strength = float(fade_strength)
@@ -42295,7 +42295,7 @@ class LensProfile:
                  breathing_ratio=0.03,
                  swirl_strength=0.15,
                  chroma_amount=0.014):
-        self.name = name
+                     self.name = name
         self.mtf_center = mtf_center
         self.mtf_edge = mtf_edge
         self.field_curvature = field_curvature
@@ -42548,7 +42548,7 @@ class FilmStockProfile:
                  saturation_boost,
                  contrast_curve,
                  halation_boost):
-        self.name = name
+                     self.name = name
         self.rgb_shadows = np.array(rgb_shadows, np.float32)
         self.rgb_mids    = np.array(rgb_mids, np.float32)
         self.rgb_highs   = np.array(rgb_highs, np.float32)
@@ -42755,7 +42755,7 @@ class ColorSeparationV4:
                  sky_shift=0.0,
                  sat_boost=1.05,
                  highlight_protect=0.75):
-        self.pl_r, self.pl_g, self.pl_b = printer_lights
+                     self.pl_r, self.pl_g, self.pl_b = printer_lights
         self.skin_shift = skin_tone_shift
         self.foliage_shift = foliage_shift
         self.sky_shift = sky_shift
@@ -42882,7 +42882,7 @@ class DeepSkinV7:
                  skin_strength=0.65,
                  sat_compress=0.45,
                  red_highlight_protect=0.55):
-        self.skin_strength = float(skin_strength)
+                     self.skin_strength = float(skin_strength)
         self.sat_compress = float(sat_compress)
         self.red_hl = float(red_highlight_protect)
 
@@ -43005,7 +43005,7 @@ class DeepSkinV7:
                  skin_strength=0.65,
                  sat_compress=0.45,
                  red_highlight_protect=0.55):
-        self.skin_strength = float(skin_strength)
+                     self.skin_strength = float(skin_strength)
         self.sat_compress = float(sat_compress)
         self.red_hl = float(red_highlight_protect)
 
@@ -43128,7 +43128,7 @@ class AnalogGrainV7:
                  grain_size=1.80,
                  iso_equivalent=400,
                  temporal_smooth=0.85):
-        self.grain_strength = float(grain_strength)
+                     self.grain_strength = float(grain_strength)
         self.grain_size = float(grain_size)
         self.iso_equivalent = int(iso_equivalent)
         self.temporal_smooth = float(temporal_smooth)
@@ -43276,7 +43276,7 @@ class FilmHalideDiffusionV4:
                  blue_depth=10.0,
                  developer_softness=0.45,
                  temporal_smooth=0.82):
-        self.halide_strength = float(halide_strength)
+                     self.halide_strength = float(halide_strength)
         self.depth_r = float(red_depth)
         self.depth_g = float(green_depth)
         self.depth_b = float(blue_depth)
@@ -43418,7 +43418,7 @@ class ColorNegativeEmulatorV6:
                  shoulder=0.78,
                  dye_crosstalk=0.12,
                  temporal_smooth=0.80):
-        self.stock = stock if stock in self.LUTS else "500T"
+                     self.stock = stock if stock in self.LUTS else "500T"
         self.matrix = self.LUTS[self.stock]
         self.strength = float(strength)
         self.toe = float(toe)
@@ -43550,7 +43550,7 @@ class FilmPrintLUTV5:
                  sat_boost=1.22,
                  contrast=1.18,
                  temporal_smooth=0.85):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.gamma = float(gamma)
         self.toe = float(toe)
         self.shoulder = float(shoulder)
@@ -43668,7 +43668,7 @@ class InterlayerHalationV4:
                  strength=0.55,
                  highlight_thresh=0.78,
                  temporal_smooth=0.80):
-        self.r_spread = float(red_spread)
+                     self.r_spread = float(red_spread)
         self.g_spread = float(green_spread)
         self.b_spread = float(blue_spread)
         self.abs_c = float(absorption_cyan)
@@ -43789,7 +43789,7 @@ class FilmGrainV6:
                  grain_size_midtone=1.20,
                  grain_size_highlight=2.00,
                  chroma_mix=0.40):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.breathe = float(temporal_breathe)
         self.gs_sh = float(grain_size_shadow)
         self.gs_mid = float(grain_size_midtone)
@@ -43922,7 +43922,7 @@ class GateWeaveV3:
             warp_strength=0.012,
             freq_low=0.25,
             freq_high=4.0):
-        self.weave_strength = float(weave_strength)
+                self.weave_strength = float(weave_strength)
         self.jitter_strength = float(jitter_strength)
         self.warp_strength = float(warp_strength)
         self.freq_low = float(freq_low)
@@ -44033,7 +44033,7 @@ class GlowRollFusionV4:
             white_clip=0.995,
             knee_start=0.78,
             knee_end=0.94):
-        self.roll_strength = float(roll_strength)
+                self.roll_strength = float(roll_strength)
         self.spectral_bias = float(spectral_bias)
         self.density_comp = float(density_comp)
         self.white_clip = float(white_clip)
@@ -44174,7 +44174,7 @@ class FilmGrainV4:
             spectral_weight=(1.10, 1.00, 0.92),
             temporal_stability=0.85,
             ai_scene_factor=1.0):
-        self.base_intensity = float(base_intensity)
+                self.base_intensity = float(base_intensity)
         self.shadow_boost = float(shadow_boost)
         self.spectral_weight = tuple(spectral_weight)
         self.temporal_stability = float(np.clip(temporal_stability, 0.0, 0.99))
@@ -44323,7 +44323,7 @@ class FilmGateWeaveV3:
             rotation_strength=0.020,    # degrees
             breathing_strength=0.0025,  # radial distortion
             temporal_smooth=0.92):
-        self.jitter_strength = float(jitter_strength)
+                self.jitter_strength = float(jitter_strength)
         self.rotation_strength = float(rotation_strength)
         self.breathing_strength = float(breathing_strength)
         self.temporal_smooth = float(np.clip(temporal_smooth, 0.0, 0.99))
@@ -44459,7 +44459,7 @@ class FilmDamageV3:
             dirt_strength=0.30,
             scratch_brightness=0.55,
             temporal_decay=0.92):
-        self.dust_amount = float(dust_amount)
+                self.dust_amount = float(dust_amount)
         self.scratch_rate = float(scratch_rate)
         self.hair_rate = float(hair_rate)
         self.dirt_strength = float(dirt_strength)
@@ -44599,7 +44599,7 @@ class FilmAgingOxidationV3:
                  oxidation_strength: float = 0.55,
                  speckle_density: float = 0.35,
                  edge_burn_strength: float = 0.45):
-        self.aging_strength = float(aging_strength)
+                     self.aging_strength = float(aging_strength)
         self.decade = int(np.clip(decade, 1970, 2020))
         self.oxidation_strength = float(oxidation_strength)
         self.speckle_density = float(np.clip(speckle_density, 0.0, 1.0))
@@ -44860,7 +44860,7 @@ class FilmGateFlareV1:
                  flare_strength=0.35,
                  dust_density=0.015,
                  softness=18.0):
-        self.shadow_strength = float(shadow_strength)
+                     self.shadow_strength = float(shadow_strength)
         self.flare_strength = float(flare_strength)
         self.dust_density = float(dust_density)
         self.softness = float(softness)
@@ -45085,7 +45085,7 @@ class UltraHalationV4:
                  depth_layers=3,
                  spectral_shift=(1.00, 0.55, 0.10),
                  jitter_pull=0.25):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.threshold = float(threshold)
         self.base_radius = float(base_radius)
         self.depth_layers = int(depth_layers)
@@ -45198,7 +45198,7 @@ class FilmWarpEngineV5:
                  sprocket_pull=0.004,
                  chroma_warp=0.65,
                  jitter_amount=0.25):
-        self.curl_strength = float(curl_strength)
+                     self.curl_strength = float(curl_strength)
         self.warp_strength = float(warp_strength)
         self.breathing_strength = float(breathing_strength)
         self.sprocket_pull = float(sprocket_pull)
@@ -45309,7 +45309,7 @@ class TelecineFlickerV3:
                  band_strength=0.02,
                  bulb_drift=0.008,
                  fps=24.0):
-        self.flicker_strength = float(flicker_strength)
+                     self.flicker_strength = float(flicker_strength)
         self.color_shift_strength = float(color_shift_strength)
         self.band_strength = float(band_strength)
         self.bulb_drift = float(bulb_drift)
@@ -45409,7 +45409,7 @@ class GateFlareApertureV3:
                  edge_glow=0.12,
                  blade_streak_strength=0.04,
                  aperture_blades=8):
-        self.flare_strength = float(flare_strength)
+                     self.flare_strength = float(flare_strength)
         self.diffusion_radius = float(diffusion_radius)
         self.edge_glow = float(edge_glow)
         self.blade_streak_strength = float(blade_streak_strength)
@@ -45507,7 +45507,7 @@ class ExposureBreathingV3:
                  flutter_intensity=0.08,
                  thermal_drift=0.002,
                  fps=24.0):
-        self.pump_intensity = float(pump_intensity)
+                     self.pump_intensity = float(pump_intensity)
         self.flutter_intensity = float(flutter_intensity)
         self.thermal_drift = float(thermal_drift)
         self.fps = float(fps)
@@ -45613,7 +45613,7 @@ class FilmScratchEngineV4:
             scratch_persistence=0.90,
             emulsion_dot_prob=0.02,
             intensity=0.55):
-        self.density = float(np.clip(density, 0.0, 1.0))
+                self.density = float(np.clip(density, 0.0, 1.0))
         self.tramline_prob = float(tramline_prob)
         self.scratch_persistence = float(np.clip(scratch_persistence, 0.0, 0.999))
         self.emulsion_dot_prob = float(emulsion_dot_prob)
@@ -45678,7 +45678,7 @@ class FilmScratchEngineV4:
                     if x < 0 or x >= w: continue
                     dist = (x - cx)**2 + (y - cy)**2
                     if dist <= radius * radius:
-        mask[y, x] = random.uniform(0.3, 1.0)
+                        mask[y, x] = random.uniform(0.3, 1.0)
         return mask
     # --------------------------------------------------------------------------
     def _merge_temporal(self, new_map):
@@ -45748,7 +45748,7 @@ class FilmLightLeakV3:
             intensity=0.65,
             warm_bias=1.35,
             flicker_strength=0.35):
-        self.leak_prob = float(leak_prob)
+                self.leak_prob = float(leak_prob)
         self.max_streak_frames = int(max_streak_frames)
         self.intensity = float(intensity)
         self.warm_bias = float(warm_bias)
@@ -45861,7 +45861,7 @@ class SprocketHoleEngineV3:
             bleed_strength=0.50,
             flicker_strength=0.35,
             dust_prob=0.12):
-        self.film_format = film_format
+                self.film_format = film_format
         self.shadow_strength = float(shadow_strength)
         self.bleed_strength = float(bleed_strength)
         self.flicker_strength = float(flicker_strength)
@@ -45999,7 +45999,7 @@ class EmulsionDamageV3:
             reticulation_strength=0.30,
             bubble_density=0.015,
             random_seed=None):
-        self.lift_intensity = float(lift_intensity)
+                self.lift_intensity = float(lift_intensity)
         self.stain_intensity = float(stain_intensity)
         self.reticulation_strength = float(reticulation_strength)
         self.bubble_density = float(bubble_density)
@@ -46147,7 +46147,7 @@ class FilmCurlEngineV2:
             edge_warp_intensity=0.020,
             magnification=1.015,
             roller_phase_speed=0.035):
-        self.curl_strength = float(curl_strength)
+                self.curl_strength = float(curl_strength)
         self.curl_frequency = float(curl_frequency)
         self.edge_warp_intensity = float(edge_warp_intensity)
         self.magnification = float(magnification)
@@ -46262,7 +46262,7 @@ class GateFluctuationEngineV3:
             shutter_asymmetry=0.012,
             flicker_geom_coupling=0.015,
             fps=24.0):
-        self.pressure_osc_amp = float(pressure_osc_amp)
+                self.pressure_osc_amp = float(pressure_osc_amp)
         self.pressure_freq = float(pressure_freq)
         self.tension_amp = float(tension_amp)
         self.tension_freq = float(tension_freq)
@@ -46418,7 +46418,7 @@ class PullDownMisregistrationV1:
             chatter_amp=0.25,
             chatter_freq=180.0,
             fps=24.0):
-        self.base_offset = float(base_offset)
+                self.base_offset = float(base_offset)
         self.jitter_strength = float(jitter_strength)
         self.wear_rate = float(wear_rate)
         self.claw_freq = float(claw_freq)
@@ -46534,7 +46534,7 @@ class SprocketGeometryV2:
             elastic_strength=0.25,
             drift_noise_freq=0.015,
             fps=24.0):
-        self.ovalization_strength = float(ovalization_strength)
+                self.ovalization_strength = float(ovalization_strength)
         self.punch_drift_rate = float(punch_drift_rate)
         self.tear_strength = float(tear_strength)
         self.elastic_strength = float(elastic_strength)
@@ -46638,7 +46638,7 @@ class GateDustEngineV3:
             convection_wobble=0.003,
             stickiness=0.92,
             fps=24.0):
-        self.dust_count = int(dust_count)
+                self.dust_count = int(dust_count)
         self.fiber_count = int(fiber_count)
         self.cluster_count = int(cluster_count)
         self.opacity = float(opacity)
@@ -46910,7 +46910,7 @@ class NegativeGrainEngineV5:
                  red_gain=0.90,
                  motion_smear=0.22,
                  fps=24.0):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.blue_gain = float(blue_gain)
         self.green_gain = float(green_gain)
         self.red_gain = float(red_gain)
@@ -46943,7 +46943,7 @@ class NegativeGrainEngineV5:
     def _compute_exposure_map(self, img):
         """
         Computes a 0..1 density map where:
-= deep shadows (large grain)
+            = deep shadows (large grain)
 = bright highlights (fine grain)
         """
         lum = 0.2126*img[...,2] + 0.7152*img[...,1] + 0.0722*img[...,0]
@@ -47029,7 +47029,7 @@ class ProjectionShutterGhostV3:
                  persistence: float = 0.66,
                  chroma_bleed: float = 0.07,
                  jitter: float = 0.6):
-        self.shards = max(1, min(4, int(shards)))
+                     self.shards = max(1, min(4, int(shards)))
         self.shutter_angle = float(np.clip(shutter_angle, 10.0, 360.0))
         self.persistence = float(np.clip(persistence, 0.0, 0.99))
         self.chroma_bleed = float(np.clip(chroma_bleed, 0.0, 0.5))
@@ -47144,7 +47144,7 @@ class TelecineFlickerV3_5:
                  ripple_strength: float = 0.03,
                  hotspot_shift: float = 4.0,
                  band_strength: float = 0.06):
-        self.blades = int(np.clip(blades, 1, 5))
+                     self.blades = int(np.clip(blades, 1, 5))
         self.base_intensity = float(base_intensity)
         self.ripple_strength = float(ripple_strength)
         self.hotspot_shift = float(hotspot_shift)
@@ -47257,7 +47257,7 @@ class PerfShadowEngineV2:
                  bleed_amount: float = 28.0,
                  jitter_strength: float = 3.5,
                  leakage_strength: float = 0.12):
-        self.shadow_strength = shadow_strength
+                     self.shadow_strength = shadow_strength
         self.bleed_amount = bleed_amount
         self.jitter_strength = jitter_strength
         self.leakage_strength = leakage_strength
@@ -47357,7 +47357,7 @@ class ChemicalLeakEngineV4:
                  fog_color_bias=(1.0, 0.55, 0.8),
                  wave_speed: float = 0.035,
                  wave_scale: float = 0.018):
-        self.leak_strength = leak_strength
+                     self.leak_strength = leak_strength
         self.bias_r, self.bias_g, self.bias_b = fog_color_bias
         self.wave_speed = wave_speed
         self.wave_scale = wave_scale
@@ -47483,7 +47483,7 @@ class TelecineReflectionV3:
                  warm_tint: float = 0.35,
                  drift_speed: float = 0.012,
                  streak_strength: float = 0.22):
-        self.reflect_strength = reflect_strength
+                     self.reflect_strength = reflect_strength
         self.warm_tint = warm_tint
         self.drift_speed = drift_speed
         self.streak_strength = streak_strength
@@ -47711,7 +47711,7 @@ class LabChemicalFlickerV4:
                  density_patch_intensity: float = 0.03,
                  micro_blur_strength: float = 0.35,
                  flicker_speed: float = 1.0):
-        self.base_intensity = base_intensity
+                     self.base_intensity = base_intensity
         self.color_shift_intensity = color_shift_intensity
         self.density_patch_intensity = density_patch_intensity
         self.micro_blur_strength = micro_blur_strength
@@ -47839,7 +47839,7 @@ class FilmSpectralEngineV5:
                  shoulder_strength: float = 0.55,
                  mid_contrast: float = 1.12,
                  crossover_matrix: np.ndarray = None):
-        self.toe_strength = float(toe_strength)
+                     self.toe_strength = float(toe_strength)
         self.shoulder_strength = float(shoulder_strength)
         self.mid_contrast = float(mid_contrast)
         # Default dye crossover matrix (VISION3 calibrated)
@@ -48136,7 +48136,7 @@ class HalationDensityEngineV4:
                  blue_scatter_reduction: float = 0.82,
                  highlight_expansion: float = 1.6,
                  energy_preserve: float = 0.75):
-        self.base_radius = base_radius
+                     self.base_radius = base_radius
         self.max_radius = max_radius
         self.red_scatter_boost = red_scatter_boost
         self.blue_scatter_reduction = blue_scatter_reduction
@@ -48290,7 +48290,7 @@ class OpticalPrinterRingsV4:
                  radius_growth: float = 1.45,
                  sharpness: float = 0.65,
                  energy_preserve: float = 0.82):
-        self.num_rings = int(np.clip(num_rings, 1, 12))
+                     self.num_rings = int(np.clip(num_rings, 1, 12))
         self.base_strength = base_strength
         self.chroma_dispersion = chroma_dispersion
         self.radius_growth = radius_growth
@@ -48433,7 +48433,7 @@ class PrintDensityCurveV5:
                  toe_softness: float = 0.45,
                  shoulder_softness: float = 0.55,
                  density_balance: float = 0.85):
-        self.toe = toe
+                     self.toe = toe
         self.gamma = gamma
         self.shoulder = shoulder
         self.toe_softness = toe_softness
@@ -48567,7 +48567,7 @@ class UltraFilmGrainV5:
                  breathing_speed=0.13,
                  grain_scale=1.0,
                  motion_stability=0.92):
-        self.strength = strength
+                     self.strength = strength
         self.iso = iso
         self.renewal_rate = renewal_rate
         self.breathing_speed = breathing_speed
@@ -48736,7 +48736,7 @@ class UltraHalationV6:
                  temporal_blend=0.82,
                  motion_suppression=0.90,
                  stock_profile="vision3_2383"):
-        self.strength = strength
+                     self.strength = strength
         self.threshold = threshold
         self.radius = radius
         self.temporal_blend = temporal_blend
@@ -48901,7 +48901,7 @@ class FilmPrintEngineV7:
                  shoulder_strength=0.22,
                  silver_retention=0.0,
                  temporal_blend=0.80):
-        self.stock = stock
+                     self.stock = stock
         self.contrast = contrast
         self.saturation = saturation
         self.toe_strength = toe_strength
@@ -49061,7 +49061,7 @@ class FilmGateSimV4:
                  overscan=1.03,
                  breathing_intensity=0.002,
                  dirt_intensity=0.04):
-        self.format = format
+                     self.format = format
         self.perf_visibility = perf_visibility
         self.edge_softness = edge_softness
         self.gate_shadow_strength = gate_shadow_strength
@@ -49216,7 +49216,7 @@ class CRTScanlineEngineV4:
                  roll_wobble=0.003,
                  lp_cutoff=0.85,
                  mode="dot_triad"):
-        self.scanline_strength = scanline_strength
+                     self.scanline_strength = scanline_strength
         self.bloom_strength = bloom_strength
         self.triad_strength = triad_strength
         self.jitter_intensity = jitter_intensity
@@ -49382,7 +49382,7 @@ class OpticalHalationEngineV5:
                  green_radius=12,
                  blue_radius=6,
                  sensor_reflection_strength=0.10):
-        self.h_strength = halation_strength
+                     self.h_strength = halation_strength
         self.b_strength = bloom_strength
         self.threshold = highlight_threshold
         self.micro_contrast = micro_contrast
@@ -49512,7 +49512,7 @@ class LensAberrationV7:
                  radial_distortion=0.0028,
                  edge_softness=0.18,
                  depth_influence=0.0):
-        self.ca_strength = ca_strength
+                     self.ca_strength = ca_strength
         self.r_shift = red_shift
         self.g_shift = green_shift
         self.b_shift = blue_shift
@@ -49646,7 +49646,7 @@ class LensBreathingV5:
                  edge_warp=0.12,
                  focus_smooth=0.15,
                  focus_curve=0.85):
-        self.breathing_strength = breathing_strength
+                     self.breathing_strength = breathing_strength
         self.edge_warp = edge_warp
         self.focus_smooth = focus_smooth
         self.focus_curve = focus_curve
@@ -49765,7 +49765,7 @@ class FocusBloomBokehV6:
                  blade_count=9,
                  blade_roundness=0.45,
                  anamorphic_ratio=1.0):
-        self.bloom_strength = bloom_strength
+                     self.bloom_strength = bloom_strength
         self.bokeh_strength = bokeh_strength
         self.chroma_shift = chroma_shift
         self.coc_scale = coc_scale
@@ -49910,7 +49910,7 @@ class AnamorphicOpticsV4:
                  oval_ratio=2.2,
                  chroma_separation=0.008,
                  edge_smear_intensity=0.12):
-        self.squeeze = squeeze
+                     self.squeeze = squeeze
         self.streak_strength = streak_strength
         self.streak_color = streak_color.lower()
         self.oval_ratio = oval_ratio
@@ -50060,7 +50060,7 @@ class DepthLightWrapV3:
                  chroma_shift=0.006,
                  scatter_radius=18,
                  depth_soften=0.015):
-        self.base_strength = base_strength
+                     self.base_strength = base_strength
         self.bg_wrap_strength = bg_wrap_strength
         self.chroma_shift = chroma_shift
         self.scatter_radius = scatter_radius
@@ -50333,7 +50333,7 @@ class HalationEdgePreserverV62:
                  microcontrast_boost=0.22,
                  color_protect_strength=0.35,
                  rolloff_radius=8.0):
-        self.edge_strength = edge_strength
+                     self.edge_strength = edge_strength
         self.microcontrast_boost = microcontrast_boost
         self.color_protect_strength = color_protect_strength
         self.rolloff_radius = rolloff_radius
@@ -50460,7 +50460,7 @@ class SpectralHalationRebalancerV63:
                  spectral_strength=0.85,
                  skin_protect_strength=0.40,
                  highlight_compress=0.55):
-        self.stock_profile = stock_profile
+                     self.stock_profile = stock_profile
         self.spectral_strength = spectral_strength
         self.skin_protect_strength = skin_protect_strength
         self.highlight_compress = highlight_compress
@@ -50595,7 +50595,7 @@ class HalationBloomFusionV5:
                  halation_strength=1.0,
                  chroma_glow_strength=0.45,
                  harmonizer_strength=0.65):
-        self.bloom_strength = bloom_strength
+                     self.bloom_strength = bloom_strength
         self.halation_strength = halation_strength
         self.chroma_glow_strength = chroma_glow_strength
         self.harmonizer_strength = harmonizer_strength
@@ -51039,7 +51039,7 @@ class GateDustEngineV3:
                  flutter_strength=0.6,
                  softness=0.8,
                  seed=None):
-        self.hair_density = hair_density
+                     self.hair_density = hair_density
         self.dust_density = dust_density
         self.streak_intensity = streak_intensity
         self.flutter_strength = flutter_strength
@@ -51228,7 +51228,7 @@ class TelecineCompositeV4:
                  scan_vertical_noise=0.012,
                  scan_horizontal_banding=0.008,
                  scan_blur_radius=0.45):
-        self.gate_weave = gate_weave          # GateWeaveEngineV1 etc.
+                     self.gate_weave = gate_weave          # GateWeaveEngineV1 etc.
         self.halation = halation              # HalationV3
         self.bloom = bloom                    # BloomV3 or V4
         self.hdr = hdr                        # HDRHarmonizerV3
@@ -51395,7 +51395,7 @@ class TelecineColorScienceV5:
                  toe_strength=0.12,
                  shoulder_strength=0.18,
                  printer_light_exposure=1.0):
-        self.film_stock = film_stock
+                     self.film_stock = film_stock
         self.enable_aces = enable_aces
         self.toe_strength = toe_strength
         self.shoulder_strength = shoulder_strength
@@ -53125,7 +53125,7 @@ class PerforationShadowEngineV3:
                  flare_tint=(1.0, 0.85, 0.65),
                  overscan: bool = False,
                  pulldown_speed: float = 1.0):
-        self.perf_opacity = perf_opacity
+                     self.perf_opacity = perf_opacity
         self.perf_softness = perf_softness
         self.flare_intensity = flare_intensity
         self.flare_tint = np.array(flare_tint, dtype=np.float32)
@@ -53254,7 +53254,7 @@ class UltraGateFlareV5:
                  halation_strength: float = 0.12,
                  anamorphic_ratio: float = 3.5,
                  chroma_phase_speed: float = 0.35):
-        self.bloom_strength = bloom_strength
+                     self.bloom_strength = bloom_strength
         self.veil_strength = veil_strength
         self.halation_strength = halation_strength
         self.anamorphic_ratio = anamorphic_ratio
@@ -54088,7 +54088,7 @@ class FilmStockSpectralLUTFusionV4:
                  density_strength=0.65,
                  grain_saturation_comp=0.25,
                  exposure_index=500):
-        self.film_stock = film_stock
+                     self.film_stock = film_stock
         self.sat = saturation
         self.con = contrast
         self.hlr = highlight_rolloff
@@ -54228,7 +54228,7 @@ class ColorScienceHarmonizerV3:
                  skintone_preserve=0.82,
                  midtone_balance=0.12,
                  shadow_chroma_lift=0.18):
-        self.gc = gamut_compression
+                     self.gc = gamut_compression
         self.hc = highlight_compress
         self.stp = skintone_preserve
         self.mb = midtone_balance
@@ -54341,7 +54341,7 @@ class DisplayTransformV4:
                  peak_nits=1000.0,
                  rolloff_start=0.85,
                  rolloff_strength=0.35):
-        self.mode = mode.lower()
+                     self.mode = mode.lower()
         self.peak_nits = peak_nits
         self.roll = rolloff_start
         self.roll_s = rolloff_strength
@@ -54466,7 +54466,7 @@ class DisplayLegalizerV2:
                  dither_strength=0.004,
                  hdr_mode=False,
                  hdr_peak_nits=1000):
-        self.luma_min = float(luma_min)
+                     self.luma_min = float(luma_min)
         self.luma_max = float(luma_max)
         self.chroma_soft = float(chroma_soft)
         self.dither_strength = float(dither_strength)
@@ -54571,7 +54571,7 @@ class MasterOutputEncoderV3:
                  tiff_16bit=True,
                  video_crf=12,
                  container="exr"):
-        self.color_space = color_space   # ACEScg / ACES2065-1 / Rec709
+                     self.color_space = color_space   # ACEScg / ACES2065-1 / Rec709
         self.container = container
         self.exr_half = bool(exr_half)
         self.tiff_16bit = bool(tiff_16bit)
@@ -55607,7 +55607,7 @@ class HalationReinforcementV3:
                  blue_multiplier=0.65,
                  threshold=0.85,
                  breathing_amplitude=0.035):
-        self.base_intensity = base_intensity
+                     self.base_intensity = base_intensity
         self.r_mult = red_multiplier
         self.g_mult = green_multiplier
         self.b_mult = blue_multiplier
@@ -55711,7 +55711,7 @@ class SpectralGrainV6:
                  intensity=1.0,
                  size=1.0,
                  temporal_drift=0.25):
-        self.stock = stock.lower()
+                     self.stock = stock.lower()
         self.intensity = float(intensity)
         self.size = float(size)
         self.t_drift = float(temporal_drift)
@@ -55845,7 +55845,7 @@ class GateDustSpeckV4:
                  fiber_intensity=0.20,
                  persistence=0.60,
                  chroma_variation=0.25):
-        self.density = density                  # Base particles per pixel
+                     self.density = density                  # Base particles per pixel
         self.speck_intensity = speck_intensity  # How dark particles appear
         self.fiber_intensity = fiber_intensity  # Strength of fiber streaks
         self.persistence = persistence          # Temporal dust carryover
@@ -55983,7 +55983,7 @@ class EmulsionCrackEngineV3:
                  tension_direction=0.35,
                  turbulence_scale=1.4,
                  temporal_shift=0.015):
-        self.crack_intensity = crack_intensity
+                     self.crack_intensity = crack_intensity
         self.tension_direction = tension_direction  # -1..1 direction tilt
         self.turbulence_scale = turbulence_scale
         self.temporal_shift = temporal_shift
@@ -56101,7 +56101,7 @@ class ChemicalStainEngineV2:
                 pooling_intensity=0.30,
                 fade_speed=0.012,
                 streak_direction="vertical"):
-       self.stain_intensity = stain_intensity
+                    self.stain_intensity = stain_intensity
        self.streak_strength = streak_strength
        self.color_shift_strength = color_shift_strength
        self.pooling_intensity = pooling_intensity
@@ -56244,7 +56244,7 @@ class GateAbrasionEngineV3:
                 glint_strength=0.22,
                 life_variation=0.35,
                 orientation="vertical"):
-       self.scratch_density = scratch_density
+                    self.scratch_density = scratch_density
        self.deep_scratch_rate = deep_scratch_rate
        self.flicker_strength = flicker_strength
        self.glint_strength = glint_strength
@@ -56410,7 +56410,7 @@ class FilmHalationV6:
                 emulsion_scatter=1.6,
                 far_scatter=3.2,
                 heat_expansion=0.0008):
-       self.halation_strength = halation_strength
+                    self.halation_strength = halation_strength
        self.bloom_strength = bloom_strength
        self.highlight_threshold = highlight_threshold
        self.emulsion_scatter = emulsion_scatter
@@ -56526,7 +56526,7 @@ class LensBreathingV4:
                 max_breath_pct=0.035,   # 3.5% FOV change typical for cinema lenses
                 vignette_change=0.08,
                 chroma_shift=0.0025):
-       self.base_focal = base_focal_length
+                    self.base_focal = base_focal_length
        self.max_breath_pct = max_breath_pct
        self.vignette_change = vignette_change
        self.chroma_shift = chroma_shift
@@ -56794,7 +56794,7 @@ class SpectralMicroHalationAT:
                  radius_base: float = 2.0,
                  temporal_breath: float = 0.015,
                  jitter_strength: float = 0.008):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.spectral_shift = float(spectral_shift)
         self.radius_base = float(radius_base)
         self.temporal_breath = float(temporal_breath)
@@ -56914,7 +56914,7 @@ class FilmEdgePerforationShadowV7:
                  jitter_intensity=0.35,
                  sprocket_banding_strength=0.018,
                  temporal_variation=0.12):
-        self.perf_shadow_strength = perf_shadow_strength
+                     self.perf_shadow_strength = perf_shadow_strength
         self.edge_falloff_strength = edge_falloff_strength
         self.jitter_intensity = jitter_intensity
         self.sprocket_banding_strength = sprocket_banding_strength
@@ -57052,7 +57052,7 @@ class FilmBaseScatterV6:
                  anisotropy=0.35,
                  edge_lift_strength=0.045,
                  directionality=0.55):
-        self.scatter_strength = scatter_strength
+                     self.scatter_strength = scatter_strength
         self.warm_absorption = warm_absorption
         self.anisotropy = anisotropy
         self.edge_lift_strength = edge_lift_strength
@@ -57197,7 +57197,7 @@ class EmulsionGrainAlignmentV5:
                  shadow_clump=0.55,          # Grain clusters in dark areas
                  highlight_scatter=0.35,     # Grain becomes finer in highlights
                  pressure_wave_intensity=0.12):
-        self.grain_strength = grain_strength
+                     self.grain_strength = grain_strength
         self.flow_direction_deg = flow_direction_deg
         self.shadow_clump = shadow_clump
         self.highlight_scatter = highlight_scatter
@@ -57320,7 +57320,7 @@ class SilverHalideDistributionV6:
                  coarse_strength=0.18,
                  dissolution_speed=0.015,
                  spectral_separation=True):
-        self.fine_strength = fine_strength
+                     self.fine_strength = fine_strength
         self.medium_strength = medium_strength
         self.coarse_strength = coarse_strength
         self.dissolution_speed = dissolution_speed
@@ -57446,7 +57446,7 @@ class CrystalClumpEngineV5:
                  adjacency_strength=0.33,
                  contrast_sensitivity=1.25,
                  cluster_scale=2.2):
-        self.clump_strength = clump_strength
+                     self.clump_strength = clump_strength
         self.adjacency_strength = adjacency_strength
         self.contrast_sensitivity = contrast_sensitivity
         self.cluster_scale = cluster_scale
@@ -57562,7 +57562,7 @@ class ChemicalAdjacencyDiffusionV5:
                  positive_halo_strength=0.17,
                  ripple_strength=0.14,
                  viscosity_scale=2.0):
-        self.diffusion_strength = diffusion_strength
+                     self.diffusion_strength = diffusion_strength
         self.negative_halo_strength = negative_halo_strength
         self.positive_halo_strength = positive_halo_strength
         self.ripple_strength = ripple_strength
@@ -57680,7 +57680,7 @@ class SpectralDyeAbsorptionV1:
                  mfade=0.0,
                  yfade=0.0,
                  nonlinear_curve=1.65):
-        """
+                     """
         Parameters:
             cyan_strength       — strength of R absorption
             magenta_strength    — strength of G absorption
@@ -57794,7 +57794,7 @@ class SpectralDensityLUTFusionV1:
                  crosstalk_MC=0.03,
                  crosstalk_CY=0.02,
                  lut_resolution=4096):
-        """
+                     """
         Parameters:
             toe_strength       — intensity of deep-shadow compression
             shoulder_strength  — highlight compression (soft shoulder)
@@ -57933,7 +57933,7 @@ class SpectralGrainInteractionV1:
                  chroma_bias_B=0.93,
                  clump_factor=0.65,
                  resolution_scale=1.0):
-        """
+                     """
         Parameters:
             stock               — 50D, 250D, 500T (defines cluster size)
             grain_strength      — overall grain visibility
@@ -58083,7 +58083,7 @@ class SpectralHalationBlendV3:
                  halo_strength=0.65,
                  highlight_threshold=0.82,
                  softness=0.45):
-        self.base_radius = base_radius
+                     self.base_radius = base_radius
         self.max_radius = max_radius
         self.sW_R = spectral_weight_R
         self.sW_G = spectral_weight_G
@@ -58688,7 +58688,7 @@ class ChemicalHaloBloomV7:
                  ring_intensity=0.25,
                  ring_frequency=0.65,
                  density_factor=1.25):
-        self.base_strength = float(base_strength)
+                     self.base_strength = float(base_strength)
         self.c_weight, self.m_weight, self.y_weight = cmy_weights
         self.radius = float(diffusion_radius)
         self.ring_intensity = float(ring_intensity)
@@ -58791,7 +58791,7 @@ class FilmStockCompressionV9:
                  mid_contrast=1.18,
                  sat_preserve=0.92,
                  printer_lights_offset=0.0):
-        self.toe = float(toe_strength)
+                     self.toe = float(toe_strength)
         self.shoulder = float(shoulder_strength)
         self.mid = float(mid_contrast)
         self.sat_preserve = float(sat_preserve)
@@ -58916,7 +58916,7 @@ class SpectralColorMatrixV5:
                  mode="kodak_vision3",
                  blend=0.5,
                  contamination_strength=0.12):
-        self.mode = mode
+                     self.mode = mode
         self.blend = float(np.clip(blend, 0.0, 1.0))
         self.contam = float(contamination_strength)
         # ------------------------------------------------------------------
@@ -59032,7 +59032,7 @@ class FilmGrainSpectralV6:
                  grain_size=1.0,
                  temperature=6500,
                  seed=None):
-        self.grain_strength = float(grain_strength)
+                     self.grain_strength = float(grain_strength)
         self.base_grain_size = float(grain_size)
         self.temperature = float(temperature)
         self.rng = np.random.default_rng(seed if seed is not None else np.random.randint(1e9))
@@ -59158,7 +59158,7 @@ class FilmHalationV7:
                  anti_halation_breakdown=0.18,
                  diffusion_scale=24.0,
                  anisotropy=0.55):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.red_weight = float(red_weight)
         self.green_weight = float(green_weight)
         self.blue_weight = float(blue_weight)
@@ -59312,7 +59312,7 @@ class SpectralBloomV7:
                  base_radius=18.0,
                  passes=6,
                  chroma_separation=0.012):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.warm_bias = float(warm_bias)
         self.threshold = float(threshold)
         self.base_radius = float(base_radius)
@@ -59425,7 +59425,7 @@ class LensSoftScatterV6:
                  highlight_bias=0.55,
                  veil_strength=0.18,
                  spectral_weight=0.12):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.radius = float(radius)
         self.hbias = float(highlight_bias)
         self.veil = float(veil_strength)
@@ -59531,7 +59531,7 @@ class LensBreathingV4:
                  warp_strength=0.015,
                  vignette_gain=0.28,
                  hysteresis=0.92):
-        self.base_mag = float(base_mag)
+                     self.base_mag = float(base_mag)
         self.mag_close = float(mag_close)
         self.mag_vel = float(mag_velocity)
         self.warp_strength = float(warp_strength)
@@ -59678,7 +59678,7 @@ class ChromaticWarpV7:
                  axial_scale=0.65,
                  prism_strength=0.004,
                  micro_dispersion=0.0014):
-        self.base_ca = float(base_ca)
+                     self.base_ca = float(base_ca)
         self.edge_ca = float(edge_ca)
         self.axial_scale = float(axial_scale)
         self.prism_strength = float(prism_strength)
@@ -59833,7 +59833,7 @@ class SpectralHalationV6:
                  red_bias=1.0,
                  green_bias=0.55,
                  blue_bias=0.22):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.thickness = float(thickness)
         # band radii multipliers
         self.inner_band = float(inner_band)
@@ -59963,7 +59963,7 @@ class SpectralDensityToeKneeV3:
                  knee_point_r=0.72,
                  knee_point_g=0.78,
                  knee_point_b=0.83):
-        self.toe_strength = float(toe_strength)
+                     self.toe_strength = float(toe_strength)
         self.knee_strength = float(knee_strength)
         self.gamma = float(gamma)
         # Spectral toe lift differences (blue lifts earliest)
@@ -60077,7 +60077,7 @@ class AdvancedColorimetryBalancerV4:
                  crosstalk_matrix=None,
                  gray_balance_strength=0.65,
                  gamut_compression=0.35):
-        self.enable_aces_lock = enable_aces_lock
+                     self.enable_aces_lock = enable_aces_lock
         self.fog_strength = float(fog_reduction_strength)
         self.gray_balance_strength = float(gray_balance_strength)
         self.gamut_compression = float(gamut_compression)
@@ -60234,7 +60234,7 @@ class FilmColorMatrixV5:
                  saturation=1.0,
                  density_strength=1.0,
                  highlight_color_bloom=0.35):
-        self.film_stock = film_stock.lower()
+                     self.film_stock = film_stock.lower()
         self.print_contrast = float(print_contrast)
         self.saturation = float(np.clip(saturation, 0.0, 3.0))
         self.density_strength = float(density_strength)
@@ -60377,7 +60377,7 @@ class FilmicContrastV6:
                  toe_strength=0.32,
                  shoulder_strength=0.28,
                  shoulder_compress=1.18):
-        self.contrast = float(contrast)
+                     self.contrast = float(contrast)
         self.pivot = float(pivot)
         self.toe_strength = float(toe_strength)
         self.shoulder_strength = float(shoulder_strength)
@@ -60472,7 +60472,7 @@ class HalationV6:
                  radius_small=8,
                  radius_medium=18,
                  radius_large=45):
-        self.strength = strength
+                     self.strength = strength
         self.threshold = threshold
         self.soft_knee = soft_knee
         self.red_bias = red_bias
@@ -60698,7 +60698,7 @@ class FilmPrintLUTV7:
                  highlight_compression=0.65,
                  toe_strength=0.55,
                  knee_strength=0.45):
-        self.stock = stock.lower()
+                     self.stock = stock.lower()
         self.contrast = contrast
         self.saturation = saturation
         self.highlight_compression = highlight_compression
@@ -60844,7 +60844,7 @@ class FilmPrintGateCompressV4:
                  highlight_ceiling=0.92,
                  midtone_elasticity=0.18,
                  lamp_flicker_intensity=0.004):
-        self.compression_strength = float(compression_strength)
+                     self.compression_strength = float(compression_strength)
         self.shadow_floor = float(shadow_floor)
         self.highlight_ceiling = float(highlight_ceiling)
         self.midtone_elasticity = float(midtone_elasticity)
@@ -60948,7 +60948,7 @@ class BlackPointDiffusionV3:
                  fog_intensity=0.015,
                  haze_strength=0.12,
                  grain_adj_strength=0.18):
-        self.shadow_cutoff = float(shadow_cutoff)
+                     self.shadow_cutoff = float(shadow_cutoff)
         self.diffusion_strength = float(diffusion_strength)
         self.chroma_collapse = float(chroma_collapse)
         self.fog_intensity = float(fog_intensity)
@@ -61084,7 +61084,7 @@ class ColorPhaseMisregistrationV4:
                  psf_r=1.2,
                  psf_g=0.9,
                  psf_b=1.0):
-        self.base_shift = float(base_shift)
+                     self.base_shift = float(base_shift)
         self.drift_amplitude = float(drift_amplitude)
         self.breathing_strength = float(breathing_strength)
         self.psf_r = float(psf_r)
@@ -61199,7 +61199,7 @@ class LensBreathingEngineV2:
                  pop_intensity=0.0025,
                  pop_probability=0.005,
                  anamorphic_ratio=1.35):
-        self.base_strength = float(base_strength)
+                     self.base_strength = float(base_strength)
         self.wobble_strength = float(wobble_strength)
         self.pop_intensity = float(pop_intensity)
         self.pop_probability = float(pop_probability)
@@ -61316,7 +61316,7 @@ class UltraDOFEngineV5:
                  cat_eye_intensity=0.45,
                  highlight_threshold=0.72,
                  chroma_fringe_strength=0.12):
-        self.aperture_factor = float(aperture_factor)
+                     self.aperture_factor = float(aperture_factor)
         self.focus_depth = float(focus_depth)
         self.max_coc = float(max_coc)
         self.anamorphic_strength = float(anamorphic_strength)
@@ -61488,7 +61488,7 @@ class ApertureBladeModelV3:
                  deformation_strength=0.12,
                  off_axis_skew=0.15,
                  fstop=2.0):
-        self.blades = int(np.clip(blade_count, 3, 18))
+                     self.blades = int(np.clip(blade_count, 3, 18))
         self.blade_curve = float(blade_curve)  # 0 = sharp polygon, 1 = fully rounded
         self.deformation_strength = float(deformation_strength)
         self.off_axis_skew = float(off_axis_skew)
@@ -61628,7 +61628,7 @@ class StarburstDiffractionV4:
                  spike_intensity=1.0,
                  jitter=0.12,
                  harmonic_strength=0.35):
-        self.blades = int(np.clip(blade_count, 3, 18))
+                     self.blades = int(np.clip(blade_count, 3, 18))
         self.spectral_sep = float(spectral_separation)
         self.spike_intensity = float(spike_intensity)
         self.jitter = float(jitter)
@@ -61753,7 +61753,7 @@ class ChromaticAberrationV3:
                  edge_strength=0.85,
                  highlight_boost=1.6,
                  wavelength_ratio=(1.0, 1.13, 1.22)):
-        self.radial_strength = float(radial_strength)
+                     self.radial_strength = float(radial_strength)
         self.focus_shift = float(focus_shift)
         self.edge_strength = float(edge_strength)
         self.highlight_boost = float(highlight_boost)
@@ -61879,7 +61879,7 @@ class BokehShearBreathingV3:
                  cat_eye_strength=1.25,
                  highlight_gain=1.8,
                  base_blur_radius=6):
-        self.anamorphic_ratio = float(anamorphic_ratio)
+                     self.anamorphic_ratio = float(anamorphic_ratio)
         self.breathing_intensity = float(breathing_intensity)
         self.blade_count = int(blade_count)
         self.cat_eye_strength = float(cat_eye_strength)
@@ -62033,7 +62033,7 @@ class CoCEngineV4:
                  sensor_height_mm=24.0,
                  max_blur_px=32,
                  layers=12):
-        self.aperture_f = float(aperture_f)
+                     self.aperture_f = float(aperture_f)
         self.focal_len_mm = float(focal_len_mm)
         self.sensor_height_mm = float(sensor_height_mm)
         self.max_blur_px = int(max_blur_px)
@@ -62045,7 +62045,7 @@ class CoCEngineV4:
         """
         Compute Circle-of-Confusion radius per pixel based on physical optics.
         Depth map expected in WORLD DISTANCE units normalized 0..1:
-= near plane, 1 = infinity.
+            = near plane, 1 = infinity.
         The formula used:
            CoC = | (A * (D - F)) / (D * (F - A)) | * scale_factor
         Where:
@@ -62187,7 +62187,7 @@ class DepthTemporalStabilizerV2:
                  jump_threshold=0.18,
                  recover_rate=0.12,
                  bilateral_strength=7.0):
-        self.smooth_alpha = float(smooth_alpha)
+                     self.smooth_alpha = float(smooth_alpha)
         self.jump_threshold = float(jump_threshold)
         self.recover_rate = float(recover_rate)
         self.bilateral_strength = float(bilateral_strength)
@@ -62308,7 +62308,7 @@ class LensBreathingCorrectorV3:
                  anamorphic_ratio=1.0,
                  smooth_alpha=0.90,
                  max_comp=0.035):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.anamorphic_ratio = float(anamorphic_ratio)
         self.smooth_alpha = float(smooth_alpha)
         self.max_comp = float(max_comp)
@@ -62420,7 +62420,7 @@ class AnamorphicDistortionV3:
                  curvature_strength=0.028,
                  vignetting_strength=0.35,
                  astigmatism_strength=0.20):
-        self.squeeze_ratio = float(squeeze_ratio)
+                     self.squeeze_ratio = float(squeeze_ratio)
         self.chroma_strength = float(chroma_strength)
         self.curvature_strength = float(curvature_strength)
         self.vignetting_strength = float(vignetting_strength)
@@ -62564,7 +62564,7 @@ class BokehKernelV3:
                  chroma_rim_strength=0.12,
                  cat_eye_intensity=0.35,
                  aspherical_strength=0.20):
-        self.anamorphic_ratio = float(anamorphic_ratio)
+                     self.anamorphic_ratio = float(anamorphic_ratio)
         self.blades = int(blades)
         self.blade_rotation = math.radians(blade_rotation_deg)
         self.onion_strength = float(onion_strength)
@@ -62728,7 +62728,7 @@ class DOFEngineV3:
                  scatter_strength=0.25,
                  fg_preserve=0.85,
                  kernel_cache_size=128):
-        self.focus_distance = float(focus_distance_m)
+                     self.focus_distance = float(focus_distance_m)
         self.focus_range = float(focus_range_m)
         self.max_coc = float(max_coc_px)
         self.scatter_strength = float(scatter_strength)
@@ -62886,7 +62886,7 @@ class LensFlareGhostV2:
                  aperture_blades=8,
                  aperture_curve=0.25,
                  angle_falloff=0.65):
-        self.streak_intensity = streak_intensity
+                     self.streak_intensity = streak_intensity
         self.ghost_intensity = ghost_intensity
         self.halo_intensity = halo_intensity
         self.spectral_shift = spectral_shift
@@ -63039,7 +63039,7 @@ class ChromaticAberrationV4:
                  depth_influence=0.65,
                  coc_influence=0.75,
                  radial_strength=1.25):
-        self.max_shift_px = max_shift_px
+                     self.max_shift_px = max_shift_px
         self.spectral_curve = spectral_curve
         self.depth_influence = depth_influence
         self.coc_influence = coc_influence
@@ -63155,7 +63155,7 @@ class DiffractionAiryDiskV2:
                  spike_intensity=0.45,
                  ring_intensity=0.55,
                  max_kernel=45):
-        self.aperture_f = aperture_f
+                     self.aperture_f = aperture_f
         self.sensor_pitch = sensor_pitch
         self.wavelength_nm = wavelength_nm
         self.blade_count = blade_count
@@ -63274,7 +63274,7 @@ class MicroContrastEnhancerV4:
                  boost_coarse=0.10,
                  mask_strength=0.55,
                  detail_preservation=0.8):
-        self.boost_fine = boost_fine
+                     self.boost_fine = boost_fine
         self.boost_medium = boost_medium
         self.boost_coarse = boost_coarse
         self.mask_strength = mask_strength
@@ -63400,7 +63400,7 @@ class FilmHalationEngineV7:
                  density_power=1.8,
                  blend_strength=0.55,
                  hybrid_bloom_mix=0.18):
-        self.red_strength = red_strength
+                     self.red_strength = red_strength
         self.green_strength = green_strength
         self.blue_strength = blue_strength
         self.falloff_radius = falloff_radius
@@ -63521,7 +63521,7 @@ class OpticalBloomEngineV6:
                  radius_wide=40,
                  spectral_falloff=(1.0, 0.8, 0.55),  # B,G,R falloff
                  edge_rolloff_power=1.65):
-        self.threshold = threshold
+                     self.threshold = threshold
         self.bloom_strength = bloom_strength
         self.radius_small = radius_small
         self.radius_medium = radius_medium
@@ -63863,7 +63863,7 @@ class HalationExpansionV6:
                  depth_scale: float = 0.85,
                  spectral_bias=(1.30, 1.10, 0.85),
                  secondary_radius_mul: float = 2.75):
-        self.base_strength = base_strength
+                     self.base_strength = base_strength
         self.secondary_strength = secondary_strength
         self.directionality = directionality
         self.depth_scale = depth_scale
@@ -64002,7 +64002,7 @@ class OpticalPrinterExposureV5:
                  y_filter: float = 0.016,
                  aberration_strength: float = 0.22,
                  duplication_softness: float = 0.15):
-        self.lamp_drift_strength = lamp_drift_strength
+                     self.lamp_drift_strength = lamp_drift_strength
         self.flare_strength = flare_strength
         self.contrast_drift = contrast_drift
         self.c_filter = c_filter
@@ -64113,7 +64113,7 @@ class AnalogPrintContrastV7:
                  gen_loss: float = 0.035,
                  cross_coupling: float = 0.06,
                  dynamic_contrast_resp: float = 0.25):
-        self.gamma_mid = gamma_mid
+                     self.gamma_mid = gamma_mid
         self.toe_strength = toe_strength
         self.shoulder_strength = shoulder_strength
         self.gen_loss = gen_loss
@@ -64227,7 +64227,7 @@ class UltraFilmGrainV9:
                  push_pull: float = 0.0,      # -1.0 pull → finer grain; +1.0 push → coarser
                  temporal_swim: float = 0.35, # Amount grain moves per frame
                  chroma_correlation: float = 0.42):
-        self.master_intensity = master_intensity
+                     self.master_intensity = master_intensity
         self.grain_size = grain_size
         self.push_pull = push_pull
         self.temporal_swim = temporal_swim
@@ -64364,7 +64364,7 @@ class UltraHalationBloomIntegratorV6:
                  overprint_strength: float = 0.35,
                  temporal_smoothing: float = 0.80,
                  edge_scatter_strength: float = 0.22):
-        self.halation_strength = halation_strength
+                     self.halation_strength = halation_strength
         self.bloom_strength = bloom_strength
         self.overprint_strength = overprint_strength
         self.temporal_smoothing = temporal_smoothing
@@ -64528,7 +64528,7 @@ class TemporalFilmHarmonicsV5:
                  harmonic_strength=0.18,
                  shutter_phase=0.73,
                  smear_strength=0.22):
-        self.persistence = persistence
+                     self.persistence = persistence
         self.harmonic_strength = harmonic_strength
         self.shutter_phase = shutter_phase      # phase correlation of RS drift
         self.smear_strength = smear_strength    # sub-pixel smear factor
@@ -64652,7 +64652,7 @@ class SpectralMotionGrainV6:
                  shutter_osc_freq=2.4,
                  grain_sharpness=0.65,
                  temporal_depth=0.92):
-        self.base_strength = base_strength
+                     self.base_strength = base_strength
         self.spectral_bias = spectral_bias
         self.motion_sensitivity = motion_sensitivity
         self.shutter_osc_freq = shutter_osc_freq
@@ -64799,7 +64799,7 @@ class HighlightGrainBoostV3:
                  specular_threshold=0.72,
                  highlight_color_bias=(1.15, 1.05, 0.92), # Slight warm shift
                  rolloff_curve=2.2):
-        self.boost_strength = boost_strength
+                     self.boost_strength = boost_strength
         self.bloom_radius = bloom_radius
         self.specular_threshold = specular_threshold
         self.highlight_color_bias = highlight_color_bias
@@ -64921,7 +64921,7 @@ class AnalogContrastHalationV4:
                  magenta_mix=0.42,
                  contrast_threshold=0.12,
                  rolloff=2.6):
-        self.strength = strength
+                     self.strength = strength
         self.radius = radius
         self.red_bias = red_bias
         self.magenta_mix = magenta_mix
@@ -65052,7 +65052,7 @@ class FilmDensityCurveShaperV5:
                  shoulder_strength=0.55,
                  spectral_balance=(1.06, 1.00, 0.94),  # R,G,B multipliers
                  aces_safe=True):
-        self.toe_strength = toe_strength
+                     self.toe_strength = toe_strength
         self.midtone_contrast = midtone_contrast
         self.shoulder_strength = shoulder_strength
         self.spectral_balance = spectral_balance
@@ -65511,7 +65511,7 @@ class FilmHalationV4:
                  bloom_strength=0.12,
                  spectral_shift=0.035,
                  anti_halation_leak=0.15):
-        self.threshold = float(threshold)
+                     self.threshold = float(threshold)
         self.core_radius = int(core_radius)
         self.mid_radius = int(mid_radius)
         self.bloom_radius = int(bloom_radius)
@@ -65629,7 +65629,7 @@ class AnalogBreathingDensityV3:
                  density_osc_intensity=0.015,
                  contrast_micro_mod=0.012,
                  breathing_speed=1.0):
-        self.lens_breath_intensity = float(lens_breath_intensity)
+                     self.lens_breath_intensity = float(lens_breath_intensity)
         self.film_transport_intensity = float(film_transport_intensity)
         self.density_osc_intensity = float(density_osc_intensity)
         self.contrast_micro_mod = float(contrast_micro_mod)
@@ -65747,7 +65747,7 @@ class MicroContrastEngineV6:
                  shadow_cohesion=0.12,
                  highlight_soften=0.08,
                  edge_boost=0.14):
-        self.low_freq_strength = float(low_freq_strength)
+                     self.low_freq_strength = float(low_freq_strength)
         self.mid_freq_strength = float(mid_freq_strength)
         self.high_freq_strength = float(high_freq_strength)
         self.shadow_cohesion = float(shadow_cohesion)
@@ -66025,7 +66025,7 @@ class HalationIntegratorV4:
                  shadow_suppress=0.65,
                  dir_scatter_strength=0.30,
                  contrast_preserve=0.12):
-        self.warm_bleed_strength = warm_bleed_strength
+                     self.warm_bleed_strength = warm_bleed_strength
         self.shadow_suppress = shadow_suppress
         self.dir_scatter_strength = dir_scatter_strength
         self.contrast_preserve = contrast_preserve
@@ -66273,7 +66273,7 @@ class PrintThroughGrainV5:
                  density_scale=0.9,           # controls shadow-vs-highlight grain
                  smear_strength=0.12,         # swelling-induced blur
                  noise_std=0.08):
-        self.persistence = persistence
+                     self.persistence = persistence
         self.highlight_gain = highlight_gain
         self.density_scale = density_scale
         self.smear_strength = smear_strength
@@ -66418,7 +66418,7 @@ class SpectralHalationDepthV6:
                  # R stronger, G weak, B almost none
                  highlight_threshold=0.82,
                  intensity=1.0):
-        self.base_radius = base_radius
+                     self.base_radius = base_radius
         self.depth_scale = depth_scale
         self.spectral_bias = spectral_bias
         self.highlight_threshold = highlight_threshold
@@ -66543,7 +66543,7 @@ class ACESHalationCompensatorV4:
                  shoulder_strength=0.32,
                  energy_recovery=0.18,
                  hue_preservation=0.85):
-        self.shoulder_strength = shoulder_strength
+                     self.shoulder_strength = shoulder_strength
         self.energy_recovery = energy_recovery
         self.hue_preservation = hue_preservation
     # ----------------------------------------------------------------------
@@ -66865,7 +66865,7 @@ class GrainTemporalPhaseOscV2:
                  oscillation_speed: float = 0.45,
                  phase_shift_scale: float = 2.5,
                  chroma_response: float = 0.30):
-        self.sharpness_min = sharpness_min
+                     self.sharpness_min = sharpness_min
         self.sharpness_max = sharpness_max
         self.oscillation_speed = oscillation_speed
         self.phase_shift_scale = phase_shift_scale
@@ -66983,7 +66983,7 @@ class SilverHalideClusterBreakV2:
                  adjacency_strength: float = 0.18,
                  micro_clump_intensity: float = 0.35,
                  ribbon_angle_deg: float = 27.0):
-        self.ribbon_strength = ribbon_strength
+                     self.ribbon_strength = ribbon_strength
         self.breakup_threshold = breakup_threshold
         self.adjacency_strength = adjacency_strength
         self.micro_clump_intensity = micro_clump_intensity
@@ -67119,7 +67119,7 @@ class SilverHalideEnergyDissipationV1:
                  shadow_boost_strength: float = 0.18,
                  diffusion_radius: float = 3.0,
                  rebound_radius: float = 1.6):
-        self.hi_soft = highlight_soften_strength
+                     self.hi_soft = highlight_soften_strength
         self.sh_boost = shadow_boost_strength
         self.diff_rad = diffusion_radius
         self.rb_rad = rebound_radius
@@ -67230,7 +67230,7 @@ class LatentImageActivationV2:
                  cluster_threshold: float = 0.42,
                  burst_probability: float = 0.002,
                  bloom_radius: float = 2.2):
-        self.activation_bias = activation_bias
+                     self.activation_bias = activation_bias
         self.hi_bloom = highlight_bloom_strength
         self.shadow_preserve = shadow_preserve
         self.cluster_threshold = cluster_threshold
@@ -67483,7 +67483,7 @@ class SilverHalideReductionV4:
                  developer_bleed: float = 0.12,
                  anisotropy: float = 0.07,
                  contrast_curve_strength: float = 0.65):
-        self.reduction_strength = reduction_strength
+                     self.reduction_strength = reduction_strength
         self.cluster_growth_rate = cluster_growth_rate
         self.developer_bleed = developer_bleed
         self.anisotropy = anisotropy
@@ -67608,7 +67608,7 @@ class HalationEngineV7:
                  exposure_softness: float = 0.72,
                  grain_modulation_strength: float = 0.18,
                  edge_bias_strength: float = 0.15):
-        self.intensity = intensity
+                     self.intensity = intensity
         self.base_radius = base_radius
         self.spectral_factor = spectral_factor
         self.substrate_reflectivity = substrate_reflectivity
@@ -67725,7 +67725,7 @@ class UltraGrainReinforceV6:
                  clump_size: float = 1.8,
                  drift_speed: float = 0.015,
                  micro_acutance: float = 0.14):
-        self.grain_strength = grain_strength
+                     self.grain_strength = grain_strength
         self.chroma_ratio = chroma_ratio
         self.clump_size = clump_size
         self.drift_speed = drift_speed
@@ -67837,7 +67837,7 @@ class MicroContrastV8:
                  nano_strength: float = 0.12,
                  midtone_bias: float = 0.55,
                  edge_preserve: float = 0.75):
-        self.strength = strength
+                     self.strength = strength
         self.nano_strength = nano_strength
         self.midtone_bias = midtone_bias
         self.edge_preserve = edge_preserve
@@ -67955,7 +67955,7 @@ class AcesFilmDensityFusionV9:
                  dye_scatter=0.12,
                  highlight_preserve=0.85,
                  temperature="daylight"):
-        self.stock = stock.lower()
+                     self.stock = stock.lower()
         self.density_strength = density_strength
         self.dye_scatter = dye_scatter
         self.highlight_preserve = highlight_preserve
@@ -68081,7 +68081,7 @@ class LUT3DFusionEngineV12:
                  lut_strength: float = 1.0,
                  adaptive_strength: bool = True,
                  preserve_highlights: float = 0.85):
-        self.lut = lut_array.astype(np.float32)
+                     self.lut = lut_array.astype(np.float32)
         self.size = lut_array.shape[0]   # 17, 33, 49, 65 supported
         self.strength = lut_strength
         self.adaptive_strength = adaptive_strength
@@ -68212,7 +68212,7 @@ class FilmSpectralResponseV14:
                  dye_density_scale: float = 1.25,
                  cross_talk_strength: float = 0.08,
                  reciprocity_comp: float = 0.12):
-        self.toe_strength = toe_strength
+                     self.toe_strength = toe_strength
         self.shoulder_strength = shoulder_strength
         self.dye_scale = dye_density_scale
         self.cross_talk = cross_talk_strength
@@ -68514,7 +68514,7 @@ class UltraHalationTransportV12:
                  chroma_offset=1.4,
                  anisotropy=0.65,
                  skin_protect=0.75):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.red_bias = float(red_bias)
         self.chroma_offset = float(chroma_offset)
         self.anisotropy = float(anisotropy)
@@ -68671,7 +68671,7 @@ class BloomHalationSynthV9:
                  spectral_warmth=0.32,
                  non_linear_gain=0.65,
                  haze_strength=0.12):
-        self.bloom_influence = float(bloom_influence)
+                     self.bloom_influence = float(bloom_influence)
         self.halation_influence = float(halation_influence)
         self.spectral_warmth = float(spectral_warmth)
         self.non_linear_gain = float(non_linear_gain)
@@ -68813,7 +68813,7 @@ class HDRHighlightFusionV14:
                  glow_mix=0.38,
                  hue_protection=0.72,
                  spectral_separation=0.42):
-        self.shoulder_strength = float(shoulder_strength)
+                     self.shoulder_strength = float(shoulder_strength)
         self.chroma_rollout = float(chroma_rollout)
         self.glow_mix = float(glow_mix)
         self.hue_protection = float(hue_protection)
@@ -68937,7 +68937,7 @@ class MicroContrastHarmonizerV11:
                  high_gain=0.18,
                  edge_sensitivity=0.55,
                  saturation_preservation=0.92):
-        self.low_gain = low_gain
+                     self.low_gain = low_gain
         self.mid_gain = mid_gain
         self.high_gain = high_gain
         self.edge_sensitivity = edge_sensitivity
@@ -69056,7 +69056,7 @@ class FilmStockSpectralResponseV9:
                  highlight_rolloff_strength=0.35,
                  shadow_color_tint_strength=0.20,
                  push_pull=0.0):
-        """
+                     """
         stock_type: name of film stock to emulate
         intensity: blend factor for the spectral response
         highlight_rolloff_strength: how aggressively highlights compress
@@ -69214,7 +69214,7 @@ class UltraHalationCoreV12:
                  directionality=0.55,
                  depth_mix=0.65,
                  highlight_threshold=0.78):
-        self.strength = strength
+                     self.strength = strength
         self.radius = radius
         self.spectral_weight = spectral_weight
         self.directionality = directionality
@@ -69487,7 +69487,7 @@ class ACESHighlightRolloffV4:
                  sat_protect=0.75,
                  chroma_preserve=0.82,
                  intensity=1.0):
-        self.pre_roll = float(pre_roll)
+                     self.pre_roll = float(pre_roll)
         self.roll_end = float(roll_end)
         self.brz_strength = float(brz_strength)
         self.sat_protect = float(sat_protect)
@@ -69751,7 +69751,7 @@ class PrintStock2383EngineV7:
                  contrast_strength=1.0,
                  saturation=1.0,
                  intensity=1.0):
-        self.pl_r = pl_r
+                     self.pl_r = pl_r
         self.pl_g = pl_g
         self.pl_b = pl_b
         self.contrast_strength = float(contrast_strength)
@@ -69859,7 +69859,7 @@ class HalationEngineV12:
                  yellow_scatter=4.0,
                  highlight_threshold=0.75,
                  ah_back_strength=0.65):
-        self.intensity = float(intensity)
+                     self.intensity = float(intensity)
         self.red_scatter = float(red_scatter)
         self.orange_scatter = float(orange_scatter)
         self.yellow_scatter = float(yellow_scatter)
@@ -69958,7 +69958,7 @@ class BloomEngineV16:
                  dispersion=0.015,
                  base_radius=7.0,
                  layers=6):
-        self.strength = float(strength)
+                     self.strength = float(strength)
         self.threshold = float(threshold)
         self.soft_knee = float(soft_knee)
         self.dispersion = float(dispersion)
@@ -70069,7 +70069,7 @@ class LensGlareV20:
                  directionality=0.65,
                  coating_hue_shift=(1.03, 1.0, 0.97),
                  radius=45):
-        self.glare_strength = float(glare_strength)
+                     self.glare_strength = float(glare_strength)
         self.haze_strength = float(haze_strength)
         self.spectral_glint_strength = float(spectral_glint_strength)
         self.directionality = float(directionality)
@@ -70190,7 +70190,7 @@ class SensorNoiseModelV14:
                  read_noise_base=0.004,
                  thermal_noise_base=0.003,
                  rolling_banding_strength=0.006):
-        self.iso_base = iso_base
+                     self.iso_base = iso_base
         self.temperature_c = temperature_c
         self.prnu_strength = prnu_strength
         self.dsnu_strength = dsnu_strength
@@ -75258,7 +75258,7 @@ class Vision3_CurveBlender:
         density_toe, 
         density_linear, 
         density_shoulder):
-       """
+            """
        Composites the three density predictions into the final manifold.
        """
        
@@ -76171,7 +76171,7 @@ class NearBlackHueDriftPrevention:
                  black_luma_threshold: float = 0.035,
                  max_hue_correction: float = 0.65,
                  chroma_fade_power: float = 1.4):
-        self.black_luma_threshold = black_luma_threshold
+                     self.black_luma_threshold = black_luma_threshold
         self.max_hue_correction = max_hue_correction
         self.chroma_fade_power = chroma_fade_power
 
@@ -76269,7 +76269,7 @@ class TemporalDetailPreserverV2:
                  motion_suppression: float = 0.75,
                  edge_threshold: float = 0.02,
                  temporal_blend: float = 0.85):
-        self.base_strength = float(base_strength)
+                     self.base_strength = float(base_strength)
         self.motion_suppression = float(motion_suppression)
         self.edge_threshold = float(edge_threshold)
         self.temporal_blend = float(temporal_blend)
@@ -76366,7 +76366,7 @@ class RollingShutterDeWarpV1:
     def __init__(self,
                  sensor_readout_ms: float = 8.5,
                  strength: float = 1.0):
-        """
+                     """
         sensor_readout_ms:
             Total rolling shutter readout time (ms)
             GoPro Hero 12 ≈ 7–9 ms depending on mode
@@ -76457,7 +76457,7 @@ class TemporalCoherenceV2:
                  max_blend: float = 0.45,
                  motion_sensitivity: float = 1.8,
                  history_size: int = 3):
-        self.base_blend = base_blend
+                     self.base_blend = base_blend
         self.max_blend = max_blend
         self.motion_sensitivity = motion_sensitivity
         self.history_size = history_size
@@ -76560,7 +76560,7 @@ class MotionIntentDecoupler:
                  vibration_cut_hz: float = 18.0,
                  intent_cut_hz: float = 2.5,
                  fps: float = 60.0):
-        self.vibration_cut_hz = vibration_cut_hz
+                     self.vibration_cut_hz = vibration_cut_hz
         self.intent_cut_hz = intent_cut_hz
         self.fps = fps
         self.prev_gyro = np.zeros(3, dtype=np.float32)
@@ -76581,7 +76581,7 @@ class MotionIntentDecoupler:
         Args:
           gyro_xyz   : np.array([gx, gy, gz]) from MPU6050 (rad/s)
           shot_intent: dict with keys:
-        { "type": orbit / dolly / follow / lock,
+              { "type": orbit / dolly / follow / lock,
         "aggressiveness": 0..1 }
         Returns:
           dict:
@@ -76866,7 +76866,7 @@ class GyroAIFusionCore:
                  gyro_weight=0.82,
                  flow_weight=0.18,
                  max_rotation_deg=12.0):
-        self.gyro_weight = gyro_weight
+                     self.gyro_weight = gyro_weight
         self.flow_weight = flow_weight
         self.max_rotation = np.deg2rad(max_rotation_deg)
     def fuse(self, gyro_frame, flow_rotation):
@@ -77430,7 +77430,7 @@ class TemporalColorDensityMemory:
                  base_strength=0.92,
                  motion_cutoff=0.35,
                  exposure_cutoff=0.75):
-        self.base_strength = base_strength
+                     self.base_strength = base_strength
         self.motion_cutoff = motion_cutoff
         self.exposure_cutoff = exposure_cutoff
         self._prev_density = None
@@ -77477,7 +77477,7 @@ class TemporalColorDensityMemory:
               frame_linear,
               motion_magnitude=None,
               cloud_bias=None):
-        """
+                  """
         Args:
             frame_linear: ACEScg linear RGB (float32)
             motion_magnitude: normalized motion scalar (0..1)
@@ -77567,7 +77567,7 @@ class TemporalDyeRelaxationModel:
                  base_relaxation_rate=0.85,
                  highlight_relaxation_boost=0.92,
                  cut_reset_threshold=0.35):
-        self.base_rate = base_relaxation_rate
+                     self.base_rate = base_relaxation_rate
         self.highlight_rate = highlight_relaxation_boost
         self.cut_threshold = cut_reset_threshold
         self._prev_density = None
@@ -77600,7 +77600,7 @@ class TemporalDyeRelaxationModel:
                 rgb_linear,
                 frame_dt=1/24.0,
                 gyro_confidence=1.0):
-        """
+                    """
         Args:
             rgb_linear: linear RGB frame (float32, 0–1, ACEScg/AP1)
             frame_dt: frame delta time (seconds, can be GPMF-derived)
@@ -77705,7 +77705,7 @@ class FlickerColorCoupling81G03:
                  chroma_coupling_strength=0.35,
                  temporal_memory=0.85,
                  highlight_bias=0.6):
-        self.chroma_coupling_strength = chroma_coupling_strength
+                     self.chroma_coupling_strength = chroma_coupling_strength
         self.temporal_memory = temporal_memory
         self.highlight_bias = highlight_bias
         self._prev_luma = None
@@ -77812,7 +77812,7 @@ class ExposureColorLagModel:
                  lag_strength=0.65,
                  chroma_bias=(1.0, 0.9, 0.8),
                  max_ev_per_frame=1.5):
-        """
+                     """
         Args:
             lag_strength:
                 Global inertia factor (0 = none, 1 = heavy lag)
@@ -78437,7 +78437,7 @@ class LongTakeColorCoherence:
                  coherence_tau_seconds=18.0,
                  max_chroma_correction=0.06,
                  saturation_drift_guard=0.08):
-        self.tau = coherence_tau_seconds
+                     self.tau = coherence_tau_seconds
         self.max_corr = max_chroma_correction
         self.sat_guard = saturation_drift_guard
         self._anchor_rgb = None
@@ -78482,7 +78482,7 @@ class LongTakeColorCoherence:
               aces_rgb,
               dt_seconds,
               exposure_ev_delta=0.0):
-        """
+                  """
         Apply long-take chromatic coherence correction.
         Args:
             aces_rgb: frame in linear ACEScg
@@ -79785,7 +79785,7 @@ def _81i03_highlight_collapse_strength(luma):
 def apply_81i03_highlight_microcontrast(rgb_linear,
         radius_px=3.5,
         max_collapse=0.65):
-    """
+            """
     Args:
         rgb_linear : linear-light RGB (ACEScg or equivalent)
         radius_px  : spatial scale of micro-contrast (film-grain scale)
@@ -79960,7 +79960,7 @@ class LocalContrastEnergyConserver:
                  radius_px=24,
                  strength=0.35,
                  temporal_alpha=0.12):
-        self.radius = int(radius_px)
+                     self.radius = int(radius_px)
         self.strength = float(strength)
         self.temporal_alpha = float(temporal_alpha)
         self._prev_luma_gain = None
@@ -80444,7 +80444,7 @@ class FilmVsDigitalContrastModel:
                  film_bias=0.85,
                  digital_suppression=0.65,
                  density_anchor=0.18):
-        self.film_bias = film_bias
+                     self.film_bias = film_bias
         self.digital_suppression = digital_suppression
         self.density_anchor = density_anchor  # ~18% gray
     # ------------------------------------------------------------------
@@ -81415,7 +81415,7 @@ class Vision3LookFinalLock:
                  lock_strength=0.92,
                  temporal_alpha=0.08,
                  max_chroma_delta=0.035):
-        self.lock_strength = float(lock_strength)
+                     self.lock_strength = float(lock_strength)
         self.temporal_alpha = float(temporal_alpha)
         self.max_chroma_delta = float(max_chroma_delta)
         self._prev_mean_rgb = None
@@ -81665,7 +81665,7 @@ class FilmHeatAgingModel:
               aging_strength=0.35,
               exposure_ev=0.0,
               gyro_confidence=1.0):
-        """
+                  """
         Applies thermal aging warm bias.
         Parameters:
             rgb_linear: np.ndarray, float32, linear RGB
@@ -81693,7 +81693,7 @@ def apply_film_heat_aging(rgb_linear,
         aging_strength,
         exposure_ev,
         gyro_confidence):
-    """
+            """
     Lightweight wrapper for pipeline integration.
     """
     _model = FilmHeatAgingModel()
@@ -81743,7 +81743,7 @@ def _81k03_energy_preserve(src, dst):
     return dst * (e0 / e1)
 def apply_81k03_cold_storage_bias(rgb_linear,
         intensity=0.35):
-    """
+            """
     Apply cold-storage-induced cool bias to ACES-linear RGB.
     Parameters:
         rgb_linear : ndarray
@@ -81767,7 +81767,7 @@ def apply_81k03_cold_storage_bias(rgb_linear,
 def apply_81k03_temporal_cold_bias(curr_rgb,
         prev_rgb=None,
         stability=0.85):
-    """
+            """
     Temporal stabilizer to avoid frame-to-frame color breathing.
     """
     if prev_rgb is None:
@@ -81802,7 +81802,7 @@ def _81k04_channel_density_factors(loss_strength):
 def apply_81k04_density_loss(rgb_linear,
         years_equivalent=25.0,
         max_years=50.0):
-    """
+            """
     Apply film density loss from long-term aging.
     Parameters:
         rgb_linear : ndarray
@@ -81920,7 +81920,7 @@ import numpy as _np
 def _81k07_highlight_mask(luma,
         threshold=0.72,
         softness=0.18):
-    """
+            """
     Generate a smooth highlight mask.
     WHY:
     Highlight density loss is gradual and non-binary.
@@ -81930,7 +81930,7 @@ def _81k07_highlight_mask(luma,
     return _np.clip(x, 0.0, 1.0)
 def _81k07_density_decay_curve(mask,
         strength):
-    """
+            """
     Density decay follows a sub-linear response:
     strongest near peak highlights, gentle near threshold.
     """
@@ -81938,7 +81938,7 @@ def _81k07_density_decay_curve(mask,
 def _81k07_chroma_fade(rgb,
         mask,
         strength):
-    """
+            """
     Aged highlights lose chroma before luma.
     This is NOT saturation scaling — it is dye weakness.
     """
@@ -81952,7 +81952,7 @@ def _81k07_chroma_fade(rgb,
     return luma + (rgb - luma) * fade
 def apply_81k07_highlight_density_loss(rgb_linear,
         strength=0.45):
-    """
+            """
     Apply highlight density loss to ACES-linear RGB.
     Parameters:
         rgb_linear : ndarray
@@ -82100,7 +82100,7 @@ class FilmStockProfile:
                  color_separation,
                  highlight_density,
                  shadow_density):
-        self.name = name
+                     self.name = name
         self.toe_strength = toe_strength
         self.shoulder_strength = shoulder_strength
         self.midtone_contrast = midtone_contrast
@@ -82136,7 +82136,7 @@ def _81l01_apply_contrast(rgb, contrast):
 def apply_81l01_film_stock(rgb_linear,
         profile: FilmStockProfile,
         gyro_metadata=None):
-    """
+            """
     Apply film stock abstraction to ACES-linear RGB.
     Parameters:
         rgb_linear : ndarray
@@ -82314,7 +82314,7 @@ def _81l03_perceptual_axes(rgb_log):
     return lum, warm_cool, sat_pressure
 def apply_81l03_film_abstraction(rgb_linear,
         abstraction_strength=0.65):
-    """
+            """
     Convert ACES-linear RGB into a film-intent abstraction space.
     Parameters:
         rgb_linear : ndarray
@@ -82451,7 +82451,7 @@ def _81l05_density_curve(hue, strength):
     )
 def apply_81l05_hue_density_curvature(rgb_linear,
         strength=0.4):
-    """
+            """
     Apply perceptual hue-based density curvature.
     Parameters:
         rgb_linear : ndarray
@@ -82517,7 +82517,7 @@ def apply_81l06_density_color_memory(rgb_linear,
         prev_density_map=None,
         strength=0.4,
         memory_decay=0.85):
-    """
+            """
     Apply density-aware color memory to ACES-linear RGB.
     Parameters:
         rgb_linear : ndarray
@@ -82570,7 +82570,7 @@ def _81l08_gamut_soft_clip(chroma, limit, softness):
 def apply_81l08_perceptual_gamut_compression(rgb_linear,
         limit=0.42,
         softness=3.5):
-    """
+            """
     Perceptual film-gamut compression in ACES-linear space.
     Parameters:
         rgb_linear : ndarray
@@ -82624,7 +82624,7 @@ def _81l10_abstraction_curve(x):
 def apply_81l10_abstraction_master(rgb_linear,
         abstraction_strength=0.5,
         scene_adaptive=True):
-    """
+            """
     Master abstraction controller for film stock simulation.
     Parameters:
         rgb_linear : ndarray
@@ -82703,7 +82703,7 @@ def _81l11_recombine_dye_layers(c, m, y):
     return _np.stack([r, g, b], axis=-1)
 def apply_81l11_dye_layer_abstraction(rgb_linear,
         strength=0.45):
-    """
+            """
     Apply film-stock-level dye layer abstraction.
     Parameters:
         rgb_linear : ndarray
@@ -82755,7 +82755,7 @@ def _81l13_stock_bias_matrix(intensity):
     ], dtype=_np.float32)
 def apply_81l13_film_stock_memory_bias(rgb_linear,
         intensity=0.35):
-    """
+            """
     Apply perceptual film stock memory bias.
     Parameters:
         rgb_linear : ndarray
@@ -82888,7 +82888,7 @@ def _81m02_soft_compress(value, limit):
     return limit * (1.0 - _np.exp(-value / (limit + 1e-6)))
 def apply_81m02_perceptual_saturation_guard(rgb_linear,
         strength=1.0):
-    """
+            """
     Perceptual saturation safeguard.
     Parameters:
         rgb_linear : ndarray
@@ -82948,7 +82948,7 @@ def apply_81m03_chroma_safeguard(rgb_linear,
         strength=0.6,
         knee=0.18,
         softness=6.5):
-    """
+            """
     Adaptive chroma overshoot safeguard.
     Parameters:
         rgb_linear : ndarray
@@ -83224,7 +83224,7 @@ def _81m07_microdetail_suppress(rgb, strength):
     return blur + detail
 def apply_81m07_perceptual_safeguard(rgb_linear,
         intensity=0.65):
-    """
+            """
     Apply perceptual overprocessing suppression.
     Parameters:
         rgb_linear : ndarray
@@ -83268,7 +83268,7 @@ def _81m09_compress_curve(x, knee=0.6, softness=0.35):
     return knee + (1.0 - _np.exp(-t / softness)) * softness
 def apply_81m09_gamut_chroma_guard(rgb_linear,
         strength=0.85):
-    """
+            """
     Adaptive chroma compression near gamut boundary.
     Parameters:
         rgb_linear : ndarray
@@ -83320,7 +83320,7 @@ def _81m10_adaptive_gain(contrast, energy):
 def apply_81m10_perceptual_master_control(rgb_processed,
         rgb_reference,
         global_strength=1.0):
-    """
+            """
     Final perceptual safeguard.
     Parameters:
         rgb_processed : ndarray
@@ -83384,7 +83384,7 @@ def apply_81n01_color_arbitration(rgb_sensor,
         rgb_film,
         rgb_grade,
         metadata):
-    """
+            """
     Film-aware arbitration between sensor, film emulation, and grading layers.
     """
     luma = _81n01_extract_luma(rgb_sensor)[..., None]
@@ -83421,7 +83421,7 @@ class TemporalMetadataArbiter81N02:
                  sensor_bias=0.65,
                  ai_bias=0.35,
                  decay=0.92):
-        self.sensor_bias = sensor_bias
+                     self.sensor_bias = sensor_bias
         self.ai_bias = ai_bias
         self.decay = decay
         self._prev_confidence = None
@@ -83457,7 +83457,7 @@ class TemporalMetadataArbiter81N02:
                   ai_value,
                   sensor_confidence,
                   ai_confidence):
-        """
+                      """
         Return final arbitrated value and effective confidence.
         """
         s_c, a_c = self.compute_confidence(
@@ -83549,7 +83549,7 @@ def fuse_metadata_confidence(
         optical_conf,
         film_conf,
         prev_state=None):
-    """
+            """
     Fuse heterogeneous confidence signals into a stable arbitration vector.
     Parameters:
         exposure_conf : float
@@ -83579,7 +83579,7 @@ def fuse_metadata_confidence(
 def apply_confidence_weighted_mix(
         signals,
         weights):
-    """
+            """
     Apply confidence-weighted mixing to competing control signals.
     Parameters:
         signals : list of ndarray or float
@@ -83860,7 +83860,7 @@ def _81o01_latency_model(timestamps):
     return latency.astype(_np.float32)
 def extract_81o01_gpmf_motion(gpmf_packet,
         gyro_scale=0.00122173):
-    """
+            """
     Extract cinematic-grade motion metadata from GoPro GPMF stream.
     Parameters:
         gpmf_packet : dict
@@ -83890,7 +83890,7 @@ def extract_81o01_gpmf_motion(gpmf_packet,
 def fuse_81o01_motion_stream(local_motion,
         cloud_motion=None,
         alpha=0.75):
-    """
+            """
     Hybrid fusion of local real-time gyro motion with cloud-refined motion.
     Parameters:
         local_motion : dict
@@ -84069,7 +84069,7 @@ def apply_81o03_color_intent_arbitration(rgb_linear,
         sensor_state,
         scene_meta,
         user_bias=None):
-    """
+            """
     Ultra-level arbitration between competing color pipelines.
     Inputs are expected to be scene-linear RGB in the same color space.
     """
@@ -84382,7 +84382,7 @@ def _81o09_exposure_stability(gpmf_meta):
 def arbitrate_81o09_color_intent(rgb_linear,
         gpmf_meta=None,
         ai_intent=None):
-    """
+            """
     Returns a dictionary of downstream color-intent weights.
     No pixel values are modified here.
     """
@@ -84460,7 +84460,7 @@ def apply_81o10_gpmf_motion_fusion(gpmf_motion,
         fps,
         latency_ms=12.0,
         smooth_alpha=0.82):
-    """
+            """
     Fuse GoPro GPMF gyro motion with confidence arbitration.
     Parameters:
         gpmf_motion : ndarray [N,3]
@@ -84546,7 +84546,7 @@ def _81p01_perceptual_chroma(rgb):
     return _np.linalg.norm(rgb - mean, axis=-1)
 def apply_81p01_perceptual_color_integrity(rgb_linear,
         strength=0.65):
-    """
+            """
     Preserve perceptual color integrity under aggressive processing.
     Parameters:
         rgb_linear : ndarray
@@ -84615,7 +84615,7 @@ class HighlightDensityRedistributionModel:
                  redistribution_strength=0.65,
                  hue_protect_strength=0.85,
                  temporal_smooth=0.12):
-        self.t_start = threshold_start
+                     self.t_start = threshold_start
         self.t_full = threshold_full
         self.redist_k = redistribution_strength
         self.hue_k = hue_protect_strength
@@ -84727,7 +84727,7 @@ class HighlightDensityRedistributionModel:
 # ==============================================================================
 def apply_highlight_density_redistribution(frame_linear,
         model: HighlightDensityRedistributionModel):
-    """
+            """
     Integration helper for global tone pipeline.
     """
     if model is None or frame_linear is None:
@@ -85536,7 +85536,7 @@ class TemporalChromaInertia:
                  inertia=0.92,
                  max_delta=0.08,
                  luma_protection=0.6):
-        self.inertia = inertia
+                     self.inertia = inertia
         self.max_delta = max_delta
         self.luma_protection = luma_protection
         self._prev_chroma = None
@@ -85730,7 +85730,7 @@ class TemporalChromaticInertia81Q06:
                  relaxation_rate: float = 0.18,
                  highlight_bias: float = 1.35,
                  shadow_bias: float = 0.75):
-        self.inertia_strength = inertia_strength
+                     self.inertia_strength = inertia_strength
         self.relaxation_rate = relaxation_rate
         self.highlight_bias = highlight_bias
         self.shadow_bias = shadow_bias
@@ -85892,7 +85892,7 @@ class TemporalChromaStability:
                  base_strength=0.18,
                  highlight_protection=0.65,
                  motion_sensitivity=0.75):
-        self.base_strength = base_strength
+                     self.base_strength = base_strength
         self.highlight_protection = highlight_protection
         self.motion_sensitivity = motion_sensitivity
     # --------------------------------------------------------------------------
@@ -86282,7 +86282,7 @@ class ShadowBlueContaminationGuard:
                  blue_ratio_limit: float = 1.35,
                  suppression_strength: float = 0.65,
                  temporal_alpha: float = 0.15):
-        self.shadow_threshold = shadow_threshold
+                     self.shadow_threshold = shadow_threshold
         self.blue_ratio_limit = blue_ratio_limit
         self.suppression_strength = suppression_strength
         self.temporal_alpha = temporal_alpha
@@ -86396,7 +86396,7 @@ class TemporalColorDensityStabilizer:
                  chroma_strength=0.65,
                  luma_strength=0.45,
                  motion_threshold=0.06):
-        self.chroma_strength = chroma_strength
+                     self.chroma_strength = chroma_strength
         self.luma_strength = luma_strength
         self.motion_threshold = motion_threshold
     # --------------------------------------------------------------------------
@@ -86505,7 +86505,7 @@ class TemporalChromaStabilityEnvelope:
                  strength=0.65,
                  luma_protection=0.75,
                  max_delta=0.12):
-        self.strength = strength
+                     self.strength = strength
         self.luma_protection = luma_protection
         self.max_delta = max_delta
     # --------------------------------------------------------------------------
@@ -86676,7 +86676,7 @@ class TemporalHighlightChromaStabilizer:
     def __init__(self,
                  highlight_threshold=0.75,
                  chroma_smoothness=0.82):
-        self.threshold = highlight_threshold
+                     self.threshold = highlight_threshold
         self.alpha = chroma_smoothness
         self._prev_chroma = None
     # --------------------------------------------------------------------------
@@ -86887,7 +86887,7 @@ class TemporalSaturationStability:
                  strength=0.65,
                  midtone_center=0.45,
                  midtone_width=0.35):
-        self.strength = strength
+                     self.strength = strength
         self.midtone_center = midtone_center
         self.midtone_width = midtone_width
         self._prev_sat = None
@@ -86989,7 +86989,7 @@ class TemporalPerceptualColorCoherence:
                  strength=0.55,
                  chroma_threshold=0.08,
                  inertia=0.85):
-        self.strength = strength
+                     self.strength = strength
         self.chroma_threshold = chroma_threshold
         self.inertia = inertia
         self._prev_chroma = None
@@ -87233,7 +87233,7 @@ class TemporalChromaInertia:
     def __init__(self,
                  inertia_strength=0.82,
                  max_delta=0.12):
-        """
+                     """
         inertia_strength:
             Higher = stronger resistance to rapid chroma change.
         max_delta:
@@ -87334,7 +87334,7 @@ class TemporalChromaStability:
                  strength=0.55,
                  motion_gate=0.35,
                  luma_protect=0.6):
-        self.strength = strength
+                     self.strength = strength
         self.motion_gate = motion_gate
         self.luma_protect = luma_protect
         self._prev_chroma = None
@@ -87456,7 +87456,7 @@ class ChannelSeparationDepthV1:
                  midtone_bias: float = 0.6,
                  highlight_protect: float = 0.75,
                  temporal_stability: float = 0.9):
-        self.separation_strength = float(np.clip(separation_strength, 0.0, 1.0))
+                     self.separation_strength = float(np.clip(separation_strength, 0.0, 1.0))
         self.midtone_bias = float(np.clip(midtone_bias, 0.0, 1.0))
         self.highlight_protect = float(np.clip(highlight_protect, 0.0, 1.0))
         self.temporal_stability = float(np.clip(temporal_stability, 0.0, 1.0))
@@ -87634,7 +87634,7 @@ class TemporalChromaCoherence:
                  strength=0.55,
                  chroma_floor=1e-4,
                  max_delta=0.08):
-        self.strength = strength
+                     self.strength = strength
         self.chroma_floor = chroma_floor
         self.max_delta = max_delta
         self._prev_chroma = None
@@ -87803,7 +87803,7 @@ class TemporalHighlightCoherence81T05:
                  threshold=0.75,
                  inertia=0.88,
                  max_delta=0.15):
-        self.threshold = threshold
+                     self.threshold = threshold
         self.inertia = inertia
         self.max_delta = max_delta
         self._prev_luma = None
@@ -87990,7 +87990,7 @@ class TemporalChromaInertia:
                  inertia_strength=0.65,
                  luma_protection=0.75,
                  max_delta=0.08):
-        self.inertia = inertia_strength
+                     self.inertia = inertia_strength
         self.luma_protection = luma_protection
         self.max_delta = max_delta
     # --------------------------------------------------------------------------
@@ -88087,7 +88087,7 @@ class TemporalTonalConsistency81T09:
                  alpha_global=0.90,
                  alpha_local=0.85,
                  highlight_protect=0.75):
-        self.alpha_global = alpha_global
+                     self.alpha_global = alpha_global
         self.alpha_local = alpha_local
         self.highlight_protect = highlight_protect
         self._prev_luma_mean = None
@@ -88207,7 +88207,7 @@ class TemporalPerceptualUnifier:
                  memory_strength=0.88,
                  motion_release=0.55,
                  highlight_release=0.35):
-        self.memory_strength = memory_strength
+                     self.memory_strength = memory_strength
         self.motion_release = motion_release
         self.highlight_release = highlight_release
         self._prev_frame = None
@@ -88396,7 +88396,7 @@ class TemporalChromaStabilityClamp:
                  chroma_strength=0.72,
                  luma_protection=0.85,
                  motion_relief=0.35):
-        self.chroma_strength = chroma_strength
+                     self.chroma_strength = chroma_strength
         self.luma_protection = luma_protection
         self.motion_relief = motion_relief
     # --------------------------------------------------------------------------
@@ -88569,7 +88569,7 @@ class TemporalChromaEnergyStabilizer:
                  inertia=0.88,
                  max_delta=0.12,
                  luma_gate=0.15):
-        self.inertia = inertia
+                     self.inertia = inertia
         self.max_delta = max_delta
         self.luma_gate = luma_gate
         self._prev_chroma = None
@@ -88869,7 +88869,7 @@ class PerceptualTemporalVarianceGate:
                  luma_threshold=0.015,
                  chroma_threshold=0.020,
                  response_strength=0.75):
-        self.luma_th = luma_threshold
+                     self.luma_th = luma_threshold
         self.chroma_th = chroma_threshold
         self.strength = response_strength
     # --------------------------------------------------------------------------
@@ -89060,7 +89060,7 @@ class ContrastGrainInteractionV1:
                  highlight_bias: float = 0.2,
                  edge_protect: float = 0.75,
                  temporal_alpha: float = 0.12):
-        self.grain_influence = grain_influence
+                     self.grain_influence = grain_influence
         self.shadow_bias = shadow_bias
         self.highlight_bias = highlight_bias
         self.edge_protect = edge_protect
@@ -89191,7 +89191,7 @@ class TemporalColorCoherence:
     def __init__(self,
                  strength=0.55,
                  chroma_threshold=0.015):
-        self.strength = strength
+                     self.strength = strength
         self.chroma_threshold = chroma_threshold
         self._prev_chroma = None
     # --------------------------------------------------------------------------
@@ -89269,7 +89269,7 @@ class TemporalChromaticCoherence:
                  strength=0.55,
                  chroma_threshold=0.06,
                  max_delta=0.12):
-        self.strength = strength
+                     self.strength = strength
         self.chroma_threshold = chroma_threshold
         self.max_delta = max_delta
         self._prev_chroma = None
@@ -89478,7 +89478,7 @@ class MidtoneContrastStability:
                  mid_high=0.45,
                  temporal_strength=0.85,
                  max_correction=0.12):
-        self.mid_low = mid_low
+                     self.mid_low = mid_low
         self.mid_high = mid_high
         self.temporal_strength = temporal_strength
         self.max_correction = max_correction
@@ -89591,7 +89591,7 @@ class MotionSafeContrastV1:
                  motion_threshold: float = 0.015,
                  max_contrast_reduction: float = 0.35,
                  temporal_smooth: float = 0.85):
-        self.motion_threshold = motion_threshold
+                     self.motion_threshold = motion_threshold
         self.max_contrast_reduction = max_contrast_reduction
         self.temporal_smooth = temporal_smooth
         self._prev_motion_map = None
@@ -89703,7 +89703,7 @@ class ViewDependentChromaStability:
                  strength=0.55,
                  gradient_sigma=1.2,
                  chroma_floor=1e-4):
-        self.strength = np.clip(strength, 0.0, 1.0)
+                     self.strength = np.clip(strength, 0.0, 1.0)
         self.gradient_sigma = gradient_sigma
         self.chroma_floor = chroma_floor
     # --------------------------------------------------------------------------
@@ -89946,7 +89946,7 @@ class IlluminantSpectralConsistencyEngine:
                  adaptation_rate=0.12,
                  lock_strength=0.55,
                  confidence_floor=0.25):
-        self.adaptation_rate = adaptation_rate
+                     self.adaptation_rate = adaptation_rate
         self.lock_strength = lock_strength
         self.confidence_floor = confidence_floor
         self._state_white = None
@@ -90053,7 +90053,7 @@ class _TemporalLookMemory:
                  decay=0.985,
                  influence=0.45,
                  clamp_range=(0.85, 1.15)):
-        self.decay = decay
+                     self.decay = decay
         self.influence = influence
         self.clamp_lo, self.clamp_hi = clamp_range
         self._memory = None
@@ -90166,7 +90166,7 @@ class HighEnergyContrastBoostV1:
                  highlight_protect: float = 0.85,
                  shadow_protect: float = 0.90,
                  temporal_smooth: float = 0.82):
-        self.base_strength = base_strength
+                     self.base_strength = base_strength
         self.motion_gain = motion_gain
         self.midtone_focus = midtone_focus
         self.highlight_protect = highlight_protect
@@ -90276,7 +90276,7 @@ class TemporalWhiteBalanceHysteresis:
                  warm_response=0.18,
                  cool_response=0.10,
                  max_delta=0.06):
-        self.warm_response = warm_response
+                     self.warm_response = warm_response
         self.cool_response = cool_response
         self.max_delta = max_delta
         self._state_white = None
@@ -90371,7 +90371,7 @@ class TemporalPerceptualMemory:
                  chroma_decay_rate=0.045,
                  luma_decay_rate=0.018,
                  motion_amplifier=1.75):
-        self.chroma_decay = chroma_decay_rate
+                     self.chroma_decay = chroma_decay_rate
         self.luma_decay = luma_decay_rate
         self.motion_amp = motion_amplifier
         self._memory_luma = None
@@ -91109,7 +91109,7 @@ class NightSceneColorStrategy:
                  highlight_warm_preserve=0.85,
                  midtone_sat_suppress=0.65,
                  luminance_floor=0.02):
-        self.shadow_cool_strength = shadow_cool_strength
+                     self.shadow_cool_strength = shadow_cool_strength
         self.highlight_warm_preserve = highlight_warm_preserve
         self.midtone_sat_suppress = midtone_sat_suppress
         self.luminance_floor = luminance_floor
@@ -91207,7 +91207,7 @@ class TemporalColorAdaptationInertia:
                  inertia_strength=0.82,
                  chroma_threshold=0.015,
                  hue_threshold=0.008):
-        self.inertia_strength = inertia_strength
+                     self.inertia_strength = inertia_strength
         self.chroma_threshold = chroma_threshold
         self.hue_threshold = hue_threshold
         self._prev_chroma = None
@@ -91443,7 +91443,7 @@ class SceneMemoryRetentionEngine:
                  memory_half_life_frames: int = 90,
                  confidence_floor: float = 0.35,
                  max_memory_weight: float = 0.65):
-        self.half_life = max(1, int(memory_half_life_frames))
+                     self.half_life = max(1, int(memory_half_life_frames))
         self.confidence_floor = float(confidence_floor)
         self.max_memory_weight = float(max_memory_weight)
         self._memory = None
@@ -91558,7 +91558,7 @@ class LongTakeColorStability81Y01:
                  stability_strength: float = 0.92,
                  chroma_bandwidth: float = 0.015,
                  max_correction: float = 0.04):
-        self.stability_strength = np.clip(stability_strength, 0.0, 0.99)
+                     self.stability_strength = np.clip(stability_strength, 0.0, 0.99)
         self.chroma_bandwidth = chroma_bandwidth
         self.max_correction = max_correction
         self.anchor_chroma = None
@@ -91654,7 +91654,7 @@ class LookDriftDetector81Y02:
                  luma_weight: float = 1.0,
                  saturation_weight: float = 0.85,
                  sensitivity: float = 1.0):
-        self.window_size = int(np.clip(window_size, 8, 256))
+                     self.window_size = int(np.clip(window_size, 8, 256))
         self.chroma_weight = chroma_weight
         self.luma_weight = luma_weight
         self.saturation_weight = saturation_weight
@@ -91783,7 +91783,7 @@ class ExposureChangeCompensator:
                  max_compensation_stops: float = 2.5,
                  highlight_protect: float = 0.65,
                  shadow_protect: float = 0.45):
-        self.adaptation_rate = float(adaptation_rate)
+                     self.adaptation_rate = float(adaptation_rate)
         self.max_comp_stops = float(max_compensation_stops)
         self.highlight_protect = float(highlight_protect)
         self.shadow_protect = float(shadow_protect)
@@ -91889,7 +91889,7 @@ class PerceptualColorCoherence81Y05:
                  chroma_sensitivity: float = 0.9,
                  luma_sensitivity: float = 0.35,
                  adaptation_rate: float = 0.12):
-        self.coherence_strength = float(_np.clip(coherence_strength, 0.0, 1.0))
+                     self.coherence_strength = float(_np.clip(coherence_strength, 0.0, 1.0))
         self.chroma_sensitivity = chroma_sensitivity
         self.luma_sensitivity = luma_sensitivity
         self.adaptation_rate = adaptation_rate
@@ -91997,7 +91997,7 @@ class MotionInducedLookShiftControl:
                  flow_smoothing: float = 0.9,
                  chroma_protect: float = 0.75,
                  contrast_protect: float = 0.65):
-        self.motion_threshold = motion_threshold
+                     self.motion_threshold = motion_threshold
         self.max_damping = max_damping
         self.flow_smoothing = flow_smoothing
         self.chroma_protect = chroma_protect
@@ -92140,7 +92140,7 @@ class ShotLookDescriptor:
                  saturation,
                  exposure,
                  confidence=1.0):
-        self.mean_color = mean_color      # vec3 (AP1)
+                     self.mean_color = mean_color      # vec3 (AP1)
         self.contrast = float(contrast)
         self.saturation = float(saturation)
         self.exposure = float(exposure)
@@ -92199,7 +92199,7 @@ class MultiShotLookConsistency:
                  smoothing_strength=0.85,
                  drift_threshold=0.12,
                  max_correction=0.35):
-        self.history = deque(maxlen=history_size)
+                     self.history = deque(maxlen=history_size)
         self.smoothing_strength = smoothing_strength
         self.drift_threshold = drift_threshold
         self.max_correction = max_correction
@@ -92269,7 +92269,7 @@ def apply_multi_shot_consistency(img_ap1,
         current_desc: ShotLookDescriptor,
         stable_desc: ShotLookDescriptor,
         strength=1.0):
-    """
+            """
     Gently nudges current frame toward stabilized multi-shot look.
     """
     if current_desc is None or stable_desc is None:
@@ -92339,7 +92339,7 @@ class StabilityFinalLock:
                  contrast_delta_limit=0.10,
                  exposure_delta_limit=0.35,
                  temporal_alpha=0.92):
-        self.color_delta_limit = float(color_delta_limit)
+                     self.color_delta_limit = float(color_delta_limit)
         self.contrast_delta_limit = float(contrast_delta_limit)
         self.exposure_delta_limit = float(exposure_delta_limit)
         self.temporal_alpha = float(temporal_alpha)
@@ -92505,7 +92505,7 @@ class FilmDigitalPriorityArbiter:
                  base_film_bias=0.55,
                  texture_protect=0.65,
                  temporal_alpha=0.90):
-        self.base_film_bias = float(base_film_bias)
+                     self.base_film_bias = float(base_film_bias)
         self.texture_protect = float(texture_protect)
         self.temporal_alpha = float(temporal_alpha)
         self._prev_mask = None
@@ -92544,7 +92544,7 @@ def apply_film_digital_arbitration(img_ap1,
         film_processed,
         digital_processed,
         arbiter: FilmDigitalPriorityArbiter):
-    """
+            """
     Blends film-emulated and digital-preserved images based on priority mask.
     Both inputs must be AP1 linear and energy-consistent.
     """
@@ -92617,7 +92617,7 @@ class LookConflictResolver:
                  film_bias=0.35,
                  digital_bias=0.25,
                  temporal_alpha=0.88):
-        total = ai_bias + film_bias + digital_bias
+                     total = ai_bias + film_bias + digital_bias
         self.ai_bias = ai_bias / total
         self.film_bias = film_bias / total
         self.digital_bias = digital_bias / total
@@ -92637,7 +92637,7 @@ class LookConflictResolver:
                 ai_img,
                 film_img,
                 digital_img):
-        """
+                    """
         base_img:
             The stabilized reference image (post-81Y).
         ai_img / film_img / digital_img:
@@ -92685,8 +92685,8 @@ def apply_look_conflict_resolution(base_img,
         film_img,
         digital_img,
         resolver: LookConflictResolver):
-    if resolver is None:
-        return film_img
+            if resolver is None:
+                return film_img
     return resolver.resolve(base_img, ai_img, film_img, digital_img)
 # ==============================================================================
 # END OF CHUNK 81 Z 02 — CONFLICTING LOOK RESOLUTION
@@ -92738,7 +92738,7 @@ class HighlightPriorityArbiter:
                  highlight_peak=0.90,
                  film_bias=0.70,
                  temporal_alpha=0.90):
-        self.highlight_start = float(highlight_start)
+                     self.highlight_start = float(highlight_start)
         self.highlight_peak = float(highlight_peak)
         self.film_bias = float(film_bias)
         self.temporal_alpha = float(temporal_alpha)
@@ -92770,7 +92770,7 @@ def apply_highlight_priority(film_highlight_img,
         digital_highlight_img,
         img_ap1_ref,
         arbiter: HighlightPriorityArbiter):
-    """
+            """
     Blends highlight regions based on film vs digital priority.
     All inputs must be AP1 linear and energy-consistent.
     """
@@ -92835,7 +92835,7 @@ class ShadowPriorityArbiter:
                  film_bias=0.65,
                  texture_protect=0.40,
                  temporal_alpha=0.92):
-        self.shadow_start = float(shadow_start)
+                     self.shadow_start = float(shadow_start)
         self.shadow_end = float(shadow_end)
         self.film_bias = float(film_bias)
         self.texture_protect = float(texture_protect)
@@ -92878,7 +92878,7 @@ def apply_shadow_priority(film_shadow_img,
         img_ap1_ref,
         arbiter: ShadowPriorityArbiter,
         texture_energy=None):
-    """
+            """
     Blends shadow regions based on film vs digital priority.
     All inputs must be AP1 linear and energy-consistent.
     """
@@ -92944,7 +92944,7 @@ class TemporalLookMemory:
                  contrast_memory_alpha=0.93,
                  exposure_memory_alpha=0.92,
                  cut_reset_threshold=0.35):
-        self.color_alpha = float(color_memory_alpha)
+                     self.color_alpha = float(color_memory_alpha)
         self.contrast_alpha = float(contrast_memory_alpha)
         self.exposure_alpha = float(exposure_memory_alpha)
         self.cut_reset_threshold = float(cut_reset_threshold)
@@ -93019,8 +93019,8 @@ class TemporalLookMemory:
 def apply_temporal_look_coherence(img_ap1,
         memory: TemporalLookMemory,
         shot_change_score=0.0):
-    if memory is None:
-        return img_ap1
+            if memory is None:
+                return img_ap1
     return memory.update(img_ap1, shot_change_score)
 # ==============================================================================
 # END OF CHUNK 81 Z 06 — TEMPORAL LOOK COHERENCE ARBITRATION
@@ -93086,7 +93086,7 @@ class PerceptualColorIntent:
                  chroma_memory_alpha=0.93,
                  max_hue_shift_deg=6.0,
                  subject_boost=1.25):
-        self.hue_alpha = float(hue_memory_alpha)
+                     self.hue_alpha = float(hue_memory_alpha)
         self.chroma_alpha = float(chroma_memory_alpha)
         self.max_hue_shift = np.deg2rad(max_hue_shift_deg)
         self.subject_boost = float(subject_boost)
@@ -93153,8 +93153,8 @@ class PerceptualColorIntent:
 def apply_perceptual_color_intent(img_ap1,
         engine: PerceptualColorIntent,
         subject_mask=None):
-    if engine is None:
-        return img_ap1
+            if engine is None:
+                return img_ap1
     return engine.apply(img_ap1, subject_mask)
 # ==============================================================================
 # END OF CHUNK 81 Z 07 — PERCEPTUAL COLOR INTENT ARBITRATION
@@ -93222,7 +93222,7 @@ class GlobalLookConsensus:
                  highlight_weight=0.15,
                  shadow_weight=0.15,
                  temporal_alpha=0.90):
-        weights = np.array([
+                     weights = np.array([
             base_weight,
             film_weight,
             digital_weight,
@@ -93267,7 +93267,7 @@ class GlobalLookConsensus:
               highlight_img,
               shadow_img,
               priority_masks=None):
-        imgs = [base_img, film_img, digital_img, highlight_img, shadow_img]
+                  imgs = [base_img, film_img, digital_img, highlight_img, shadow_img]
         if any(im is None for im in imgs):
             return film_img
         # Compute dynamic weights
@@ -93308,8 +93308,8 @@ def apply_global_look_consensus(base_img,
         shadow_img,
         consensus: GlobalLookConsensus,
         priority_masks=None):
-    if consensus is None:
-        return film_img
+            if consensus is None:
+                return film_img
     return consensus.apply(
         base_img,
         film_img,
@@ -93373,7 +93373,7 @@ class FinalOutputGate:
                  highlight_soft_limit=12.0,
                  chroma_energy_limit=3.5,
                  temporal_alpha=0.94):
-        self.max_scene_linear = float(max_scene_linear)
+                     self.max_scene_linear = float(max_scene_linear)
         self.highlight_soft_limit = float(highlight_soft_limit)
         self.chroma_energy_limit = float(chroma_energy_limit)
         self.temporal_alpha = float(temporal_alpha)
@@ -93475,7 +93475,7 @@ class ODTViewConditioner:
                  surround_compensation=0.85,
                  midtone_anchor=0.18,
                  temporal_alpha=0.95):
-        self.target_peak_nits = float(target_peak_nits)
+                     self.target_peak_nits = float(target_peak_nits)
         self.surround_comp = float(surround_compensation)
         self.midtone_anchor = float(midtone_anchor)
         self.temporal_alpha = float(temporal_alpha)
@@ -93520,8 +93520,8 @@ class ODTViewConditioner:
 # ------------------------------------------------------------------------------
 def apply_odt_view_conditioning(img_ap1,
         conditioner: ODTViewConditioner):
-    if conditioner is None:
-        return img_ap1
+            if conditioner is None:
+                return img_ap1
     return conditioner.apply(img_ap1)
 # ==============================================================================
 # END OF CHUNK 82 A 01 — ACES ODT PREPARATION + VIEW CONDITIONING
@@ -93598,7 +93598,7 @@ class ACES_ODT_Rec709:
                  display_gamma=2.4,
                  legal_range=True,
                  temporal_alpha=0.96):
-        self.display_gamma = float(display_gamma)
+                     self.display_gamma = float(display_gamma)
         self.legal_range = bool(legal_range)
         self.temporal_alpha = float(temporal_alpha)
         self._prev_mean = None
@@ -93740,7 +93740,7 @@ class ACES_ODT_HDR_PQ:
    def __init__(self,
                 target_peak_nits=1000.0,
                 temporal_alpha=0.97):
-       self.target_peak_nits = float(target_peak_nits)
+                    self.target_peak_nits = float(target_peak_nits)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_mean_nits = None
    # ------------------------------------------------------------------
@@ -93866,7 +93866,7 @@ class ACES_ODT_HDR_HLG:
    def __init__(self,
                 system_gamma=1.2,
                 temporal_alpha=0.97):
-       self.system_gamma = float(system_gamma)
+                    self.system_gamma = float(system_gamma)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_mean = None
    # ------------------------------------------------------------------
@@ -93966,7 +93966,7 @@ class ODTPerceptualNormalizer:
                 chroma_energy_ref=0.22,
                 midtone_percentile=45.0,
                 temporal_alpha=0.96):
-       self.target_midtone = float(target_midtone)
+                    self.target_midtone = float(target_midtone)
        self.chroma_energy_ref = float(chroma_energy_ref)
        self.midtone_percentile = float(midtone_percentile)
        self.temporal_alpha = float(temporal_alpha)
@@ -94017,8 +94017,8 @@ class ODTPerceptualNormalizer:
 # ------------------------------------------------------------------------------
 def apply_odt_perceptual_normalization(img_display_rgb,
         normalizer: ODTPerceptualNormalizer):
-   if normalizer is None:
-       return img_display_rgb
+            if normalizer is None:
+                return img_display_rgb
    return normalizer.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 A 05 — CROSS-ODT PERCEPTUAL NORMALIZATION
@@ -94110,7 +94110,7 @@ class DisplayGamutSafety:
                 sat_soft_limit=0.98,
                 sat_hard_limit=1.05,
                 temporal_alpha=0.97):
-       self.sat_soft_limit = float(sat_soft_limit)
+                    self.sat_soft_limit = float(sat_soft_limit)
        self.sat_hard_limit = float(sat_hard_limit)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_sat = None
@@ -94160,8 +94160,8 @@ class DisplayGamutSafety:
 # ------------------------------------------------------------------------------
 def apply_display_gamut_safety(img_display_rgb,
         safety: DisplayGamutSafety):
-   if safety is None:
-       return img_display_rgb
+            if safety is None:
+                return img_display_rgb
    return safety.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 A 06 — DISPLAY-REFERRED GAMUT SAFETY + HUE-LOCK
@@ -94216,7 +94216,7 @@ class DisplayTemporalCoherence:
                 luma_alpha=0.97,
                 chroma_alpha=0.95,
                 hue_alpha=0.94):
-       self.luma_alpha = float(luma_alpha)
+                    self.luma_alpha = float(luma_alpha)
        self.chroma_alpha = float(chroma_alpha)
        self.hue_alpha = float(hue_alpha)
        self._prev_luma_mean = None
@@ -94263,8 +94263,8 @@ class DisplayTemporalCoherence:
 # ------------------------------------------------------------------------------
 def apply_display_temporal_coherence(img_display_rgb,
         coherence: DisplayTemporalCoherence):
-   if coherence is None:
-       return img_display_rgb
+            if coherence is None:
+                return img_display_rgb
    return coherence.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 A 07 — DISPLAY TEMPORAL COHERENCE & FLICKER LOCK
@@ -94318,7 +94318,7 @@ class PreEncodeConditioner:
                 gradient_softness=0.015,
                 chroma_damping=0.92,
                 temporal_alpha=0.98):
-       self.gradient_softness = float(gradient_softness)
+                    self.gradient_softness = float(gradient_softness)
        self.chroma_damping = float(chroma_damping)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_luma_mean = None
@@ -94364,8 +94364,8 @@ class PreEncodeConditioner:
 # ------------------------------------------------------------------------------
 def apply_preencode_conditioning(img_display_rgb,
         conditioner: PreEncodeConditioner):
-   if conditioner is None:
-       return img_display_rgb
+            if conditioner is None:
+                return img_display_rgb
    return conditioner.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 B 01 — DELIVERY PRE-ENCODE SIGNAL CONDITIONING
@@ -94415,7 +94415,7 @@ class DeliveryMetadataInspector:
                 mastering_peak_nits=1000.0,
                 mastering_black_nits=0.005,
                 temporal_alpha=0.98):
-       self.mastering_peak_nits = float(mastering_peak_nits)
+                    self.mastering_peak_nits = float(mastering_peak_nits)
        self.mastering_black_nits = float(mastering_black_nits)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_maxcll = None
@@ -94467,8 +94467,8 @@ class DeliveryMetadataInspector:
 # ------------------------------------------------------------------------------
 def analyze_delivery_metadata(img_display_rgb,
         inspector: DeliveryMetadataInspector):
-   if inspector is None:
-       return None
+            if inspector is None:
+                return None
    return inspector.analyze(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 B 02 — DELIVERY METADATA & MASTERING CONSISTENCY
@@ -94511,7 +94511,7 @@ class DeliveryRangeEncoder:
                 mode="legal",
                 bit_depth=8,
                 temporal_alpha=0.99):
-       assert mode in ("full", "legal")
+                    assert mode in ("full", "legal")
        self.mode = mode
        self.bit_depth = int(bit_depth)
        self.temporal_alpha = float(temporal_alpha)
@@ -94555,8 +94555,8 @@ class DeliveryRangeEncoder:
 # ------------------------------------------------------------------------------
 def apply_delivery_range_encoding(img_display_rgb,
         encoder: DeliveryRangeEncoder):
-   if encoder is None:
-       return img_display_rgb
+            if encoder is None:
+                return img_display_rgb
    return encoder.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 B 03 — DELIVERY COLOR RANGE ENCODING
@@ -94609,7 +94609,7 @@ class QuantizationShaper:
                 bit_depth=10,
                 plateau_strength=0.6,
                 temporal_alpha=0.99):
-       self.bit_depth = int(bit_depth)
+                    self.bit_depth = int(bit_depth)
        self.plateau_strength = float(plateau_strength)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_step = None
@@ -94649,8 +94649,8 @@ class QuantizationShaper:
 # ------------------------------------------------------------------------------
 def apply_quantization_shaping(img_display_rgb,
         shaper: QuantizationShaper):
-   if shaper is None:
-       return img_display_rgb
+            if shaper is None:
+                return img_display_rgb
    return shaper.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 B 04 — ENCODER-AWARE QUANTIZATION SHAPING
@@ -94705,7 +94705,7 @@ class DeliveryColorspaceLocker:
                 transfer="bt1886",
                 matrix_coeffs="bt709",
                 temporal_alpha=0.99):
-       self.colorspace = colorspace
+                    self.colorspace = colorspace
        self.transfer = transfer
        self.matrix_coeffs = matrix_coeffs
        self.temporal_alpha = float(temporal_alpha)
@@ -94757,8 +94757,8 @@ class DeliveryColorspaceLocker:
 # ------------------------------------------------------------------------------
 def lock_delivery_colorspace(img_display_rgb,
         locker: DeliveryColorspaceLocker):
-   if locker is None:
-       return img_display_rgb, None
+            if locker is None:
+                return img_display_rgb, None
    return img_display_rgb, locker.analyze(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 B 05 — DELIVERY COLORSPACE TAGGING & SIGNAL LOCK
@@ -94809,7 +94809,7 @@ class PerceptualLuminanceAnchor:
                 reference_luma=0.18,
                 perceptual_gamma=0.43,
                 temporal_alpha=0.97):
-       self.reference_luma = float(reference_luma)
+                    self.reference_luma = float(reference_luma)
        self.perceptual_gamma = float(perceptual_gamma)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_anchor = None
@@ -94844,8 +94844,8 @@ class PerceptualLuminanceAnchor:
 # ------------------------------------------------------------------------------
 def apply_perceptual_luminance_anchor(img_display_rgb,
         anchor: PerceptualLuminanceAnchor):
-   if anchor is None:
-       return img_display_rgb
+            if anchor is None:
+                return img_display_rgb
    return anchor.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 C 01 — PERCEPTUAL LUMINANCE ANCHORING
@@ -94896,7 +94896,7 @@ class TemporalBrightnessMemory:
                 adaptation_rate=0.08,
                 perceptual_gamma=0.45,
                 max_step=0.05):
-       self.adaptation_rate = float(adaptation_rate)
+                    self.adaptation_rate = float(adaptation_rate)
        self.perceptual_gamma = float(perceptual_gamma)
        self.max_step = float(max_step)
        self._memory = None
@@ -94937,8 +94937,8 @@ class TemporalBrightnessMemory:
 # ------------------------------------------------------------------------------
 def apply_temporal_brightness_memory(img_display_rgb,
         memory: TemporalBrightnessMemory):
-   if memory is None:
-       return img_display_rgb
+            if memory is None:
+                return img_display_rgb
    return memory.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 C 02 — TEMPORAL PERCEPTUAL BRIGHTNESS MEMORY
@@ -94990,7 +94990,7 @@ class HighlightEnergyRedistributor:
                 threshold=0.65,
                 knee_strength=0.35,
                 chroma_preservation=0.90):
-       self.threshold = float(threshold)
+                    self.threshold = float(threshold)
        self.knee_strength = float(knee_strength)
        self.chroma_preservation = float(chroma_preservation)
    # ------------------------------------------------------------------
@@ -95028,8 +95028,8 @@ class HighlightEnergyRedistributor:
 # ------------------------------------------------------------------------------
 def apply_highlight_energy_redistribution(img_display_rgb,
         redistributor: HighlightEnergyRedistributor):
-   if redistributor is None:
-       return img_display_rgb
+            if redistributor is None:
+                return img_display_rgb
    return redistributor.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 C 03 — PERCEPTUAL HIGHLIGHT ENERGY REDISTRIBUTION
@@ -95081,7 +95081,7 @@ class TemporalHighlightInertia:
                 highlight_threshold=0.7,
                 inertia_strength=0.85,
                 max_delta=0.04):
-       self.highlight_threshold = float(highlight_threshold)
+                    self.highlight_threshold = float(highlight_threshold)
        self.inertia_strength = float(inertia_strength)
        self.max_delta = float(max_delta)
        self._highlight_memory = None
@@ -95126,8 +95126,8 @@ class TemporalHighlightInertia:
 # ------------------------------------------------------------------------------
 def apply_temporal_highlight_inertia(img_display_rgb,
         inertia: TemporalHighlightInertia):
-   if inertia is None:
-       return img_display_rgb
+            if inertia is None:
+                return img_display_rgb
    return inertia.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 C 04 — TEMPORAL HIGHLIGHT CONSISTENCY
@@ -95181,7 +95181,7 @@ class PerceptualColorStabilizer:
                 mid_luma=0.35,
                 highlight_desat=0.75,
                 shadow_boost=1.08):
-       self.mid_luma = float(mid_luma)
+                    self.mid_luma = float(mid_luma)
        self.highlight_desat = float(highlight_desat)
        self.shadow_boost = float(shadow_boost)
    # ------------------------------------------------------------------
@@ -95215,8 +95215,8 @@ class PerceptualColorStabilizer:
 # ------------------------------------------------------------------------------
 def apply_perceptual_color_stability(img_display_rgb,
         stabilizer: PerceptualColorStabilizer):
-   if stabilizer is None:
-       return img_display_rgb
+            if stabilizer is None:
+                return img_display_rgb
    return stabilizer.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 C 05 — PERCEPTUAL COLOR APPEARANCE STABILITY
@@ -95268,7 +95268,7 @@ class MotionPerceptualCoherence:
                 contrast_damping=0.92,
                 chroma_damping=0.95,
                 temporal_alpha=0.90):
-       self.motion_sensitivity = float(motion_sensitivity)
+                    self.motion_sensitivity = float(motion_sensitivity)
        self.contrast_damping = float(contrast_damping)
        self.chroma_damping = float(chroma_damping)
        self.temporal_alpha = float(temporal_alpha)
@@ -95322,8 +95322,8 @@ class MotionPerceptualCoherence:
 # ------------------------------------------------------------------------------
 def apply_motion_perceptual_coherence(img_display_rgb,
         coherence: MotionPerceptualCoherence):
-   if coherence is None:
-       return img_display_rgb
+            if coherence is None:
+                return img_display_rgb
    return coherence.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 D 01 — MOTION-COUPLED PERCEPTUAL COHERENCE
@@ -95375,7 +95375,7 @@ class DirectionalMotionWeighter:
                 lateral_weight=0.6,
                 forward_weight=0.3,
                 temporal_alpha=0.88):
-       self.yaw_weight = float(yaw_weight)
+                    self.yaw_weight = float(yaw_weight)
        self.lateral_weight = float(lateral_weight)
        self.forward_weight = float(forward_weight)
        self.temporal_alpha = float(temporal_alpha)
@@ -95434,8 +95434,8 @@ class DirectionalMotionWeighter:
 # ------------------------------------------------------------------------------
 def apply_directional_motion_weighting(img_display_rgb,
         weighter: DirectionalMotionWeighter):
-   if weighter is None:
-       return img_display_rgb
+            if weighter is None:
+                return img_display_rgb
    return weighter.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 D 02 — DIRECTIONAL MOTION WEIGHTING
@@ -95498,7 +95498,7 @@ class MotionAdaptiveMicroContrast:
                 sensitivity=0.35,
                 max_damping=0.30,
                 temporal_alpha=0.85):
-       self.sensitivity = float(sensitivity)
+                    self.sensitivity = float(sensitivity)
        self.max_damping = float(max_damping)
        self.temporal_alpha = float(temporal_alpha)
        self._prev_luma = None
@@ -95553,8 +95553,8 @@ class MotionAdaptiveMicroContrast:
 # ------------------------------------------------------------------------------
 def apply_motion_micro_contrast_control(img_display_rgb,
         controller: MotionAdaptiveMicroContrast):
-   if controller is None:
-       return img_display_rgb
+            if controller is None:
+                return img_display_rgb
    return controller.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 D 03 — MOTION-ADAPTIVE MICRO-CONTRAST CONTROL
@@ -95607,7 +95607,7 @@ class FilmicDensityInertia:
                 chroma_alpha=0.90,
                 max_exposure_delta=0.08,
                 max_chroma_delta=0.06):
-       self.exposure_alpha = float(exposure_alpha)
+                    self.exposure_alpha = float(exposure_alpha)
        self.chroma_alpha = float(chroma_alpha)
        self.max_exposure_delta = float(max_exposure_delta)
        self.max_chroma_delta = float(max_chroma_delta)
@@ -95670,8 +95670,8 @@ class FilmicDensityInertia:
 # ------------------------------------------------------------------------------
 def apply_filmic_density_inertia(img_display_rgb,
         inertia: FilmicDensityInertia):
-   if inertia is None:
-       return img_display_rgb
+            if inertia is None:
+                return img_display_rgb
    return inertia.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 E 01 — FILMIC EXPOSURE & COLOR DENSITY INERTIA
@@ -95723,7 +95723,7 @@ class HighlightColorDensitySeparation:
                 highlight_alpha=0.75,
                 base_alpha=0.92,
                 max_delta=0.08):
-       self.highlight_threshold = float(highlight_threshold)
+                    self.highlight_threshold = float(highlight_threshold)
        self.highlight_alpha = float(highlight_alpha)
        self.base_alpha = float(base_alpha)
        self.max_delta = float(max_delta)
@@ -95801,8 +95801,8 @@ class HighlightColorDensitySeparation:
 # ------------------------------------------------------------------------------
 def apply_highlight_color_density_separation(img_display_rgb,
         separator: HighlightColorDensitySeparation):
-   if separator is None:
-       return img_display_rgb
+            if separator is None:
+                return img_display_rgb
    return separator.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 E 02 — HIGHLIGHT COLOR DENSITY SEPARATION
@@ -95855,7 +95855,7 @@ class ShadowColorRetention:
                 shadow_alpha=0.95,
                 base_alpha=0.88,
                 max_delta=0.05):
-       self.shadow_threshold = float(shadow_threshold)
+                    self.shadow_threshold = float(shadow_threshold)
        self.shadow_alpha = float(shadow_alpha)
        self.base_alpha = float(base_alpha)
        self.max_delta = float(max_delta)
@@ -95933,8 +95933,8 @@ class ShadowColorRetention:
 # ------------------------------------------------------------------------------
 def apply_shadow_color_retention(img_display_rgb,
         retention: ShadowColorRetention):
-   if retention is None:
-       return img_display_rgb
+            if retention is None:
+                return img_display_rgb
    return retention.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 E 03 — SHADOW COLOR RETENTION
@@ -95988,7 +95988,7 @@ class MidtoneDensityStabilizer:
                 mid_high=0.65,
                 mid_alpha=0.94,
                 max_delta=0.04):
-       self.mid_low = float(mid_low)
+                    self.mid_low = float(mid_low)
        self.mid_high = float(mid_high)
        self.mid_alpha = float(mid_alpha)
        self.max_delta = float(max_delta)
@@ -96046,8 +96046,8 @@ class MidtoneDensityStabilizer:
 # ------------------------------------------------------------------------------
 def apply_midtone_density_stabilization(img_display_rgb,
         stabilizer: MidtoneDensityStabilizer):
-   if stabilizer is None:
-       return img_display_rgb
+            if stabilizer is None:
+                return img_display_rgb
    return stabilizer.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 E 04 — MIDTONE DENSITY BREATHING CONTROL
@@ -96125,7 +96125,7 @@ class TemporalHueStabilizer:
                 motion_sensitivity=0.30,
                 hue_alpha=0.92,
                 max_hue_delta=np.deg2rad(2.5)):
-       self.motion_sensitivity = float(motion_sensitivity)
+                    self.motion_sensitivity = float(motion_sensitivity)
        self.hue_alpha = float(hue_alpha)
        self.max_hue_delta = float(max_hue_delta)
        self._prev_luma = None
@@ -96181,8 +96181,8 @@ class TemporalHueStabilizer:
 # ------------------------------------------------------------------------------
 def apply_temporal_hue_stability(img_display_rgb,
         stabilizer: TemporalHueStabilizer):
-   if stabilizer is None:
-       return img_display_rgb
+            if stabilizer is None:
+                return img_display_rgb
    return stabilizer.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 F 01 — TEMPORAL HUE STABILITY
@@ -96232,7 +96232,7 @@ class HighlightHueSuppression:
    def __init__(self,
                 highlight_threshold=0.80,
                 suppression_strength=0.85):
-       self.highlight_threshold = float(highlight_threshold)
+                    self.highlight_threshold = float(highlight_threshold)
        self.suppression_strength = float(suppression_strength)
    # ------------------------------------------------------------------
    def apply(self, img_display_rgb):
@@ -96272,8 +96272,8 @@ class HighlightHueSuppression:
 # ------------------------------------------------------------------------------
 def apply_highlight_hue_suppression(img_display_rgb,
         suppressor: HighlightHueSuppression):
-   if suppressor is None:
-       return img_display_rgb
+            if suppressor is None:
+                return img_display_rgb
    return suppressor.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 F 02 — HIGHLIGHT HUE SUPPRESSION
@@ -96344,7 +96344,7 @@ class SkinToneHueAnchor:
                 motion_sensitivity=0.25,
                 hue_alpha=0.94,
                 max_delta=np.deg2rad(2.0)):
-       self.skin_hue_center = float(skin_hue_center)
+                    self.skin_hue_center = float(skin_hue_center)
        self.skin_hue_width = float(skin_hue_width)
        self.motion_sensitivity = float(motion_sensitivity)
        self.hue_alpha = float(hue_alpha)
@@ -96411,8 +96411,8 @@ class SkinToneHueAnchor:
 # ------------------------------------------------------------------------------
 def apply_skin_tone_hue_anchor(img_display_rgb,
         anchor: SkinToneHueAnchor):
-   if anchor is None:
-       return img_display_rgb
+            if anchor is None:
+                return img_display_rgb
    return anchor.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 F 03 — SKIN-TONE HUE ANCHOR
@@ -96457,7 +96457,7 @@ class SpectralCrossChannelInertia:
                 inertia_alpha=0.93,
                 coupling_strength=0.35,
                 max_delta=0.06):
-       self.inertia_alpha = float(inertia_alpha)
+                    self.inertia_alpha = float(inertia_alpha)
        self.coupling_strength = float(coupling_strength)
        self.max_delta = float(max_delta)
        self._channel_mem = None
@@ -96499,8 +96499,8 @@ class SpectralCrossChannelInertia:
 # ------------------------------------------------------------------------------
 def apply_spectral_cross_channel_inertia(img_display_rgb,
         inertia: SpectralCrossChannelInertia):
-   if inertia is None:
-       return img_display_rgb
+            if inertia is None:
+                return img_display_rgb
    return inertia.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 G 01 — SPECTRAL CROSS-CHANNEL INERTIA
@@ -96545,7 +96545,7 @@ class ChannelDensityMemory:
                 density_alpha=0.90,
                 coupling_strength=0.40,
                 max_delta=0.08):
-       self.density_alpha = float(density_alpha)
+                    self.density_alpha = float(density_alpha)
        self.coupling_strength = float(coupling_strength)
        self.max_delta = float(max_delta)
        self._density_mem = None
@@ -96615,7 +96615,7 @@ class SpectralRollOff:
                 strength_r=3.0,
                 strength_g=3.2,
                 strength_b=3.5):
-       self.knee_r = float(knee_r)
+                    self.knee_r = float(knee_r)
        self.knee_g = float(knee_g)
        self.knee_b = float(knee_b)
        self.strength_r = float(strength_r)
@@ -96639,8 +96639,8 @@ class SpectralRollOff:
 # ------------------------------------------------------------------------------
 def apply_spectral_rolloff(img_display_rgb,
         rolloff: SpectralRollOff):
-   if rolloff is None:
-       return img_display_rgb
+            if rolloff is None:
+                return img_display_rgb
    return rolloff.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 G 03 — FILM-LIKE SPECTRAL ROLL-OFF
@@ -96662,8 +96662,8 @@ def apply_spectral_rolloff(img_display_rgb,
 # ------------------------------------------------------------------------------
 def apply_channel_density_memory(img_display_rgb,
         memory: ChannelDensityMemory):
-   if memory is None:
-       return img_display_rgb
+            if memory is None:
+                return img_display_rgb
    return memory.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 G 02 — CHANNEL INTERACTION DENSITY MEMORY
@@ -96713,7 +96713,7 @@ class SpectralRollOff:
                 strength_r=3.0,
                 strength_g=3.2,
                 strength_b=3.5):
-       self.knee_r = float(knee_r)
+                    self.knee_r = float(knee_r)
        self.knee_g = float(knee_g)
        self.knee_b = float(knee_b)
        self.strength_r = float(strength_r)
@@ -96737,8 +96737,8 @@ class SpectralRollOff:
 # ------------------------------------------------------------------------------
 def apply_spectral_rolloff(img_display_rgb,
         rolloff: SpectralRollOff):
-   if rolloff is None:
-       return img_display_rgb
+            if rolloff is None:
+                return img_display_rgb
    return rolloff.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 G 03 — FILM-LIKE SPECTRAL ROLL-OFF
@@ -96785,7 +96785,7 @@ class SecondaryDyeLayer:
                 dye_alpha=0.96,
                 dye_strength=0.25,
                 max_delta=0.05):
-       self.dye_alpha = float(dye_alpha)
+                    self.dye_alpha = float(dye_alpha)
        self.dye_strength = float(dye_strength)
        self.max_delta = float(max_delta)
        self._dye_mem = None
@@ -96828,8 +96828,8 @@ class SecondaryDyeLayer:
 # ------------------------------------------------------------------------------
 def apply_secondary_dye_layer(img_display_rgb,
         dye_layer: SecondaryDyeLayer):
-   if dye_layer is None:
-       return img_display_rgb
+            if dye_layer is None:
+                return img_display_rgb
    return dye_layer.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 G 04 — SECONDARY DYE LAYER SIMULATION
@@ -96869,7 +96869,7 @@ class TemporalColorEnergyConservation:
     def __init__(self,
                  energy_alpha=0.92,
                  max_delta=0.12):
-        """
+                     """
         energy_alpha:
             Temporal inertia of chroma energy (higher = slower change)
         max_delta:
@@ -96924,8 +96924,8 @@ class TemporalColorEnergyConservation:
 # ------------------------------------------------------------------------------
 def apply_temporal_color_energy_conservation(img_display_rgb,
         conservation: TemporalColorEnergyConservation):
-    if conservation is None:
-        return img_display_rgb
+            if conservation is None:
+                return img_display_rgb
     return conservation.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 H 01 — TEMPORAL COLOR ENERGY CONSERVATION
@@ -96967,7 +96967,7 @@ class ColorEnergyDecayCurve:
                  shadow_decay=0.15,
                  mid_decay=0.35,
                  highlight_decay=0.55):
-        """
+                     """
         decay_alpha:
             Temporal inertia of decay response
         shadow/mid/highlight_decay:
@@ -97026,8 +97026,8 @@ class ColorEnergyDecayCurve:
 # ------------------------------------------------------------------------------
 def apply_color_energy_decay_curve(img_display_rgb,
         decay: ColorEnergyDecayCurve):
-    if decay is None:
-        return img_display_rgb
+            if decay is None:
+                return img_display_rgb
     return decay.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 H 02 — COLOR ENERGY DECAY CURVE
@@ -97063,7 +97063,7 @@ class HighlightEnergyPersistence:
     def __init__(self,
                  highlight_alpha=0.96,
                  highlight_threshold=0.65):
-        """
+                     """
         highlight_alpha:
             Temporal inertia for highlights (higher = longer persistence)
         highlight_threshold:
@@ -97108,8 +97108,8 @@ class HighlightEnergyPersistence:
 # ------------------------------------------------------------------------------
 def apply_highlight_energy_persistence(img_display_rgb,
         persistence: HighlightEnergyPersistence):
-    if persistence is None:
-        return img_display_rgb
+            if persistence is None:
+                return img_display_rgb
     return persistence.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 H 03 — HIGHLIGHT ENERGY PERSISTENCE
@@ -97146,7 +97146,7 @@ class SceneColorMomentum:
     def __init__(self,
                  momentum_alpha=0.97,
                  momentum_strength=0.15):
-        """
+                     """
         momentum_alpha:
             Temporal inertia of scene color direction
         momentum_strength:
@@ -97190,8 +97190,8 @@ class SceneColorMomentum:
 # ------------------------------------------------------------------------------
 def apply_scene_color_momentum(img_display_rgb,
         momentum: SceneColorMomentum):
-    if momentum is None:
-        return img_display_rgb
+            if momentum is None:
+                return img_display_rgb
     return momentum.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 H 04 — SCENE-WIDE COLOR MOMENTUM
@@ -97222,7 +97222,7 @@ class LongTermColorMemory:
     def __init__(self,
                  memory_alpha=0.995,
                  memory_strength=0.10):
-        self.memory_alpha = float(memory_alpha)
+                     self.memory_alpha = float(memory_alpha)
         self.memory_strength = float(memory_strength)
         self._memory = None
     def apply(self, img_display_rgb):
@@ -97244,8 +97244,8 @@ class LongTermColorMemory:
         return np.clip(img, 0.0, 1.0)
 def apply_long_term_color_memory(img_display_rgb,
         memory: LongTermColorMemory):
-    if memory is None:
-        return img_display_rgb
+            if memory is None:
+                return img_display_rgb
     return memory.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 I 01 — LONG-TERM COLOR MEMORY
@@ -97276,7 +97276,7 @@ class SceneTransitionColorRetention:
     def __init__(self,
                  retention_alpha=0.90,
                  retention_strength=0.20):
-        """
+                     """
         retention_alpha:
             How slowly previous scene color fades
         retention_strength:
@@ -97320,8 +97320,8 @@ class SceneTransitionColorRetention:
 # ------------------------------------------------------------------------------
 def apply_scene_transition_color_retention(img_display_rgb,
         retention: SceneTransitionColorRetention):
-    if retention is None:
-        return img_display_rgb
+            if retention is None:
+                return img_display_rgb
     return retention.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 I 02 — SCENE TRANSITION COLOR RETENTION
@@ -97354,7 +97354,7 @@ class SceneBoundaryColorLock:
                  lock_threshold=0.12,
                  lock_alpha=0.98,
                  lock_strength=0.85):
-        """
+                     """
         lock_threshold:
             Scene-average chroma delta triggering a lock
         lock_alpha:
@@ -97417,8 +97417,8 @@ class SceneBoundaryColorLock:
 # ------------------------------------------------------------------------------
 def apply_scene_boundary_color_lock(img_display_rgb,
         lock: SceneBoundaryColorLock):
-    if lock is None:
-        return img_display_rgb
+            if lock is None:
+                return img_display_rgb
     return lock.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 I 03 — SCENE BOUNDARY COLOR LOCK
@@ -97449,7 +97449,7 @@ class ShotToShotChromaticDriftControl:
     def __init__(self,
                  drift_alpha=0.97,
                  drift_strength=0.60):
-        """
+                     """
         drift_alpha:
             Temporal inertia of shot chroma reference
         drift_strength:
@@ -97494,8 +97494,8 @@ class ShotToShotChromaticDriftControl:
 # ------------------------------------------------------------------------------
 def apply_shot_to_shot_chromatic_drift_control(img_display_rgb,
         control: ShotToShotChromaticDriftControl):
-    if control is None:
-        return img_display_rgb
+            if control is None:
+                return img_display_rgb
     return control.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 I 04 — SHOT-TO-SHOT CHROMATIC DRIFT CONTROL
@@ -97527,7 +97527,7 @@ class LumaChromaCompressionCoupling:
                  knee_start=0.55,
                  knee_strength=0.65,
                  curve_power=1.6):
-        """
+                     """
         knee_start:
             Luma level where chroma compression begins
         knee_strength:
@@ -97570,8 +97570,8 @@ class LumaChromaCompressionCoupling:
 # ------------------------------------------------------------------------------
 def apply_luma_chroma_compression(img_display_rgb,
         engine: LumaChromaCompressionCoupling):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 J 01 — LUMA–CHROMA COMPRESSION COUPLING
@@ -97604,7 +97604,7 @@ class LumaWeightedSaturationFalloff:
                  falloff_end=0.90,
                  min_saturation=0.65,
                  curve_power=1.4):
-        """
+                     """
         falloff_start:
             Luma level where saturation reduction begins
         falloff_end:
@@ -97655,8 +97655,8 @@ class LumaWeightedSaturationFalloff:
 # ------------------------------------------------------------------------------
 def apply_luma_weighted_saturation_falloff(img_display_rgb,
         engine: LumaWeightedSaturationFalloff):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 J 02 — LUMA-WEIGHTED SATURATION FALLOFF
@@ -97689,7 +97689,7 @@ class ShadowChromaReinforcement:
                  shadow_end=0.05,
                  max_boost=1.25,
                  curve_power=1.3):
-        """
+                     """
         shadow_start:
             Luma where reinforcement begins
         shadow_end:
@@ -97740,8 +97740,8 @@ class ShadowChromaReinforcement:
 # ------------------------------------------------------------------------------
 def apply_shadow_chroma_reinforcement(img_display_rgb,
         engine: ShadowChromaReinforcement):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 J 03 — SHADOW CHROMA REINFORCEMENT
@@ -97774,7 +97774,7 @@ class MidtoneColorElasticity:
                  mid_width=0.28,
                  max_gain=1.18,
                  curve_power=1.2):
-        """
+                     """
         mid_center:
             Luma center of midtone elasticity
         mid_width:
@@ -97821,8 +97821,8 @@ class MidtoneColorElasticity:
 # ------------------------------------------------------------------------------
 def apply_midtone_color_elasticity(img_display_rgb,
         engine: MidtoneColorElasticity):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 J 04 — MIDTONE COLOR ELASTICITY
@@ -97854,7 +97854,7 @@ class PerceptualColorDensityMapping:
     def __init__(self,
                  density_power=0.85,
                  density_limit=1.10):
-        """
+                     """
         density_power:
             Controls perceptual compression curve
         density_limit:
@@ -97902,8 +97902,8 @@ class PerceptualColorDensityMapping:
 # ------------------------------------------------------------------------------
 def apply_perceptual_color_density_mapping(img_display_rgb,
         engine: PerceptualColorDensityMapping):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 K 01 — PERCEPTUAL COLOR DENSITY MAPPING
@@ -97937,7 +97937,7 @@ class VisionWeightedChromaGain:
                  shadow_gain=0.92,
                  highlight_gain=0.90,
                  curve_power=1.3):
-        """
+                     """
         mid_center:
             Luma center of peak visual sensitivity
         mid_width:
@@ -97999,8 +97999,8 @@ class VisionWeightedChromaGain:
 # ------------------------------------------------------------------------------
 def apply_vision_weighted_chroma_gain(img_display_rgb,
         engine: VisionWeightedChromaGain):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 K 02 — VISION-WEIGHTED CHROMA GAIN
@@ -98033,7 +98033,7 @@ class BlueYellowPerceptualBalance:
                  yellow_preservation=1.05,
                  luma_threshold=0.55,
                  curve_power=1.4):
-        """
+                     """
         blue_suppression:
             Max suppression factor for blue chroma
         yellow_preservation:
@@ -98084,8 +98084,8 @@ class BlueYellowPerceptualBalance:
 # ------------------------------------------------------------------------------
 def apply_blue_yellow_perceptual_balance(img_display_rgb,
         engine: BlueYellowPerceptualBalance):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 K 03 — BLUE–YELLOW PERCEPTUAL BALANCE
@@ -98118,7 +98118,7 @@ class RedSensitivityCompensation:
                  luma_center=0.50,
                  luma_width=0.30,
                  curve_power=1.3):
-        """
+                     """
         red_compression:
             Maximum red chroma compression factor
         luma_center:
@@ -98165,8 +98165,8 @@ class RedSensitivityCompensation:
 # ------------------------------------------------------------------------------
 def apply_red_sensitivity_compensation(img_display_rgb,
         engine: RedSensitivityCompensation):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 K 04 — RED SENSITIVITY COMPENSATION
@@ -98199,7 +98199,7 @@ class TemporalColorStabilityCore:
     def __init__(self,
                  stability_alpha=0.92,
                  max_color_delta=0.06):
-        """
+                     """
         stability_alpha:
             Temporal inertia coefficient (higher = more stable)
         max_color_delta:
@@ -98248,8 +98248,8 @@ class TemporalColorStabilityCore:
 # ------------------------------------------------------------------------------
 def apply_temporal_color_stability_core(img_display_rgb,
         engine: TemporalColorStabilityCore):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 L 01 — TEMPORAL COLOR STABILITY CORE
@@ -98284,7 +98284,7 @@ class ExposureInducedColorMemory:
                  memory_alpha=0.90,
                  exposure_sensitivity=0.85,
                  max_memory_delta=0.07):
-        """
+                     """
         memory_alpha:
             Temporal persistence of color memory (higher = stronger memory)
         exposure_sensitivity:
@@ -98344,8 +98344,8 @@ class ExposureInducedColorMemory:
 # ------------------------------------------------------------------------------
 def apply_exposure_induced_color_memory(img_display_rgb,
         engine: ExposureInducedColorMemory):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 L 02 — EXPOSURE-INDUCED COLOR MEMORY
@@ -98378,7 +98378,7 @@ class MotionWeightedTemporalColorResponse:
                  base_alpha=0.90,
                  motion_sensitivity=1.5,
                  max_delta=0.06):
-        """
+                     """
         base_alpha:
             Base temporal inertia
         motion_sensitivity:
@@ -98445,8 +98445,8 @@ class MotionWeightedTemporalColorResponse:
 def apply_motion_weighted_temporal_color_response(
         img_display_rgb,
         engine: MotionWeightedTemporalColorResponse):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 L 03 — MOTION-WEIGHTED TEMPORAL COLOR RESPONSE
@@ -98481,7 +98481,7 @@ class HighlightColorPersistence:
                  highlight_threshold=0.78,
                  persistence_alpha=0.94,
                  max_highlight_delta=0.05):
-        """
+                     """
         highlight_threshold:
             Luminance level above which highlight persistence engages
         persistence_alpha:
@@ -98549,8 +98549,8 @@ class HighlightColorPersistence:
 def apply_highlight_color_persistence(
         img_display_rgb,
         engine: HighlightColorPersistence):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 L 04 — HIGHLIGHT COLOR PERSISTENCE
@@ -98587,7 +98587,7 @@ class DensitySystemConflictResolution:
                  exposure_weight=0.25,
                  highlight_weight=0.10,
                  max_density_delta=0.08):
-        """
+                     """
         temporal_weight:
             Influence of temporal density memory
         motion_weight:
@@ -98618,7 +98618,7 @@ class DensitySystemConflictResolution:
               motion_img,
               exposure_img,
               highlight_img):
-        """
+                  """
         Resolve density conflicts from multiple candidate images.
         Parameters:
             base_img:
@@ -98674,8 +98674,8 @@ def apply_density_system_conflict_resolution(
         exposure_img,
         highlight_img,
         engine: DensitySystemConflictResolution):
-    if engine is None:
-        return base_img
+            if engine is None:
+                return base_img
     return engine.apply(
         base_img,
         temporal_img,
@@ -98717,7 +98717,7 @@ class EmergencyDensityFallback:
                  max_luma=0.98,
                  max_frame_delta=0.12,
                  fallback_blend=0.85):
-        """
+                     """
         min_luma:
             Minimum acceptable luminance
         max_luma:
@@ -98782,8 +98782,8 @@ class EmergencyDensityFallback:
 def apply_emergency_density_fallback(
         img_display_rgb,
         engine: EmergencyDensityFallback):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 02 — EMERGENCY DENSITY FALLBACK
@@ -98818,7 +98818,7 @@ class SceneCutDensityReset:
                  hist_diff_threshold=0.35,
                  frame_energy_threshold=0.25,
                  reset_blend_frames=2):
-        """
+                     """
         hist_bins:
             Number of bins for luminance histogram
         hist_diff_threshold:
@@ -98903,8 +98903,8 @@ class SceneCutDensityReset:
 def apply_scene_cut_density_reset(
         img_display_rgb,
         engine: SceneCutDensityReset):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 03 — SCENE CUT DENSITY RESET
@@ -98938,7 +98938,7 @@ class MultiShotDensityContinuity:
                  continuity_alpha=0.92,
                  max_anchor_delta=0.06,
                  shot_luma_tolerance=0.10):
-        """
+                     """
         continuity_alpha:
             Strength of continuity anchoring across shots
         max_anchor_delta:
@@ -99003,8 +99003,8 @@ class MultiShotDensityContinuity:
 def apply_multi_shot_density_continuity(
         img_display_rgb,
         engine: MultiShotDensityContinuity):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 04 — MULTI-SHOT DENSITY CONTINUITY
@@ -99038,7 +99038,7 @@ class NarrativeDensityEvolution:
                  evolution_rate=0.0025,
                  max_total_shift=0.12,
                  stability_alpha=0.995):
-        """
+                     """
         evolution_rate:
             Per-frame narrative density drift rate
         max_total_shift:
@@ -99088,8 +99088,8 @@ class NarrativeDensityEvolution:
 def apply_narrative_density_evolution(
         img_display_rgb,
         engine: NarrativeDensityEvolution):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 05 — NARRATIVE DENSITY EVOLUTION
@@ -99123,7 +99123,7 @@ class DensityDriftPrevention:
                  equilibrium_luma=0.50,
                  correction_strength=0.015,
                  max_correction=0.05):
-        """
+                     """
         equilibrium_luma:
             Target neutral luminance equilibrium
         correction_strength:
@@ -99162,8 +99162,8 @@ class DensityDriftPrevention:
 def apply_density_drift_prevention(
         img_display_rgb,
         engine: DensityDriftPrevention):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 06 — DENSITY DRIFT PREVENTION
@@ -99199,7 +99199,7 @@ class ColorDensityMemoryAcrossCuts:
                  luma_gate=0.12,
                  chroma_gate=0.10,
                  max_memory_delta=0.06):
-        """
+                     """
         memory_alpha:
             Persistence strength of color-density memory
         luma_gate:
@@ -99280,8 +99280,8 @@ class ColorDensityMemoryAcrossCuts:
 def apply_color_density_memory_across_cuts(
         img_display_rgb,
         engine: ColorDensityMemoryAcrossCuts):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 07 — COLOR-DENSITY MEMORY ACROSS CUTS
@@ -99317,7 +99317,7 @@ class HighlightDensityConsistency:
                  shoulder_strength=0.85,
                  temporal_alpha=0.94,
                  max_adjustment=0.05):
-        """
+                     """
         highlight_threshold:
             Luminance threshold defining highlights
         shoulder_strength:
@@ -99382,8 +99382,8 @@ class HighlightDensityConsistency:
 def apply_highlight_density_consistency(
         img_display_rgb,
         engine: HighlightDensityConsistency):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 08 — HIGHLIGHT DENSITY CONSISTENCY
@@ -99419,7 +99419,7 @@ class ShadowDensityConsistency:
                  toe_strength=0.90,
                  temporal_alpha=0.95,
                  max_adjustment=0.04):
-        """
+                     """
         shadow_threshold:
             Luminance threshold defining shadows
         toe_strength:
@@ -99484,8 +99484,8 @@ class ShadowDensityConsistency:
 def apply_shadow_density_consistency(
         img_display_rgb,
         engine: ShadowDensityConsistency):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 09 — SHADOW DENSITY CONSISTENCY
@@ -99521,7 +99521,7 @@ class DensitySectionFinalization:
                  max_density=1.0,
                  soft_clip_strength=0.015,
                  epsilon=1e-6):
-        """
+                     """
         min_density:
             Absolute minimum output density
         max_density:
@@ -99574,8 +99574,8 @@ class DensitySectionFinalization:
 def apply_density_section_finalization(
         img_display_rgb,
         engine: DensitySectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 M 10 — DENSITY SECTION FINALIZATION
@@ -99613,7 +99613,7 @@ class ColorContrastArbitrationCore:
                  density_weight=0.20,
                  protect_weight=0.10,
                  max_contrast_delta=0.12):
-        """
+                     """
         global_weight:
             Influence of global contrast proposal
         local_weight:
@@ -99647,7 +99647,7 @@ class ColorContrastArbitrationCore:
               local_contrast_img,
               density_contrast_img,
               protected_contrast_img):
-        """
+                  """
         Resolve competing contrast candidates.
         Parameters:
             base_img:
@@ -99703,8 +99703,8 @@ def apply_color_contrast_arbitration_core(
         density_contrast_img,
         protected_contrast_img,
         engine: ColorContrastArbitrationCore):
-    if engine is None:
-        return base_img
+            if engine is None:
+                return base_img
     return engine.apply(
         base_img,
         global_contrast_img,
@@ -99744,7 +99744,7 @@ class GlobalContrastShaping:
                  pivot_luma=0.45,
                  shoulder_compression=0.92,
                  toe_compression=0.90):
-        """
+                     """
         contrast_strength:
             Overall contrast multiplier (film-like, subtle)
         pivot_luma:
@@ -99807,8 +99807,8 @@ class GlobalContrastShaping:
 def apply_global_contrast_shaping(
         img_display_rgb,
         engine: GlobalContrastShaping):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 N 02 — GLOBAL CONTRAST SHAPING
@@ -99846,7 +99846,7 @@ class LocalContrastMicroModel:
                  max_gain=1.20,
                  protect_highlights=True,
                  protect_shadows=True):
-        """
+                     """
         radius:
             Spatial radius for local contrast extraction
         strength:
@@ -99907,8 +99907,8 @@ class LocalContrastMicroModel:
 def apply_local_contrast_micro_model(
         img_display_rgb,
         engine: LocalContrastMicroModel):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 N 03 — LOCAL CONTRAST (MICRO-CONTRAST) MODELING
@@ -99942,7 +99942,7 @@ class DensityAwareContrastCoupling:
                  expansion_strength=0.18,
                  compression_strength=0.22,
                  max_scale=1.25):
-        """
+                     """
         density_pivot:
             Density value separating expansion vs compression
         expansion_strength:
@@ -99994,8 +99994,8 @@ class DensityAwareContrastCoupling:
 def apply_density_aware_contrast_coupling(
         img_display_rgb,
         engine: DensityAwareContrastCoupling):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 N 04 — DENSITY-AWARE CONTRAST COUPLING
@@ -100029,7 +100029,7 @@ class HighlightShadowContrastProtection:
                  highlight_threshold=0.82,
                  shadow_attenuation=0.55,
                  highlight_attenuation=0.50):
-        """
+                     """
         shadow_threshold:
             Luminance below which contrast is attenuated
         highlight_threshold:
@@ -100071,8 +100071,8 @@ class HighlightShadowContrastProtection:
 def apply_highlight_shadow_contrast_protection(
         img_display_rgb,
         engine: HighlightShadowContrastProtection):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 N 05 — HIGHLIGHT & SHADOW CONTRAST PROTECTION
@@ -100106,7 +100106,7 @@ class ContrastTemporalStability:
                  temporal_alpha=0.92,
                  max_delta=0.06,
                  reset_threshold=0.35):
-        """
+                     """
         temporal_alpha:
             Temporal persistence factor (higher = more inertia)
         max_delta:
@@ -100164,8 +100164,8 @@ class ContrastTemporalStability:
 def apply_contrast_temporal_stability(
         img_display_rgb,
         engine: ContrastTemporalStability):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 N 06 — CONTRAST TEMPORAL STABILITY
@@ -100200,7 +100200,7 @@ class ContrastSectionFinalization:
                  max_value=1.0,
                  epsilon=1e-6,
                  final_soft_clip=0.02):
-        """
+                     """
         min_value:
             Absolute minimum output value
         max_value:
@@ -100248,8 +100248,8 @@ class ContrastSectionFinalization:
 def apply_contrast_section_finalization(
         img_display_rgb,
         engine: ContrastSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 N 07 — CONTRAST SECTION FINALIZATION
@@ -100284,7 +100284,7 @@ class ColorBalanceAnchor:
                  gray_target=0.45,
                  temporal_alpha=0.90,
                  max_shift=0.06):
-        """
+                     """
         reference_white:
             Target RGB white point in display-linear space
         gray_target:
@@ -100352,8 +100352,8 @@ class ColorBalanceAnchor:
 def apply_color_balance_anchor(
         img_display_rgb,
         engine: ColorBalanceAnchor):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 O 01 — COLOR BALANCE ANCHOR (PHOTOCHEMICAL REFERENCE WHITE)
@@ -100388,7 +100388,7 @@ class ChromaticNeutralAxisStabilization:
                  neutral_tolerance=0.035,
                  correction_strength=0.85,
                  temporal_alpha=0.88):
-        """
+                     """
         neutral_tolerance:
             Maximum allowed chroma deviation for neutral tones
         correction_strength:
@@ -100445,8 +100445,8 @@ class ChromaticNeutralAxisStabilization:
 def apply_chromatic_neutral_axis_stabilization(
         img_display_rgb,
         engine: ChromaticNeutralAxisStabilization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 O 02 — CHROMATIC NEUTRAL AXIS STABILIZATION
@@ -100482,7 +100482,7 @@ class ColorTemperatureDriftControl:
                  drift_strength=0.80,
                  temporal_alpha=0.90,
                  max_shift=0.05):
-        """
+                     """
         warm_axis:
             RGB direction representing warm temperature bias
         cool_axis:
@@ -100557,8 +100557,8 @@ class ColorTemperatureDriftControl:
 def apply_color_temperature_drift_control(
         img_display_rgb,
         engine: ColorTemperatureDriftControl):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 O 03 — COLOR TEMPERATURE DRIFT CONTROL
@@ -100592,7 +100592,7 @@ class ColorBalanceTemporalCoherence:
                  temporal_alpha=0.94,
                  max_delta=0.04,
                  reset_luma_threshold=0.40):
-        """
+                     """
         temporal_alpha:
             Persistence factor for color balance state
         max_delta:
@@ -100650,8 +100650,8 @@ class ColorBalanceTemporalCoherence:
 def apply_color_balance_temporal_coherence(
         img_display_rgb,
         engine: ColorBalanceTemporalCoherence):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 O 04 — COLOR BALANCE TEMPORAL COHERENCE
@@ -100686,7 +100686,7 @@ class ColorBalanceSectionFinalization:
                  max_value=1.0,
                  epsilon=1e-6,
                  soft_clip=0.015):
-        """
+                     """
         min_value:
             Absolute minimum allowed channel value
         max_value:
@@ -100734,8 +100734,8 @@ class ColorBalanceSectionFinalization:
 def apply_color_balance_section_finalization(
         img_display_rgb,
         engine: ColorBalanceSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 O 05 — COLOR BALANCE SECTION FINALIZATION
@@ -100768,7 +100768,7 @@ class PrimaryColorTiming:
                  printer_lights=(0.0, 0.0, 0.0),
                  light_scale=0.025,
                  max_offset=0.08):
-        """
+                     """
         printer_lights:
             Tuple of (R, G, B) printer-light units (negative = subtract exposure)
         light_scale:
@@ -100800,8 +100800,8 @@ class PrimaryColorTiming:
 def apply_primary_color_timing(
         img_display_rgb,
         engine: PrimaryColorTiming):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 P 01 — PRIMARY COLOR TIMING (PRINTER-LIGHT EMULATION)
@@ -100837,7 +100837,7 @@ class SecondaryColorIsolation:
                  yellow_strength=0.22,
                  softness=0.60,
                  max_adjustment=0.10):
-        """
+                     """
         cyan_strength:
             Isolation strength for cyan region
         magenta_strength:
@@ -100888,8 +100888,8 @@ class SecondaryColorIsolation:
 def apply_secondary_color_isolation(
         img_display_rgb,
         engine: SecondaryColorIsolation):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 P 02 — SECONDARY COLOR ISOLATION
@@ -100925,7 +100925,7 @@ class FilmDyeCrosstalkSimulation:
                  gb_crosstalk=0.05,
                  density_modulation=0.85,
                  max_bleed=0.08):
-        """
+                     """
         rg_crosstalk:
             Influence of red exposure on green dye layer
         rb_crosstalk:
@@ -100985,8 +100985,8 @@ class FilmDyeCrosstalkSimulation:
 def apply_film_dye_crosstalk_simulation(
         img_display_rgb,
         engine: FilmDyeCrosstalkSimulation):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 P 03 — FILM DYE CROSSTALK SIMULATION
@@ -101019,7 +101019,7 @@ class ColorTimingTemporalStability:
                  temporal_alpha=0.93,
                  max_delta=0.05,
                  reset_luma_threshold=0.45):
-        """
+                     """
         temporal_alpha:
             Persistence factor for timing decisions
         max_delta:
@@ -101077,8 +101077,8 @@ class ColorTimingTemporalStability:
 def apply_color_timing_temporal_stability(
         img_display_rgb,
         engine: ColorTimingTemporalStability):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 P 04 — COLOR TIMING TEMPORAL STABILITY
@@ -101113,7 +101113,7 @@ class ColorTimingSectionFinalization:
                  epsilon=1e-6,
                  preserve_midgray=True,
                  midgray=0.18):
-        """
+                     """
         clamp_min:
             Minimum allowed signal value
         clamp_max:
@@ -101166,8 +101166,8 @@ class ColorTimingSectionFinalization:
 def apply_color_timing_section_finalization(
         img_display_rgb,
         engine: ColorTimingSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 P 05 — COLOR TIMING SECTION FINALIZATION
@@ -101203,7 +101203,7 @@ class SaturationCurveShaping:
                  shadow_desat=0.65,
                  highlight_rolloff=0.70,
                  max_sat=1.35):
-        """
+                     """
         sat_strength:
             Global saturation multiplier
         midtone_bias:
@@ -101261,8 +101261,8 @@ class SaturationCurveShaping:
 def apply_saturation_curve_shaping(
         img_display_rgb,
         engine: SaturationCurveShaping):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Q 01 — SATURATION CURVE SHAPING
@@ -101296,7 +101296,7 @@ class SaturationDensityCoupling:
                  shadow_compress=0.60,
                  highlight_compress=0.55,
                  max_modulation=1.25):
-        """
+                     """
         density_strength:
             Overall influence of density on saturation
         shadow_compress:
@@ -101346,8 +101346,8 @@ class SaturationDensityCoupling:
 def apply_saturation_density_coupling(
         img_display_rgb,
         engine: SaturationDensityCoupling):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Q 02 — SATURATION DENSITY COUPLING
@@ -101380,7 +101380,7 @@ class SaturationTemporalStability:
                  temporal_alpha=0.92,
                  max_delta=0.06,
                  reset_luma_threshold=0.42):
-        """
+                     """
         temporal_alpha:
             Persistence factor for saturation state
         max_delta:
@@ -101438,8 +101438,8 @@ class SaturationTemporalStability:
 def apply_saturation_temporal_stability(
         img_display_rgb,
         engine: SaturationTemporalStability):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Q 03 — SATURATION TEMPORAL STABILITY
@@ -101472,7 +101472,7 @@ class SaturationSectionFinalization:
                  clamp_min=0.0,
                  clamp_max=1.0,
                  epsilon=1e-6):
-        """
+                     """
         clamp_min:
             Minimum allowed signal value
         clamp_max:
@@ -101503,8 +101503,8 @@ class SaturationSectionFinalization:
 def apply_saturation_section_finalization(
         img_display_rgb,
         engine: SaturationSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Q 04 — SATURATION SECTION FINALIZATION
@@ -101539,7 +101539,7 @@ class PerceptualContrastModeling:
                  toe_strength=0.25,
                  shoulder_strength=0.30,
                  max_contrast=1.35):
-        """
+                     """
         contrast_strength:
             Overall contrast gain
         pivot:
@@ -101603,8 +101603,8 @@ class PerceptualContrastModeling:
 def apply_perceptual_contrast_modeling(
         img_display_rgb,
         engine: PerceptualContrastModeling):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 R 01 — PERCEPTUAL CONTRAST MODELING
@@ -101639,7 +101639,7 @@ class ContrastDensityInteraction:
                  shadow_limit=0.65,
                  highlight_limit=0.60,
                  max_gain=1.30):
-        """
+                     """
         density_strength:
             Influence of density on contrast shaping
         shadow_limit:
@@ -101696,8 +101696,8 @@ class ContrastDensityInteraction:
 def apply_contrast_density_interaction(
         img_display_rgb,
         engine: ContrastDensityInteraction):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 R 02 — CONTRAST DENSITY INTERACTION
@@ -101730,7 +101730,7 @@ class ContrastTemporalStability:
                  temporal_alpha=0.91,
                  max_delta=0.05,
                  reset_luma_threshold=0.40):
-        """
+                     """
         temporal_alpha:
             Persistence factor for contrast state
         max_delta:
@@ -101788,8 +101788,8 @@ class ContrastTemporalStability:
 def apply_contrast_temporal_stability(
         img_display_rgb,
         engine: ContrastTemporalStability):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 R 03 — CONTRAST TEMPORAL STABILITY
@@ -101824,7 +101824,7 @@ class ContrastSectionFinalization:
                  epsilon=1e-6,
                  preserve_midgray=True,
                  midgray=0.18):
-        """
+                     """
         clamp_min:
             Minimum allowed signal value
         clamp_max:
@@ -101877,8 +101877,8 @@ class ContrastSectionFinalization:
 def apply_contrast_section_finalization(
         img_display_rgb,
         engine: ContrastSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 R 04 — CONTRAST SECTION FINALIZATION
@@ -101913,7 +101913,7 @@ class LocalContrastMicrostructure:
                  radius_small=3,
                  radius_large=15,
                  max_boost=0.25):
-        """
+                     """
         strength:
             Overall microcontrast intensity
         radius_small:
@@ -101971,8 +101971,8 @@ class LocalContrastMicrostructure:
 def apply_local_contrast_microstructure(
         img_display_rgb,
         engine: LocalContrastMicrostructure):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 S 01 — LOCAL CONTRAST MICROSTRUCTURE
@@ -102006,7 +102006,7 @@ class EdgeAwareContrastPreservation:
                  edge_sensitivity=0.75,
                  edge_radius=1.5,
                  preserve_strength=0.85):
-        """
+                     """
         edge_sensitivity:
             Controls how strongly edges are detected
         edge_radius:
@@ -102071,8 +102071,8 @@ class EdgeAwareContrastPreservation:
 def apply_edge_aware_contrast_preservation(
         img_display_rgb,
         engine: EdgeAwareContrastPreservation):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 S 02 — EDGE-AWARE CONTRAST PRESERVATION
@@ -102105,7 +102105,7 @@ class MicrocontrastTemporalStability:
                  temporal_alpha=0.90,
                  max_delta=0.04,
                  reset_luma_threshold=0.38):
-        """
+                     """
         temporal_alpha:
             Persistence factor for microcontrast state
         max_delta:
@@ -102163,8 +102163,8 @@ class MicrocontrastTemporalStability:
 def apply_microcontrast_temporal_stability(
         img_display_rgb,
         engine: MicrocontrastTemporalStability):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 S 03 — MICROCONTRAST TEMPORAL STABILITY
@@ -102197,7 +102197,7 @@ class LocalContrastSectionFinalization:
                  clamp_min=0.0,
                  clamp_max=1.0,
                  epsilon=1e-6):
-        """
+                     """
         clamp_min:
             Minimum allowed signal value
         clamp_max:
@@ -102228,8 +102228,8 @@ class LocalContrastSectionFinalization:
 def apply_local_contrast_section_finalization(
         img_display_rgb,
         engine: LocalContrastSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 S 04 — LOCAL CONTRAST SECTION FINALIZATION
@@ -102265,7 +102265,7 @@ class HighlightTexturePreservation:
                  shoulder_strength=0.65,
                  texture_protect=0.80,
                  blur_radius=2.5):
-        """
+                     """
         highlight_threshold:
             Luma level above which highlight preservation engages
         shoulder_strength:
@@ -102341,8 +102341,8 @@ class HighlightTexturePreservation:
 def apply_highlight_texture_preservation(
         img_display_rgb,
         engine: HighlightTexturePreservation):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 T 01 — HIGHLIGHT TEXTURE PRESERVATION
@@ -102378,7 +102378,7 @@ class HighlightRolloffMicrostructure:
                  rolloff_strength=0.55,
                  spatial_variance=0.35,
                  blur_radius=3.0):
-        """
+                     """
         rolloff_start:
             Luma level where roll-off begins
         rolloff_strength:
@@ -102455,8 +102455,8 @@ class HighlightRolloffMicrostructure:
 def apply_highlight_rolloff_microstructure(
         img_display_rgb,
         engine: HighlightRolloffMicrostructure):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 T 02 — HIGHLIGHT ROLL-OFF MICROSTRUCTURE
@@ -102490,7 +102490,7 @@ class HighlightSectionFinalization:
                  clamp_max=1.0,
                  epsilon=1e-6,
                  preserve_mid_high=0.65):
-        """
+                     """
         clamp_min:
             Minimum allowed signal value
         clamp_max:
@@ -102544,8 +102544,8 @@ class HighlightSectionFinalization:
 def apply_highlight_section_finalization(
         img_display_rgb,
         engine: HighlightSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 T 04 — HIGHLIGHT SECTION FINALIZATION
@@ -102580,7 +102580,7 @@ class ShadowTexturePreservation:
                  toe_strength=0.65,
                  texture_protect=0.85,
                  blur_radius=2.0):
-        """
+                     """
         shadow_threshold:
             Luma level below which shadow preservation engages
         toe_strength:
@@ -102654,8 +102654,8 @@ class ShadowTexturePreservation:
 def apply_shadow_texture_preservation(
         img_display_rgb,
         engine: ShadowTexturePreservation):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 U 01 — SHADOW TEXTURE PRESERVATION
@@ -102690,7 +102690,7 @@ class ShadowLiftMicrostructure:
                  lift_threshold=0.25,
                  spatial_variance=0.30,
                  blur_radius=3.0):
-        """
+                     """
         lift_strength:
             Maximum shadow lift amount
         lift_threshold:
@@ -102762,8 +102762,8 @@ class ShadowLiftMicrostructure:
 def apply_shadow_lift_microstructure(
         img_display_rgb,
         engine: ShadowLiftMicrostructure):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 U 02 — SHADOW LIFT MICROSTRUCTURE
@@ -102797,7 +102797,7 @@ class ShadowTemporalStability:
                  max_delta=0.035,
                  shadow_threshold=0.30,
                  reset_luma_threshold=0.45):
-        """
+                     """
         temporal_alpha:
             Persistence factor for shadow state
         max_delta:
@@ -102866,8 +102866,8 @@ class ShadowTemporalStability:
 def apply_shadow_temporal_stability(
         img_display_rgb,
         engine: ShadowTemporalStability):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 U 03 — SHADOW TEMPORAL STABILITY
@@ -102901,7 +102901,7 @@ class ShadowSectionFinalization:
                  clamp_max=1.0,
                  epsilon=1e-6,
                  protect_mid_low=0.35):
-        """
+                     """
         clamp_min:
             Minimum allowed signal value
         clamp_max:
@@ -102955,8 +102955,8 @@ class ShadowSectionFinalization:
 def apply_shadow_section_finalization(
         img_display_rgb,
         engine: ShadowSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 U 04 — SHADOW SECTION FINALIZATION
@@ -102991,7 +102991,7 @@ class GlobalTonalBalanceRefinement:
                  highlight_weight=0.30,
                  balance_strength=0.25,
                  midtone_center=0.45):
-        """
+                     """
         shadow_weight:
             Contribution weight of shadows
         midtone_weight:
@@ -103056,8 +103056,8 @@ class GlobalTonalBalanceRefinement:
 def apply_global_tonal_balance_refinement(
         img_display_rgb,
         engine: GlobalTonalBalanceRefinement):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 V 01 — GLOBAL TONAL BALANCE REFINEMENT
@@ -103091,7 +103091,7 @@ class MidtoneDensityCalibration:
                  calibration_strength=0.30,
                  midtone_width=0.20,
                  protect_extremes=True):
-        """
+                     """
         target_midtone:
             Reference midtone luma target (cinematic)
         calibration_strength:
@@ -103148,8 +103148,8 @@ class MidtoneDensityCalibration:
 def apply_midtone_density_calibration(
         img_display_rgb,
         engine: MidtoneDensityCalibration):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 V 02 — MIDTONE DENSITY CALIBRATION
@@ -103182,7 +103182,7 @@ class GlobalDensityConsistency:
                  temporal_alpha=0.94,
                  max_delta=0.05,
                  reset_luma_threshold=0.50):
-        """
+                     """
         temporal_alpha:
             Persistence factor for global density state
         max_delta:
@@ -103240,8 +103240,8 @@ class GlobalDensityConsistency:
 def apply_global_density_consistency(
         img_display_rgb,
         engine: GlobalDensityConsistency):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 V 03 — GLOBAL DENSITY CONSISTENCY
@@ -103276,7 +103276,7 @@ class TonalSectionFinalization:
                  epsilon=1e-6,
                  luma_floor=0.02,
                  luma_ceiling=0.98):
-        """
+                     """
         clamp_min:
             Absolute minimum signal value
         clamp_max:
@@ -103327,8 +103327,8 @@ class TonalSectionFinalization:
 def apply_tonal_section_finalization(
         img_display_rgb,
         engine: TonalSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 V 04 — TONAL SECTION FINALIZATION
@@ -103361,7 +103361,7 @@ class ColorSeparationIntegrity:
                  separation_strength=0.18,
                  preserve_luma=True,
                  epsilon=1e-6):
-        """
+                     """
         separation_strength:
             Strength of channel decorrelation
         preserve_luma:
@@ -103406,8 +103406,8 @@ class ColorSeparationIntegrity:
 def apply_color_separation_integrity(
         img_display_rgb,
         engine: ColorSeparationIntegrity):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 W 01 — COLOR SEPARATION INTEGRITY
@@ -103440,7 +103440,7 @@ class ChromaCrosstalkSuppression:
                  suppression_strength=0.22,
                  luma_weight=0.65,
                  epsilon=1e-6):
-        """
+                     """
         suppression_strength:
             Strength of chroma crosstalk suppression
         luma_weight:
@@ -103490,8 +103490,8 @@ class ChromaCrosstalkSuppression:
 def apply_chroma_crosstalk_suppression(
         img_display_rgb,
         engine: ChromaCrosstalkSuppression):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 W 02 — CHROMA CROSSTALK SUPPRESSION
@@ -103526,7 +103526,7 @@ class ColorDensityStabilization:
                  luma_gate_low=0.08,
                  luma_gate_high=0.92,
                  epsilon=1e-6):
-        """
+                     """
         temporal_alpha:
             Persistence factor for chroma state
         max_chroma_delta:
@@ -103603,8 +103603,8 @@ class ColorDensityStabilization:
 def apply_color_density_stabilization(
         img_display_rgb,
         engine: ColorDensityStabilization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 W 03 — COLOR DENSITY STABILIZATION
@@ -103639,7 +103639,7 @@ class ColorSectionFinalization:
                  epsilon=1e-6,
                  saturation_floor=0.0,
                  saturation_ceiling=1.0):
-        """
+                     """
         clamp_min / clamp_max:
             Absolute signal bounds
         epsilon:
@@ -103695,8 +103695,8 @@ class ColorSectionFinalization:
 def apply_color_section_finalization(
         img_display_rgb,
         engine: ColorSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 W 04 — COLOR SECTION FINALIZATION
@@ -103729,7 +103729,7 @@ class ACESGamutIntegrityEnforcement:
                  gamut_limit=1.0,
                  compression_strength=0.85,
                  epsilon=1e-6):
-        """
+                     """
         gamut_limit:
             Maximum allowed channel excursion
         compression_strength:
@@ -103765,8 +103765,8 @@ class ACESGamutIntegrityEnforcement:
 def apply_aces_gamut_integrity_enforcement(
         img_display_rgb,
         engine: ACESGamutIntegrityEnforcement):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 X 01 — ACES GAMUT INTEGRITY ENFORCEMENT
@@ -103800,7 +103800,7 @@ class WideGamutRollOffControl:
                  rolloff_end=1.00,
                  curve_strength=1.25,
                  epsilon=1e-6):
-        """
+                     """
         rolloff_start:
             Normalized magnitude where roll-off begins
         rolloff_end:
@@ -103850,8 +103850,8 @@ class WideGamutRollOffControl:
 def apply_wide_gamut_rolloff_control(
         img_display_rgb,
         engine: WideGamutRollOffControl):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 X 02 — WIDE-GAMUT ROLL-OFF CONTROL
@@ -103885,7 +103885,7 @@ class SaturationBoundaryManagement:
                  knee_start=0.75,
                  knee_strength=1.4,
                  epsilon=1e-6):
-        """
+                     """
         saturation_limit:
             Maximum allowed saturation magnitude
         knee_start:
@@ -103938,8 +103938,8 @@ class SaturationBoundaryManagement:
 def apply_saturation_boundary_management(
         img_display_rgb,
         engine: SaturationBoundaryManagement):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 X 03 — SATURATION BOUNDARY MANAGEMENT
@@ -103973,7 +103973,7 @@ class GamutSectionFinalization:
                  clamp_max=1.0,
                  epsilon=1e-6,
                  enforce_unit_cube=True):
-        """
+                     """
         clamp_min / clamp_max:
             Absolute signal bounds
         epsilon:
@@ -104006,8 +104006,8 @@ class GamutSectionFinalization:
 def apply_gamut_section_finalization(
         img_display_rgb,
         engine: GamutSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 X 04 — GAMUT SECTION FINALIZATION
@@ -104041,7 +104041,7 @@ class OutputTransferPreparation:
                  soft_clip_strength=1.15,
                  highlight_protect=0.90,
                  epsilon=1e-6):
-        """
+                     """
         peak_soft_clip:
             Normalized level where soft clipping begins
         soft_clip_strength:
@@ -104095,8 +104095,8 @@ class OutputTransferPreparation:
 def apply_output_transfer_preparation(
         img_display_rgb,
         engine: OutputTransferPreparation):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Y 01 — OUTPUT TRANSFER PREPARATION
@@ -104131,7 +104131,7 @@ class DisplayRenderingIntentMapping:
                  highlight_compress=0.90,
                  shadow_lift=0.03,
                  epsilon=1e-6):
-        """
+                     """
         contrast:
             Global display contrast adjustment
         pivot:
@@ -104196,8 +104196,8 @@ class DisplayRenderingIntentMapping:
 def apply_display_rendering_intent_mapping(
         img_display_rgb,
         engine: DisplayRenderingIntentMapping):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Y 02 — DISPLAY RENDERING INTENT MAPPING
@@ -104232,7 +104232,7 @@ class ODTPreconditioning:
                  toe_strength=0.04,
                  shoulder_strength=0.06,
                  epsilon=1e-6):
-        """
+                     """
         contrast_soften:
             Slight reduction of contrast before ODT
         toe_strength:
@@ -104282,8 +104282,8 @@ class ODTPreconditioning:
 def apply_odt_preconditioning(
         img_display_rgb,
         engine: ODTPreconditioning):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Y 03 — ODT PRECONDITIONING
@@ -104317,7 +104317,7 @@ class OutputSectionFinalization:
                  clamp_max=1.0,
                  epsilon=1e-6,
                  freeze_nan=True):
-        """
+                     """
         clamp_min / clamp_max:
             Absolute output bounds
         epsilon:
@@ -104359,8 +104359,8 @@ class OutputSectionFinalization:
 def apply_output_section_finalization(
         img_display_rgb,
         engine: OutputSectionFinalization):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 82 Y 04 — OUTPUT SECTION FINALIZATION
@@ -104396,7 +104396,7 @@ class HDRSceneReferencing:
                  headroom_stops=4.0,
                  exposure_comp=0.0,
                  epsilon=1e-6):
-        """
+                     """
         mid_gray:
             Scene-referred mid-gray anchor
         hdr_white:
@@ -104456,8 +104456,8 @@ class HDRSceneReferencing:
 def apply_hdr_scene_referencing(
         img_display_rgb,
         engine: HDRSceneReferencing):
-    if engine is None:
-        return img_display_rgb
+            if engine is None:
+                return img_display_rgb
     return engine.apply(img_display_rgb)
 # ==============================================================================
 # END OF CHUNK 83 A 01 — HDR SCENE REFERENCING
@@ -104492,7 +104492,7 @@ class SceneReferredPeakManagement:
                  rolloff_strength=1.35,
                  preserve_chroma=True,
                  epsilon=1e-6):
-        """
+                     """
         peak_target:
             Maximum scene-referred peak in linear units
         rolloff_start:
@@ -104552,8 +104552,8 @@ class SceneReferredPeakManagement:
 def apply_scene_referred_peak_management(
         img_scene_rgb,
         engine: SceneReferredPeakManagement):
-    if engine is None:
-        return img_scene_rgb
+            if engine is None:
+                return img_scene_rgb
     return engine.apply(img_scene_rgb)
 # ==============================================================================
 # END OF CHUNK 83 A 02 — SCENE-REFERRED PEAK MANAGEMENT
@@ -104583,7 +104583,7 @@ class HDRContrastAdaptation:
                  adaptive_strength=0.35,
                  mid_gray=0.18,
                  epsilon=1e-6):
-        """
+                     """
         base_contrast:
             Baseline contrast multiplier
         adaptive_strength:
@@ -104637,8 +104637,8 @@ class HDRContrastAdaptation:
 def apply_hdr_contrast_adaptation(
         img_scene_rgb,
         engine: HDRContrastAdaptation):
-    if engine is None:
-        return img_scene_rgb
+            if engine is None:
+                return img_scene_rgb
     return engine.apply(img_scene_rgb)
 # ==============================================================================
 # END OF CHUNK 83 A 03 — HDR CONTRAST ADAPTATION
@@ -104668,7 +104668,7 @@ class HDRContrastAdaptation:
                  adaptive_strength=0.35,
                  mid_gray=0.18,
                  epsilon=1e-6):
-        """
+                     """
         base_contrast:
             Baseline contrast multiplier
         adaptive_strength:
@@ -104722,8 +104722,8 @@ class HDRContrastAdaptation:
 def apply_hdr_contrast_adaptation(
         img_scene_rgb,
         engine: HDRContrastAdaptation):
-    if engine is None:
-        return img_scene_rgb
+            if engine is None:
+                return img_scene_rgb
     return engine.apply(img_scene_rgb)
 # ==============================================================================
 # END OF CHUNK 83 A 03 — HDR CONTRAST ADAPTATION
@@ -104753,7 +104753,7 @@ class HDRSectionFinalization:
                  clamp_max=None,
                  epsilon=1e-6,
                  freeze_nan=True):
-        """
+                     """
         clamp_min:
             Lower HDR bound (scene-referred)
         clamp_max:
@@ -104800,8 +104800,8 @@ class HDRSectionFinalization:
 def apply_hdr_section_finalization(
         img_scene_rgb,
         engine: HDRSectionFinalization):
-    if engine is None:
-        return img_scene_rgb
+            if engine is None:
+                return img_scene_rgb
     return engine.apply(img_scene_rgb)
 # ==============================================================================
 # END OF CHUNK 83 A 04 — HDR SECTION FINALIZATION
@@ -104831,7 +104831,7 @@ class DolbyVisionStyleMetadataPrep:
                  peak_percentile=99.9,
                  avg_window=0.10,
                  epsilon=1e-6):
-        """
+                     """
         peak_percentile:
             Percentile used to estimate maxCLL-like peak
         avg_window:
@@ -104881,8 +104881,8 @@ class DolbyVisionStyleMetadataPrep:
 def extract_hdr_dynamic_metadata(
         img_scene_rgb,
         engine: DolbyVisionStyleMetadataPrep):
-    if engine is None:
-        return None
+            if engine is None:
+                return None
     return engine.apply(img_scene_rgb)
 # ==============================================================================
 # END OF CHUNK 83 B 01 — DOLBY VISION–STYLE METADATA PREP
@@ -104913,7 +104913,7 @@ class DynamicMetadataSmoothing:
                  ema_alpha=0.35,
                  clamp_min=1e-6,
                  clamp_max=None):
-        """
+                     """
         window_size:
             Number of frames used for rolling statistics
         ema_alpha:
@@ -104955,8 +104955,8 @@ class DynamicMetadataSmoothing:
 def smooth_hdr_dynamic_metadata(
         metadata: dict,
         engine: DynamicMetadataSmoothing):
-    if engine is None:
-        return metadata
+            if engine is None:
+                return metadata
     return engine.apply(metadata)
 # ==============================================================================
 # END OF CHUNK 83 B 02 — DYNAMIC METADATA SMOOTHING
@@ -104985,7 +104985,7 @@ class ShotBasedMetadataSegmentation:
                  reset_on_cut=True,
                  blend_frames=2,
                  epsilon=1e-6):
-        """
+                     """
         reset_on_cut:
             Fully reset metadata state at shot cut
         blend_frames:
@@ -105029,8 +105029,8 @@ def segment_hdr_metadata_by_shot(
         metadata: dict,
         is_cut: bool,
         engine: ShotBasedMetadataSegmentation):
-    if engine is None:
-        return metadata
+            if engine is None:
+                return metadata
     return engine.apply(metadata, is_cut)
 # ==============================================================================
 # END OF CHUNK 83 B 03 — SHOT-BASED METADATA SEGMENTATION
@@ -105060,7 +105060,7 @@ class MetadataStabilityEnforcement:
                  hard_min=1e-4,
                  hard_max=1e4,
                  epsilon=1e-6):
-        """
+                     """
         max_delta_ratio:
             Maximum allowed per-frame relative change
         hard_min / hard_max:
@@ -105096,8 +105096,8 @@ class MetadataStabilityEnforcement:
 def enforce_hdr_metadata_stability(
         metadata: dict,
         engine: MetadataStabilityEnforcement):
-    if engine is None:
-        return metadata
+            if engine is None:
+                return metadata
     return engine.apply(metadata)
 # ==============================================================================
 # END OF CHUNK 83 B 04 — METADATA STABILITY ENFORCEMENT
@@ -105127,7 +105127,7 @@ class SDRHDRDualPipelineArbitration:
                  hdr_peak_threshold=1.5,
                  hdr_mean_threshold=0.35,
                  hysteresis=0.10):
-        """
+                     """
         hdr_peak_threshold:
             Scene peak required to justify HDR
         hdr_mean_threshold:
@@ -105162,8 +105162,8 @@ class SDRHDRDualPipelineArbitration:
 def arbitrate_sdr_hdr_pipeline(
         metadata: dict,
         engine: SDRHDRDualPipelineArbitration):
-    if engine is None:
-        return "SDR"
+            if engine is None:
+                return "SDR"
     return engine.decide(metadata)
 # ==============================================================================
 # END OF CHUNK 83 C 01 — SDR/HDR DUAL-PIPELINE ARBITRATION
@@ -105193,7 +105193,7 @@ class OutputModeAutoSelection:
                  enable_hlg=True,
                  hdr10_peak_min=1.8,
                  hlg_mean_min=0.25):
-        """
+                     """
         enable_hdr10 / enable_hlg:
             Allow corresponding output modes
         hdr10_peak_min:
@@ -105223,8 +105223,8 @@ def select_output_mode(
         pipeline_mode: str,
         metadata: dict,
         engine: OutputModeAutoSelection):
-    if engine is None:
-        return "SDR"
+            if engine is None:
+                return "SDR"
     return engine.decide(pipeline_mode, metadata)
 # ==============================================================================
 # END OF CHUNK 83 C 02 — OUTPUT MODE AUTO-SELECTION
@@ -105287,8 +105287,8 @@ def apply_backward_compatibility(
         metadata: dict,
         source_version: str,
         engine: BackwardCompatibilityShim):
-    if engine is None:
-        return metadata
+            if engine is None:
+                return metadata
     return engine.adapt(metadata, source_version)
 # ==============================================================================
 # END OF CHUNK 83 C 03 — DISPLAY CAPABILITY NEGOTIATION
@@ -105329,8 +105329,8 @@ class OutputIntentLocking:
 def lock_output_intent(
         output_mode: str,
         engine: OutputIntentLocking):
-    if engine is None:
-        return output_mode
+            if engine is None:
+                return output_mode
     return engine.lock(output_mode)
 # ==============================================================================
 # END OF CHUNK 83 C 04 — OUTPUT INTENT LOCKING
@@ -105359,7 +105359,7 @@ class FinalMasteringGate:
                  require_intent=True,
                  allow_hdr=True,
                  epsilon=1e-6):
-        """
+                     """
         require_intent:
             Require output intent to be locked before pass
         allow_hdr:
@@ -105395,8 +105395,8 @@ def run_final_mastering_gate(
         frame,
         output_intent: str,
         engine: FinalMasteringGate):
-    if engine is None:
-        return True
+            if engine is None:
+                return True
     return engine.validate(frame, output_intent)
 # ==============================================================================
 # END OF CHUNK 83 D 01 — FINAL MASTERING GATE
@@ -105427,7 +105427,7 @@ class ArchiveSafeMasterOutput:
                  clamp_max=None,
                  checksum=True,
                  epsilon=1e-6):
-        """
+                     """
         dtype:
             Storage data type (float32 recommended)
         clamp_min / clamp_max:
@@ -105474,8 +105474,8 @@ class ArchiveSafeMasterOutput:
 def generate_archive_safe_master(
         frame,
         engine: ArchiveSafeMasterOutput):
-    if engine is None:
-        return frame
+            if engine is None:
+                return frame
     return engine.apply(frame)
 # ==============================================================================
 # END OF CHUNK 83 D 02 — ARCHIVE-SAFE MASTER OUTPUT
@@ -105505,7 +105505,7 @@ class DeliveryPackageAssembly:
                  include_checksums=True,
                  include_intent=True,
                  include_timestamp=True):
-        """
+                     """
         include_checksums:
             Preserve archival checksum in delivery package
         include_intent:
@@ -105554,8 +105554,8 @@ def assemble_delivery_package(
         metadata: dict,
         intent: str,
         engine: DeliveryPackageAssembly):
-    if engine is None:
-        return None
+            if engine is None:
+                return None
     return engine.assemble(master, metadata, intent)
 # ==============================================================================
 # END OF CHUNK 83 E 01 — DELIVERY PACKAGE ASSEMBLY
@@ -105611,8 +105611,8 @@ class EncodeProfileSelection:
 def select_encode_profile(
         intent: str,
         engine: EncodeProfileSelection):
-    if engine is None:
-        return None
+            if engine is None:
+                return None
     return engine.select(intent)
 # ==============================================================================
 # END OF CHUNK 83 E 02 — ENCODE PROFILE SELECTION
@@ -105644,7 +105644,7 @@ class BitrateStrategyArbitration:
                  detail_weight=0.4,
                  min_scale=0.7,
                  max_scale=1.6):
-        """
+                     """
         base_bitrate_*:
             Reference bitrates (bps)
         motion_weight / detail_weight:
@@ -105675,8 +105675,8 @@ class BitrateStrategyArbitration:
                intent: str,
                frame,
                motion_metric: float):
-        if intent == "HDR10" or intent == "HLG":
-            base = self.base_bitrate_hdr
+                   if intent == "HDR10" or intent == "HLG":
+                       base = self.base_bitrate_hdr
         else:
             base = self.base_bitrate_sdr
         motion_score = self._estimate_motion(motion_metric)
@@ -105695,8 +105695,8 @@ def arbitrate_bitrate(
         frame,
         motion_metric: float,
         engine: BitrateStrategyArbitration):
-    if engine is None:
-        return None
+            if engine is None:
+                return None
     return engine.decide(intent, frame, motion_metric)
 # ==============================================================================
 # END OF CHUNK 83 E 03 — BITRATE STRATEGY ARBITRATION
@@ -105752,8 +105752,8 @@ def validate_codec_constraints(
         profile: dict,
         bitrate: int,
         engine: CodecConstraintValidation):
-    if engine is None:
-        return bitrate
+            if engine is None:
+                return bitrate
     return engine.validate(profile, bitrate)
 # ==============================================================================
 # END OF CHUNK 83 E 04 — CODEC CONSTRAINT VALIDATION
@@ -105813,8 +105813,8 @@ class DistributionIntegrityCheck:
 def check_distribution_integrity(
         delivery_package: dict,
         engine: DistributionIntegrityCheck):
-    if engine is None:
-        return True
+            if engine is None:
+                return True
     return engine.validate(delivery_package)
 # ==============================================================================
 # END OF CHUNK 83 F 01 — DISTRIBUTION INTEGRITY CHECK
@@ -105843,7 +105843,7 @@ class TransportErrorResilience:
                  enable_frame_duplication=True,
                  max_frame_gap=2,
                  epsilon=1e-6):
-        """
+                     """
         enable_frame_duplication:
             Allow previous-frame reuse if current frame lost
         max_frame_gap:
@@ -105882,8 +105882,8 @@ class TransportErrorResilience:
 def apply_transport_resilience(
         delivery_package: dict,
         engine: TransportErrorResilience):
-    if engine is None:
-        return delivery_package
+            if engine is None:
+                return delivery_package
     return engine.recover(delivery_package)
 # ==============================================================================
 # END OF CHUNK 83 F 02 — TRANSPORT ERROR RESILIENCE
@@ -105910,7 +105910,7 @@ class PlaybackCompatibilityGuard:
     def __init__(self,
                  force_full_range_sdr=False,
                  allow_hdr_fallback=True):
-        """
+                     """
         force_full_range_sdr:
             Convert SDR content to full-range if required
         allow_hdr_fallback:
@@ -105938,8 +105938,8 @@ def apply_playback_guard(
         delivery_package: dict,
         encode_profile: dict,
         engine: PlaybackCompatibilityGuard):
-    if engine is None:
-        return delivery_package
+            if engine is None:
+                return delivery_package
     return engine.apply(delivery_package, encode_profile)
 # ==============================================================================
 # END OF CHUNK 83 G 01 — PLAYBACK COMPATIBILITY GUARD
@@ -105968,7 +105968,7 @@ class FallbackDecodePath:
                  prefer_sdr=True,
                  preserve_midtones=True,
                  epsilon=1e-6):
-        """
+                     """
         prefer_sdr:
             Force SDR fallback when HDR unsupported
         preserve_midtones:
@@ -106015,8 +106015,8 @@ def apply_fallback_decode(
         delivery_package: dict,
         encode_profile: dict,
         engine: FallbackDecodePath):
-    if engine is None:
-        return delivery_package
+            if engine is None:
+                return delivery_package
     return engine.apply(delivery_package, encode_profile)
 # ==============================================================================
 # END OF CHUNK 83 G 02 — FALLBACK DECODE PATH
@@ -106061,7 +106061,7 @@ class MasterVerificationSummary:
                 encode_profile: dict,
                 bitrate: int,
                 output_intent: str):
-        summary = {}
+                    summary = {}
         if delivery_package is None:
             summary["status"] = "invalid"
             return summary
@@ -106088,8 +106088,8 @@ def generate_master_verification_summary(
         bitrate: int,
         output_intent: str,
         engine: MasterVerificationSummary):
-    if engine is None:
-        return {}
+            if engine is None:
+                return {}
     return engine.compile(
         delivery_package,
         encode_profile,
@@ -106123,7 +106123,7 @@ class PipelineCompletionMarker:
     def __init__(self,
                  success_flag=True,
                  include_timestamp=True):
-        """
+                     """
         success_flag:
             Marks pipeline as completed successfully
         include_timestamp:
@@ -106146,8 +106146,8 @@ class PipelineCompletionMarker:
 def emit_pipeline_completion(
         verification_summary: dict,
         engine: PipelineCompletionMarker):
-    if engine is None:
-        return {}
+            if engine is None:
+                return {}
     return engine.emit(verification_summary)
 # ==============================================================================
 # END OF CHUNK 83 H 02 — PIPELINE COMPLETION MARKER
@@ -106208,8 +106208,8 @@ class CrossVersionMetadataBridge:
 def bridge_metadata_versions(
         metadata: dict,
         engine: CrossVersionMetadataBridge):
-    if engine is None:
-        return metadata
+            if engine is None:
+                return metadata
     return engine.normalize(metadata)
 # ==============================================================================
 # END OF CHUNK 84 A 01 — CROSS-VERSION METADATA BRIDGE
@@ -106272,8 +106272,8 @@ def apply_backward_compatibility(
         metadata: dict,
         source_version: str,
         engine: BackwardCompatibilityShim):
-    if engine is None:
-        return metadata
+            if engine is None:
+                return metadata
     return engine.adapt(metadata, source_version)
 # ==============================================================================
 # END OF CHUNK 84 A 02 — BACKWARD COMPATIBILITY SHIM
@@ -131262,13 +131262,13 @@ class CameraAICapabilityNegotiator:
                 for k, rv in req_val.items():
                     sv = sup_val.get(k)
                     if sv is None:
-        continue
+                        continue
                     if isinstance(rv, (int, float)):
-        out[k] = min(rv, sv)
+                        out[k] = min(rv, sv)
                     elif isinstance(rv, (tuple, list)):
-        out[k] = self._intersect_range(rv, sv)
+                        out[k] = self._intersect_range(rv, sv)
                     else:
-        out[k] = self._intersect_scalar(rv, sv)
+                        out[k] = self._intersect_scalar(rv, sv)
                 granted[cap] = out
             else:
                 granted[cap] = sup_val
@@ -166621,7 +166621,7 @@ class EndToEndAutonomyValidationHarness:
                 # Assert safety invariants
                 if metrics.get("flight_risk_level", 0.0) > 0.8:
                     if not metrics.get("safety_override_active", False):
-        scenario_log["failed"] = True
+                        scenario_log["failed"] = True
         break
 
             scenario_log["completed"] = not scenario_log.get("failed", False)

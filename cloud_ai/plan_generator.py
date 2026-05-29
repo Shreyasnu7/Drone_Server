@@ -16,7 +16,8 @@ class PlanGenerator:
             action=raw_action,
             thought_process=ai_result.get("thought_process", "Processing..."),
             reasoning=ai_result.get("reasoning", "AI decision"),
-            params=ai_result.get("constraints", {}),
+            # MA-22 FIX: LLM may return params under different keys depending on reasoning
+            params=ai_result.get("params") or ai_result.get("constraints") or ai_result.get("motion_plan") or ai_result.get("laptop_ai_directives") or {},
             emotional_context=ai_result.get("emotional_context", {}),
             confidence=ai_result.get("confidence", 1.0)
         )

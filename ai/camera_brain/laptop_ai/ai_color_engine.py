@@ -51,14 +51,14 @@ class AIColorEngine:
         self.lut_catalog = ["cine_soft", "cine_flat", "vivid_boost"] 
         self.load_user_luts() # Scan for User's "1000 Files"
         
-        # CRITICAL: Import the 209K line global_tone_curve masterpiece!
+        # CRITICAL: Import the 200K+ line global_tone_curve masterpiece!
+        self.tone_curve = None
         try:
-            from laptop_ai.global_tone_curve import GlobalToneCurve
-            self.tone_curve = GlobalToneCurve()
-            print("🎨 LOADED: global_tone_curve.py (209,095 lines) - Crown Jewel Active!")
-        except ImportError as e:
-            # print(f"⚠️ global_tone_curve error: {e}") # Silenced non-critical error
-            pass
+            from laptop_ai.global_tone_curve import GlobalToneCurveEngine
+            self.tone_curve = GlobalToneCurveEngine()
+            print("🎨 LOADED: global_tone_curve.py (200K+ lines) - Crown Jewel Active!")
+        except Exception as e:
+            print(f"⚠️ global_tone_curve load error: {e}")
             self.tone_curve = None
 
     def load_user_luts(self):

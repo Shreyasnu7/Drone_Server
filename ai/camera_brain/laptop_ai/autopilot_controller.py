@@ -58,9 +58,11 @@ class AutopilotController:
     async def _handle_telemetry(self, packet):
         """ Capture telemetry from Server -> Drone """
         if packet.get("type") == "telemetry":
-            self.latest_telem = packet.get("data", {})
-            # Update local state if needed
-            pass
+            # Bridge sends under "payload", older code used "data" — handle both
+            self.latest_telem = packet.get("payload", packet.get("data", {}))
+        elif packet.get("type") == "esp32_telem":
+            # ESP32 sensor data — store for DirectorCore to read
+            self.latest_esp32 = packet.get("payload", {})
     def set_mode(self, mode):
         if not self.master: return
         mode_id = self.master.mode_mapping().get(mode)

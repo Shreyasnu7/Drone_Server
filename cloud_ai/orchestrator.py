@@ -16,6 +16,7 @@ except ImportError:
     context_store = _FallbackStore()
     print("⚠️ ai_context_store not found, using inline fallback")
 import json
+import time
 
 class CloudOrchestrator:
     """
@@ -30,6 +31,14 @@ class CloudOrchestrator:
         self.cinematic_reasoner = CinematicReasoner()
         self.planner = PlanGenerator()
 
+        # Cross-flight memory — AI learns and adapts from past flights
+        try:
+            from cloud_ai.memory.cloud_memory import CloudMemory
+            self.memory = CloudMemory()
+            print("✅ Cloud AI memory ACTIVE — AI learns across flights")
+        except ImportError:
+            self.memory = None
+
     async def process_request(self, payload: dict) -> dict:
         """Full Pipeline Execution"""
         user_text = payload.get("text", "")
@@ -43,8 +52,21 @@ class CloudOrchestrator:
         laptop_ctx = context_store.get_context()
         if laptop_ctx:
             user_text += f"\n[LAPTOP_AI_CONTEXT]: {json.dumps(laptop_ctx, default=str)}"
-        
-        references = payload.get("media", []) 
+
+        # CROSS-FLIGHT MEMORY INJECTION — AI adapts from past flights
+        if self.memory:
+            try:
+                user_prefs = self.memory.get_user_preferences(payload.get("user_id", "default"))
+                if user_prefs:
+                    user_text += f"\n[USER STYLE PREFERENCES from past flights]: {json.dumps(user_prefs, default=str)}"
+                # Find relevant past patterns
+                patterns = self.memory.find_patterns({"type": payload.get("text", "")[:50]})
+                if patterns:
+                    user_text += f"\n[SUCCESSFUL PATTERNS from past flights]: {json.dumps(patterns[:2], default=str)}"
+            except Exception:
+                pass
+
+        references = payload.get("media", [])
         
         # Extract Dynamic Keys
         api_keys = payload.get("api_keys", {})
@@ -68,5 +90,16 @@ class CloudOrchestrator:
         # 3. PLAN GENERATION (The "Assistant Director" Brain)
         # Converts abstract intent into specific Drone Waypoints/Commands
         final_plan = self.planner.generate(refined_intent)
+
+        # 4. STORE TO MEMORY — AI learns from every request
+        if self.memory:
+            try:
+                self.memory.store_pattern(
+                    f"request_{int(time.time())}",
+                    shot_sequence=[final_plan.action],
+                    context={"user_request": payload.get("text", ""), "telemetry": telemetry}
+                )
+            except Exception:
+                pass
 
         return final_plan

@@ -119,8 +119,9 @@ async def generic_command(payload: Dict):
     cmd = payload.get("command")
     data = payload.get("payload")
     
-    # Broadcast to Drone
-    msg = json.dumps({"type": "ai", "payload": {"action": cmd, **(data if data else {})}})
+    # MA-33 FIX: Use type="command" so bridge command_loop recognizes it
+    # (was "ai" which bridge doesn't handle)
+    msg = json.dumps({"type": "command", "payload": cmd, **({"params": data} if data else {})})
     
     try:
         await manager.send_to_drone(msg)

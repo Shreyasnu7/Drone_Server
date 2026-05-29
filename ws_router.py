@@ -9,28 +9,37 @@ router = APIRouter()
 
 class ConnectionManager:
     def __init__(self):
-        # Store active connections
+        # Store active connections — SEPARATE slots for drone and laptop
         self.mobile_clients: List[WebSocket] = []
-        self.drone_client: WebSocket | None = None
+        self.drone_client: WebSocket | None = None    # RADXA_X / Cubie A7Z (physical drone)
+        self.laptop_client: WebSocket | None = None    # laptop_vision (DirectorCore AI)
 
     async def connect_mobile(self, websocket: WebSocket):
         await websocket.accept()
         self.mobile_clients.append(websocket)
         print(f"📱 Mobile Client Connected. Total: {len(self.mobile_clients)}")
 
-    async def connect_drone(self, websocket: WebSocket):
+    async def connect_drone(self, websocket: WebSocket, client_id: str = ""):
         await websocket.accept()
-        self.drone_client = websocket
-        print("🚁 Drone (Laptop) Connected!")
+        if client_id == "laptop_vision":
+            self.laptop_client = websocket
+            print("💻 Laptop AI Connected!")
+        else:
+            self.drone_client = websocket
+            print("🚁 Drone (Radxa/Cubie) Connected!")
 
     def disconnect_mobile(self, websocket: WebSocket):
         if websocket in self.mobile_clients:
             self.mobile_clients.remove(websocket)
             print("📱 Mobile Client Disconnected")
 
-    def disconnect_drone(self):
-        self.drone_client = None
-        print("🚁 Drone Disconnected")
+    def disconnect_drone(self, websocket: WebSocket = None):
+        if websocket == self.laptop_client:
+            self.laptop_client = None
+            print("💻 Laptop AI Disconnected")
+        else:
+            self.drone_client = None
+            print("🚁 Drone Disconnected")
 
     async def broadcast_to_mobile(self, message: str):
         """Relay message from Drone to ALL Mobile Clients"""
@@ -41,12 +50,20 @@ class ConnectionManager:
                 print(f"Error broadcasting to mobile: {e}")
 
     async def send_to_drone(self, message: str):
-        """Relay message from Mobile to Drone"""
+        """Relay message from Mobile/Laptop to Drone"""
         if self.drone_client:
             try:
                 await self.drone_client.send_text(message)
             except Exception as e:
                 print(f"Error sending to drone: {e}")
+
+    async def send_to_laptop(self, message: str):
+        """Relay message from Drone to Laptop AI"""
+        if self.laptop_client:
+            try:
+                await self.laptop_client.send_text(message)
+            except Exception as e:
+                print(f"Error sending to laptop: {e}")
 
 manager = ConnectionManager()
 
@@ -66,7 +83,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
     
     # 1. AUTH CHECK / CONNECTION SETUP
     if is_drone:
-        await manager.connect_drone(websocket)
+        await manager.connect_drone(websocket, client_id)
         try:
              # Wait for Handshake (Drone sends {"token": ...})
              # or we implement a timeout here in real prod
@@ -97,30 +114,37 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
             
             # ROUTING LOGIC
             if is_drone:
-                # 1. Drone -> Brain (Telemetry/Video)
-                try:
-                    packet = json.loads(data)
-                    # Feed brain context if present
-                    if orchestrator and ("brain_context" in packet or "telemetry" in packet):
-                        orchestrator.monitor_telemetry(packet)
-                except: pass
+                if client_id == "laptop_vision":
+                    # LAPTOP -> DRONE (AI commands go to physical drone)
+                    await manager.send_to_drone(data)
+                    # Also notify mobile apps of AI status
+                    await manager.broadcast_to_mobile(data)
+                else:
+                    # DRONE -> LAPTOP + APP (sensor data, telemetry, video)
+                    # 1. Feed brain context if present
+                    try:
+                        packet = json.loads(data)
+                        if orchestrator and ("brain_context" in packet or "telemetry" in packet):
+                            orchestrator.monitor_telemetry(packet)
+                    except: pass
 
-                # 2. Drone -> App (Pass-through)
-                await manager.broadcast_to_mobile(data)
-                
+                    # 2. Drone -> Laptop AI (ESP32 telem, LiDAR scans, telemetry)
+                    await manager.send_to_laptop(data)
+                    # 3. Drone -> App (Pass-through)
+                    await manager.broadcast_to_mobile(data)
+
             else:
-                # 3. App -> Drone (Commands)
+                # App -> Drone (Commands)
                 await manager.send_to_drone(data)
                 
     except WebSocketDisconnect:
         if is_drone:
-            manager.disconnect_drone()
-            # orchestrator.dispatcher.remove_drone_connection() # Optional depending on orch implementation
+            manager.disconnect_drone(websocket)
         else:
             manager.disconnect_mobile(websocket)
     except Exception as e:
         print(f"WS Error [{client_id}]: {e}")
         if is_drone:
-            manager.disconnect_drone()
+            manager.disconnect_drone(websocket)
         else:
             manager.disconnect_mobile(websocket)

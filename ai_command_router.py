@@ -3,16 +3,6 @@ from cloud_ai.orchestrator import CloudOrchestrator
 from cloud_ai.llm import RealLLMClient
 from plan_router import submit_plan
 from api_schemas import DronePlan
-import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
-try:
-    from ai_context_store import context_store
-except ImportError:
-    class _FallbackStore:
-        def __init__(self): self._ctx = {}
-        def update(self, data): self._ctx = data
-        def get_context(self): return self._ctx
-    context_store = _FallbackStore()
 import logging
 
 
@@ -22,17 +12,8 @@ print("--> AI COMMAND ROUTER LOADED")
 router = APIRouter(prefix="/director", tags=["AI-Command"])
 
 # Initialize Orchestrator with REAL AI Client
+# This ensures no fake "Mock" responses are ever generated.
 orchestrator = CloudOrchestrator(llm_client=RealLLMClient())
-
-
-@router.post("/ai/context")
-async def receive_laptop_context(payload: dict):
-    """
-    Receives live vision context from Laptop AI.
-    Called periodically by director_core.py on the laptop.
-    """
-    context_store.update(payload)
-    return {"status": "ok", "age": 0}
 
 @router.post("/ai/command")
 async def ai_command(payload: dict):
@@ -71,51 +52,47 @@ async def ai_command(payload: dict):
         await submit_plan(plan)
 
         # 4. DIRECT DISPATCH (Cloud Mode)
-        # Immediately send to connected drones via WebSocket
-        from ws_router import connected_clients, WebSocket
+        # AI is FREE to decide ANY action. We send the full plan to the drone
+        # as-is. The drone's bridge handles MAVLink conversion.
+        # No filtering, no hardcoded action lists — AI has full authority.
+        from ws_router import manager
         import json
-        
-        # Convert Plan -> MAVLink/Radxa Command
-        # Plan Action: "GIMBAL_TRACK target=car" -> {"type": "gimbal", "payload": ...}
-        # Plan Action: "TAKEOFF" -> {"type": "ai", "payload": {"action": "TAKEOFF"}}
-        
-        cmd_payload = {}
-        cmd_type = "ai" # default
-        
-        if "GIMBAL" in plan.action.upper():
-            cmd_type = "gimbal"
-            # Extract Pitch/Yaw (Simplified - In real system, reasoning would give numbers)
-            # Fore now, let's assume raw_intent usually has numerical data, but here we just pass intent
-            # Actually, let's just send the whole plan and let Radxa decide? 
-            # Radxa only understands specific JSON.
-            
-            # Parsing "GIMBAL_LOOK: 45, 0"
-            try:
-                parts = plan.action.split(":")
-                if len(parts) > 1:
-                    coords = parts[1].split(",")
-                    cmd_payload = {"pitch": int(coords[0]), "yaw": int(coords[1])}
-            except:
-                cmd_payload = {"pitch": 0, "yaw": 0}
 
-        elif "TAKEOFF" in plan.action.upper():
-             cmd_type = "ai"
-             cmd_payload = {"action": "TAKEOFF"}
-        elif "LAND" in plan.action.upper():
-             cmd_type = "ai"
-             cmd_payload = {"action": "LAND"}
-        
-        # Broadcast to Drones
-        if cmd_type and connected_clients:
-            print(f"📡 DISPATCHING TO DRONES: {cmd_type} {cmd_payload}")
-            msg = json.dumps({"type": cmd_type, "payload": cmd_payload})
-            
-            # connected_clients is a List[WebSocket], not a Dict
-            for sock in connected_clients:
-                 try:
-                     await sock.send_text(msg)
-                 except:
-                     pass
+        # Build the dispatch message from the AI's plan
+        # The action field is whatever the AI decided: ORBIT, FOLLOW, VELOCITY,
+        # MOVE, GOTO, DOLLY, CRANE, CIRCLE, YAW, GIMBAL, TAKEOFF, LAND, etc.
+        dispatch_msg = {
+            "type": "ai_plan",
+            "payload": {
+                "action": plan.action,
+                "params": plan.params or {},
+                "confidence": plan.confidence,
+                "reasoning": plan.reasoning,
+                "emotional_context": plan.emotional_context or {},
+            }
+        }
+
+        # Send to drone (Radxa bridge) — this is the actual execution target
+        if manager.drone_client:
+            print(f">>> AI DISPATCH TO DRONE: {plan.action} | params={plan.params}")
+            try:
+                await manager.drone_client.send_text(json.dumps(dispatch_msg))
+            except Exception as e:
+                print(f"Drone dispatch failed: {e}")
+
+        # Also notify mobile apps so they see what the AI decided
+        try:
+            notify_msg = json.dumps({
+                "type": "ai_status",
+                "payload": {
+                    "action": plan.action,
+                    "reasoning": plan.reasoning,
+                    "confidence": plan.confidence,
+                }
+            })
+            await manager.broadcast_to_mobile(notify_msg)
+        except:
+            pass
 
         return {
             "status": "queued_and_dispatched",
